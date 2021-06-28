@@ -1,0 +1,27 @@
+---
+request:
+    url: /2013-09-01/login
+    query:
+        userName: "Ncmb Tarou"
+        password: dummyPassword
+    method: GET
+response:
+    status: 200
+    file: valid_get_login_response.json
+---
+request:
+    url: /2013-09-01/login
+    query:
+        mailAddress: "sample@example.com"
+        password: dummyPassword
+    method: GET
+response:
+    status: 200
+    file: valid_get_login_response.json
+---
+request:
+    url: /2013-09-01/logout
+    method: GET
+response:
+    status: 404
+    file: valid_get_logout_error_response.json

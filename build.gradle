@@ -1,0 +1,107 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlinx-serialization'
+
+buildscript {
+    ext.kotlin_version = '1.3.61'
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://kotlin.bintray.com/kotlinx" }
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+
+
+android {
+    compileSdkVersion 29
+
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "com.nifcloud.mbaas.core"
+        minSdkVersion 20
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+repositories {
+    // artifacts are published to this repository
+    mavenCentral()
+    gradlePluginPortal()
+    maven { url "https://kotlin.bintray.com/kotlinx" }
+    google()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.10.0"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.4'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+    testImplementation 'org.mockito:mockito-inline:3.11.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation("com.squareup.okhttp3:okhttp:4.8.1")
+    testImplementation("com.squareup.okhttp3:okhttp:4.8.1")
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.8.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    testImplementation 'org.yaml:snakeyaml:1.17'
+    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
+    testImplementation 'org.robolectric:robolectric:4.5.1'
+    def lifecycle_version = "1.1.1"
+    testImplementation "android.arch.core:core-testing:$lifecycle_version"
+    def coroutines_version = '1.3.9' //Kotlin coroutines用ライブラリ(async, await)のバージョン
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
+}
+
+task clearJar(type: Delete) {
+    delete 'build/libs/' + JAR_NAME
+}
+task makeJar(type: Copy) {
+    from('build/intermediates/app_classes/release')
+    into('release/')
+    include('classes.jar')
+    rename('classes.jar', JAR_NAME)
+}
+makeJar.dependsOn(clearJar, build)

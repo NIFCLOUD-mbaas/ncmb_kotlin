@@ -1,0 +1,191 @@
+package com.nifcloud.mbaas.core
+
+import org.json.JSONException
+import org.json.JSONObject
+
+/**
+ * A class of ncmb_kotlin.
+ *
+ * Main class of datastore features. Inherits from NCMBBase.
+ */
+
+open class NCMBObject : NCMBBase {
+    protected var mClassName: String = ""
+
+    /**
+     * Constructor with class name
+     * @param className class name for data store
+     */
+    constructor(className: String){
+        mClassName = className
+        mFields = JSONObject()
+        mUpdateKeys = HashSet()
+        mIgnoreKeys = ArrayList()
+    }
+
+    /**
+     * Constructor with class name
+     * @param className class name for data store
+     */
+    constructor(className: String, params: JSONObject) : this(className) {
+        try {
+            copyFrom(params)
+        } catch (e: JSONException) {
+            throw IllegalArgumentException(e.message)
+        }
+        this.mClassName = className
+        this.mIgnoreKeys = mutableListOf(
+            "objectId", "acl",
+            "createDate", "updateDate"
+        )
+    }
+
+    /**
+     * save current NCMBObject to data store
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    open fun save(): NCMBObject {
+        val objectId = getObjectId()
+        val className = this.mClassName
+        val objService = NCMBObjectService()
+        if (objectId == null) {
+            // 保存後に実施するsaveCallbackを渡す
+            objService.saveObject(
+                this,
+                className,
+                this.mFields
+            )
+            return this
+        } else {
+            //Object update
+            try {
+                val updateJson = createUpdateJsonData()
+                objService.updateObject(
+                    this,
+                    className,
+                    objectId,
+                    updateJson
+                )
+            } catch (e: JSONException) {
+                throw NCMBException(
+                    NCMBException.INVALID_JSON,
+                    e.message!!
+                )
+            }
+            return this
+        }
+    }
+
+    /**
+     * save current NCMBObject to data store asynchronously
+     * @param callback callback after object save
+     */
+    fun saveInBackground(saveCallback: NCMBCallback) {
+        val objecdId = getObjectId()
+        val className = this.mClassName
+        val objService = NCMBObjectService()
+        if (objecdId == null) {
+            // 保存後に実施するsaveCallbackを渡す
+            objService.saveObjectInBackground(
+                this,
+                className,
+                this.mFields,
+                saveCallback
+            )
+        }
+        else {
+            //Object update
+            try {
+                val updateJson = createUpdateJsonData()
+                objService.updateObjectInBackground(
+                    this, className,
+                    objecdId,
+                    updateJson,
+                    saveCallback
+                )
+            } catch (e: JSONException) {
+                saveCallback.done(
+                    NCMBException(
+                        NCMBException.INVALID_JSON,
+                        e.message!!
+                    )
+                )
+            }
+        }
+    }
+
+    @Throws(NCMBException::class)
+    open fun fetch(): NCMBObject {
+        val objectId = getObjectId()
+        val className = this.mClassName
+        val objService = NCMBObjectService()
+        if (objectId != null) {
+            // 保存後に実施するsaveCallbackを渡す
+            objService.fetchObject(
+                this,
+                className, objectId
+            )
+        }
+        return this
+    }
+
+    fun fetchInBackground(fetchCallback: NCMBCallback) {
+        val objecdId = getObjectId()
+        val className = this.mClassName
+        val objService = NCMBObjectService()
+        if (objecdId != null) {
+            objService.fetchObjectInBackground(
+                this,
+                className,
+                objecdId,
+                fetchCallback
+            )
+        } else {
+            fetchCallback.done(
+                NCMBException(
+                    NCMBException.GENERIC_ERROR,
+                    "Need to set objectID before fetch"
+                )
+            )
+        }
+    }
+
+    /**
+     * save current NCMBObject to data store
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    open fun delete(): NCMBObject? {
+        val objectId = getObjectId()
+        val className = this.mClassName
+        val objService = NCMBObjectService()
+        if (objectId != null) {
+            // 保存後に実施するsaveCallbackを渡す
+            objService.deleteObject(this, className, objectId)
+        }
+            return null
+    }
+
+    /**
+     * delete current NCMBObject from data store asynchronously
+     * @param callback callback after delete object
+     */
+    fun deleteInBackground(deleteCallback: NCMBCallback) {
+        val objectId = getObjectId()
+        val className = this.mClassName
+        val objService = NCMBObjectService()
+        if (objectId != null) {
+            objService.deleteObjectInBackground(
+                this,
+                className, objectId, deleteCallback
+            )
+        } else {
+            val ex = NCMBException(
+                NCMBException.GENERIC_ERROR,
+                "Need to set objectID before delete"
+            )
+            deleteCallback.done(ex)
+        }
+    }
+}
