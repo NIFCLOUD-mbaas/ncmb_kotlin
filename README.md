@@ -61,6 +61,7 @@ NCMB.initialize(this.getApplicationContext(),"YOUR_APPLICATION_KEY","YOUR_CLIENT
 import com.nifcloud.mbaas.core.NCMB
 import com.nifcloud.mbaas.core.NCMBObject
 import com.nifcloud.mbaas.core.NCMBCallback
+import com.nifcloud.mbaas.core.NCMBException
 ```
 
 * オブジェクトの保存
@@ -98,7 +99,7 @@ obj.saveInBackground(NCMBCallback { e, ncmbObj ->
         //保存に成功した場合の処理
         val result = ncmbObj as NCMBObject
         Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
-        backgroundToastShow(NCMB.getCurrentContext(), "Save successfull! with ID:" + obj.getObjectId());
+        backgroundToastShow(NCMB.getCurrentContext(), "Save successfull! with ID:" + result.getObjectId());
     }
 })
 　
