@@ -4,8 +4,8 @@
 
 ニフクラ mobile backend Kotlin SDKは、 モバイルアプリのバックエンド機能を提供するクラウドサービス ニフクラ mobile backend用のKotlin SDKであり、Android SDK (Javaベース)と違い、Kotlinで開発され、Kotlin専用インタフェースを持ったSDKです。
 
-  - データストア(デベロッパープレビュー版提供予定)
-  - 会員管理(デベロッパープレビュー版提供予定)
+  - データストア(デベロッパープレビュー版提供)
+  - 会員管理(デベロッパープレビュー版提供)
   - プッシュ通知 (未提供)
   - ファイルストア(未提供)
   - SNS連携(未提供)
@@ -61,7 +61,6 @@ NCMB.initialize(this.getApplicationContext(),"YOUR_APPLICATION_KEY","YOUR_CLIENT
 import com.nifcloud.mbaas.core.NCMB
 import com.nifcloud.mbaas.core.NCMBObject
 import com.nifcloud.mbaas.core.NCMBCallback
-import com.nifcloud.mbaas.core.NCMBException
 ```
 
 * オブジェクトの保存
@@ -77,6 +76,7 @@ obj.saveInBackground(NCMBCallback { e, ncmbObj ->
         Log.d("error","保存に失敗しました : " + e.message)
     } else {
         //保存に成功した場合の処理
+        val result = ncmbObj as NCMBObject
         Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
     }
 })
@@ -96,6 +96,7 @@ obj.saveInBackground(NCMBCallback { e, ncmbObj ->
         backgroundToastShow(NCMB.getCurrentContext(), "NCMB Error:" + e.message);
     } else {
         //保存に成功した場合の処理
+        val result = ncmbObj as NCMBObject
         Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
         backgroundToastShow(NCMB.getCurrentContext(), "Save successfull! with ID:" + obj.getObjectId());
     }
