@@ -72,18 +72,21 @@ import com.nifcloud.mbaas.core.NCMBException
 NCMB.initializeの下に以下を記載します。
 
 ```kotlin
-val obj = NCMBObject("TestClass")
-obj.put("message", "Hello, NCMB!")
-obj.saveInBackground(NCMBCallback { e, ncmbObj ->
-    if (e != null) {
-        //保存に失敗した場合の処理
-        Log.d("error","保存に失敗しました : " + e.message)
-    } else {
-        //保存に成功した場合の処理
-        val result = ncmbObj as NCMBObject
-        Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
-    }
-})
+    // TestClassのNCMBObjectを作成
+    val obj = NCMBObject("TestClass")
+    // fieldに追加する値を設定
+    obj.put("message", "Hello, NCMB!")
+    // データストアへの登録を実施
+    obj.saveInBackground(NCMBCallback { e, ncmbObj ->
+        if (e != null) {
+            //保存に失敗した場合の処理
+            Log.d("error","保存に失敗しました : " + e.message)
+        } else {
+            //保存に成功した場合の処理
+            val result = ncmbObj as NCMBObject
+            Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
+        }
+    })
 ```
 
 * オブジェクトの保存(非同期処理を利用し、通信完了結果をUI上で反映する場合)
@@ -91,30 +94,33 @@ obj.saveInBackground(NCMBCallback { e, ncmbObj ->
 以下の実装例は保存されたオブジェクトIDをToastを利用し、UI上で結果を表示する例です。
 
 ```kotlin
-val obj = NCMBObject("TestClass")
-obj.put("message", "Hello, NCMB!")
-obj.saveInBackground(NCMBCallback { e, ncmbObj ->
-    if (e != null) {
-        //保存に失敗した場合の処理
-        Log.d("error","保存に失敗しました : " + e.message)
-        backgroundToastShow(NCMB.getCurrentContext(), "NCMB Error:" + e.message);
-    } else {
-        //保存に成功した場合の処理
-        val result = ncmbObj as NCMBObject
-        Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
-        backgroundToastShow(NCMB.getCurrentContext(), "Save successfull! with ID:" + result.getObjectId());
+    // TestClassのNCMBObjectを作成
+    val obj = NCMBObject("TestClass")
+    // fieldに追加する値を設定
+    obj.put("message", "Hello, NCMB!")
+    // データストアへの登録を実施
+    obj.saveInBackground(NCMBCallback { e, ncmbObj ->
+        if (e != null) {
+            //保存に失敗した場合の処理
+            Log.d("error","保存に失敗しました : " + e.message)
+            backgroundToastShow(NCMB.getCurrentContext(), "NCMB Error:" + e.message);
+        } else {
+            //保存に成功した場合の処理
+            val result = ncmbObj as NCMBObject
+            Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
+            backgroundToastShow(NCMB.getCurrentContext(), "Save successfull! with ID:" + result.getObjectId());
+        }
+    })
+    　
+    fun backgroundToastShow(context: Context?, msg: String?) {
+        if (context != null && msg != null) {
+            Handler(Looper.getMainLooper()).post(object : Runnable {
+                override fun run() {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
     }
-})
-　
-fun backgroundToastShow(context: Context?, msg: String?) {
-    if (context != null && msg != null) {
-        Handler(Looper.getMainLooper()).post(object : Runnable {
-            override fun run() {
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-}
 ```
 
 ### データストア
@@ -122,11 +128,12 @@ fun backgroundToastShow(context: Context?, msg: String?) {
 #### オブジェクトをデータストアに保存する
 
 ```kotlin
-    // testクラスのNCMBObjectを作成
+    // TestClassのNCMBObjectを作成
     val obj = NCMBObject("TestClass")
-    // データストアへの登録を実施
+    // fieldに追加する値を設定
     obj.put("fieldA", "Hello, NCMB!")
     obj.put("fieldB", 25)
+    // データストアへの登録を実施
     obj.saveInBackground(NCMBCallback { e, ncmbObj ->
         if (e != null) {
             //保存に失敗した場合の処理
@@ -143,18 +150,20 @@ fun backgroundToastShow(context: Context?, msg: String?) {
 #### オブジェクトの取得
 
 ```kotlin
-    // testクラスへのNCMBObjectを設定
+    // TestClassへのNCMBObjectを設定
     val obj = NCMBObject("TestClass")
     // objectIdプロパティを設定
     obj.setObjectId("Mz6xym6wNi63lxb8")
+    // データストアの取得を実施
     obj.fetchInBackground(NCMBCallback { e, ncmbObj ->
         if (e != null) {
-            //保存に失敗した場合の処理
-            Log.d("failure","保存に失敗しました : " + e.message)
+            //検索に失敗した場合の処理
+            Log.d("failure","取得に失敗しました : " + e.message)
         }
         else {
+            //検索に成功した場合の処理
             val result = ncmbObj as NCMBObject
-            Log.d("success","保存に成功しました")
+            Log.d("success","取得に成功しました")
             Log.d("success","fieldB value " + result.get("fieldB"))
         }
     })
@@ -164,20 +173,19 @@ fun backgroundToastShow(context: Context?, msg: String?) {
 
 保存済み（または、objectIdを持っている）のオブジェクトに新しい値をセットして `saveInBackground` メソッドを実行することでデータストアの値が更新されます。
 
-#### データストアに対しての操作を設定する
-
 ```kotlin
-    // testクラスのNCMBObjectを作成
+    // TestClassへのNCMBObjectを設定
     val obj = NCMBObject("TestClass")
     // objectIdプロパティを設定
-    obj.setObjectId("Mz6xym6wNi63lxb8")
+    obj.setObjectId("Mz6xym6wNi63lxb8")    
+    // データ更新するfieldの値を設定
     obj.put("fieldA", "Hello, NCMB!!")
     obj.put("fieldB", 30)
     // データストアへの更新を実施
     obj.saveInBackground(NCMBCallback { e, ncmbObj ->
         if (e != null) {
             //更新に失敗した場合の処理
-            Log.d("error","保存に失敗しました : " + e.message)
+            Log.d("error","更新に失敗しました : " + e.message)
         } else {
             //更新に成功した場合の処理
             val result = ncmbObj as NCMBObject
@@ -190,7 +198,7 @@ fun backgroundToastShow(context: Context?, msg: String?) {
 #### オブジェクトの削除
 
 ```kotlin
-    // testクラスのNCMBObjectを作成
+    // TestClassへのNCMBObjectを設定
     var obj = NCMBObject("TestClass")
     // objectIdプロパティを設定
     obj.setObjectId("Mz6xym6wNi63lxb8")
@@ -233,6 +241,7 @@ fun backgroundToastShow(context: Context?, msg: String?) {
 ユーザー名、パスワードでのログイン
 
 ```kotlin
+    //　Userインスタンスの生成
     var user = NCMBUser()
     //ユーザー名・パスワードを設定
     user.userName = "takanokun" /* ユーザー名 */
@@ -244,7 +253,7 @@ fun backgroundToastShow(context: Context?, msg: String?) {
         Log.d("success","ログインに成功しました")
     }
     catch(e:NCMBException){
-        // 新規登録に失敗した場合の処理
+        // ログインに失敗した場合の処理
         Log.d("failure","ログインに失敗しました ： " + e.message)
     }
     // ログイン状況の確認
@@ -259,6 +268,8 @@ fun backgroundToastShow(context: Context?, msg: String?) {
 #### ログアウト
 
 ```kotlin
+    //　Userインスタンスの生成
+    var user = NCMBUser()
     // ログアウト
     try{
         // ログアウト
