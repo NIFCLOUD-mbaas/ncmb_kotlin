@@ -58,13 +58,14 @@ ActivityのonCreateメソッド内に以下を記載します。
 NCMB.initialize(this.getApplicationContext(),"YOUR_APPLICATION_KEY","YOUR_CLIENT_KEY");
 ```
 
-* 使用するライブラリのimport
+* 利用する機能に合わせて使用するライブラリのimport
 
 ```kotlin
-import com.nifcloud.mbaas.core.NCMB
-import com.nifcloud.mbaas.core.NCMBObject
-import com.nifcloud.mbaas.core.NCMBCallback
-import com.nifcloud.mbaas.core.NCMBException
+import com.nifcloud.mbaas.core.NCMB //全機能必須
+import com.nifcloud.mbaas.core.NCMBCallback //非同期処理を行う場合
+import com.nifcloud.mbaas.core.NCMBException //例外処理を行う場合
+import com.nifcloud.mbaas.core.NCMBObject //データストアを利用する場合
+import com.nifcloud.mbaas.core.NCMBUser //会員管理を利用する場合
 ```
 
 * オブジェクトの保存
@@ -74,7 +75,7 @@ NCMB.initializeの下に以下を記載します。
 ```kotlin
     // TestClassのNCMBObjectを作成
     val obj = NCMBObject("TestClass")
-    // fieldに追加する値を設定
+    // オブジェクトに値を設定
     obj.put("message", "Hello, NCMB!")
     // データストアへの登録を実施
     obj.saveInBackground(NCMBCallback { e, ncmbObj ->
@@ -96,7 +97,7 @@ NCMB.initializeの下に以下を記載します。
 ```kotlin
     // TestClassのNCMBObjectを作成
     val obj = NCMBObject("TestClass")
-    // fieldに追加する値を設定
+    // オブジェクトに値を設定
     obj.put("message", "Hello, NCMB!")
     // データストアへの登録を実施
     obj.saveInBackground(NCMBCallback { e, ncmbObj ->
@@ -130,7 +131,7 @@ NCMB.initializeの下に以下を記載します。
 ```kotlin
     // TestClassのNCMBObjectを作成
     val obj = NCMBObject("TestClass")
-    // fieldに追加する値を設定
+    // オブジェクトに値を設定
     obj.put("fieldA", "Hello, NCMB!")
     obj.put("fieldB", 25)
     // データストアへの登録を実施
@@ -178,7 +179,7 @@ NCMB.initializeの下に以下を記載します。
     val obj = NCMBObject("TestClass")
     // objectIdプロパティを設定
     obj.setObjectId("Mz6xym6wNi63lxb8")    
-    // データ更新するfieldの値を設定
+    // オブジェクトに値を設定
     obj.put("fieldA", "Hello, NCMB!!")
     obj.put("fieldB", 30)
     // データストアへの更新を実施
@@ -215,6 +216,12 @@ NCMB.initializeの下に以下を記載します。
 ```
 
 ### 会員管理
+
+* 使用するライブラリのimport
+
+```kotlin
+import com.nifcloud.mbaas.core.NCMBUser
+```
 
 #### ユーザーの新規登録
 
