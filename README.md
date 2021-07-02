@@ -36,6 +36,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.8.1'
     implementation 'com.google.code.gson:gson:2.3.1'
     api files('libs/NCMB.jar')
+
+    //同期処理を使用する場合はこちらを追加していただく必要があります
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
 }
 ```
 
