@@ -95,7 +95,7 @@ dependencies {
 }
 
 task clearJar(type: Delete) {
-    delete 'build/libs/' + JAR_NAME
+    delete 'release/' + JAR_NAME
 }
 task makeJar(type: Copy) {
     from('build/intermediates/aar_main_jar/release')
