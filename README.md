@@ -217,12 +217,6 @@ NCMB.initializeの下に以下を記載します。
 
 ### 会員管理
 
-* 使用するライブラリのimport
-
-```kotlin
-import com.nifcloud.mbaas.core.NCMBUser
-```
-
 #### ユーザーの新規登録
 
 ```kotlin
