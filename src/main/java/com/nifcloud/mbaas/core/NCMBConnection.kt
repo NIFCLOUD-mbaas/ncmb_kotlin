@@ -112,8 +112,8 @@ class NCMBConnection(request: NCMBRequest) {
         println(ncmbRequest.url)
         println(headers)
 
-        var body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
-        var request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
+        val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
+        val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

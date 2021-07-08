@@ -337,24 +337,19 @@ open class NCMBUser: NCMBObject {
 //        return UUID.randomUUID().toString()
 //    }
 
-//Todo login background
-//
-//        /**
-//         * Login with username and password in background
-//         *
-//         * @param userName user name
-//         * @param password password
-//         * @param callback callback when finished
-//         * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
-//         */
-//        @Throws(NCMBException::class)
-//        fun loginInBackground(
-//            userName: String?, password: String?,
-//            callback: LoginCallback?
-//        ) {
-//            val service: NCMBUserService = NCMB.factory(NCMB.ServiceType.USER) as NCMBUserService
-//            service.loginByNameInBackground(userName, password, callback)
-//        }
+    /**
+     * Login with username and password in background
+     *
+     * @param userName user name
+     * @param password password
+     * @param callback callback when finished
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun loginInBackground(userName: String, password: String, loginCallback: NCMBCallback) {
+        val userService = NCMBUserService()
+        userService.loginByNameInBackground(userName, password, loginCallback)
+    }
 
     /**
      * sign up to NIFCLOUD mobile backend
@@ -381,6 +376,28 @@ open class NCMBUser: NCMBObject {
         return user
     }
 
+    /**
+     * sign up to NIFCLOUD mobile backend
+     *
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    open fun signUpInBackground(loginCallback: NCMBCallback) {
+        val userService = NCMBUserService()
+        val params = JSONObject()
+        try {
+            if(userName == null || password == null){
+                throw NCMBException(NCMBException.REQUIRED, "username or password not set")
+            }
+            for(key in mFields.keys()){
+                params.put(key, mFields[key])
+            }
+            userService.registerInBackgroundUser(params, false, loginCallback)
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
+        }
+    }
+
     @Throws(NCMBException::class)
     override fun fetch(): NCMBObject {
         val objectId = getObjectId()
@@ -390,6 +407,15 @@ open class NCMBUser: NCMBObject {
             mFields = user.mFields
         }
         return this
+    }
+
+    @Throws(NCMBException::class)
+    override fun fetchInBackground(fetchCallback: NCMBCallback) {
+        val objectId = getObjectId()
+        val userService = NCMBUserService()
+        if (objectId != null) {
+            userService.fetchUserInBackground(this, objectId, fetchCallback)
+        }
     }
 
     @Throws(NCMBException::class)
@@ -408,6 +434,19 @@ open class NCMBUser: NCMBObject {
         }
     }
 
+    @Throws(NCMBException::class)
+    override fun deleteInBackground(deleteCallback: NCMBCallback) {
+        val objectId = getObjectId()
+        val userService = NCMBUserService()
+        try {
+            if (objectId != null) {
+                userService.deleteUserInBackground(this, objectId, deleteCallback)
+            }
+        } catch (e: NCMBException) {
+            throw e
+        }
+    }
+
     /**
      * logout from NIFCLOUD mobile backend
      *
@@ -417,5 +456,16 @@ open class NCMBUser: NCMBObject {
     open fun logout() {
         val objService = NCMBUserService()
         objService.logoutUser()
+    }
+
+    /**
+     * logout from NIFCLOUD mobile backend
+     *
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    open fun logoutInBackground(logoutCallback: NCMBCallback) {
+        val userService = NCMBUserService()
+        userService.logoutUserInBackground(logoutCallback)
     }
 }

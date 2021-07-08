@@ -146,7 +146,7 @@ open class NCMBObject : NCMBBase {
         return this
     }
 
-    fun fetchInBackground(fetchCallback: NCMBCallback) {
+    open fun fetchInBackground(fetchCallback: NCMBCallback) {
         val objecdId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -180,14 +180,14 @@ open class NCMBObject : NCMBBase {
             // 保存後に実施するsaveCallbackを渡す
             objService.deleteObject(this, className, objectId)
         }
-            return null
+        return null
     }
 
     /**
      * delete current NCMBObject from data store asynchronously
      * @param callback callback after delete object
      */
-    fun deleteInBackground(deleteCallback: NCMBCallback) {
+    open fun deleteInBackground(deleteCallback: NCMBCallback) {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()

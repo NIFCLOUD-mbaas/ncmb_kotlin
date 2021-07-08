@@ -44,6 +44,19 @@ open class NCMBService {
     )
 
     /**
+     * Data class for params of request in asynchronously
+     */
+    data class RequestParamsAsync(
+        var url: String,
+        var method: String,
+        var params: JSONObject = JSONObject(),
+        var contentType: String,
+        var query: JSONObject = JSONObject(),
+        var callback: NCMBCallback,
+        var handler: NCMBHandler
+    )
+
+    /**
      * Send request in asynchronously
      *
      * @param url         URL
@@ -136,5 +149,25 @@ open class NCMBService {
         )
         val connection = NCMBConnection(request)
         connection.sendRequestAsynchronously(callback, handler)
+    }
+
+    /**
+     * Send request in asynchronously
+     *
+     * @param url         URL
+     * @param method      http method
+     * @param content     contnt body
+     * @param queryString query string
+     */
+    fun sendRequestAsync(params: RequestParamsAsync) {
+        return this.sendRequestAsync(
+            params.url,
+            params.method,
+            params.params,
+            params.contentType,
+            params.query,
+            params.callback,
+            params.handler
+        )
     }
 }

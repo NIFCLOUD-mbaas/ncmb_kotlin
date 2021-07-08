@@ -26,7 +26,7 @@ package com.nifcloud.mbaas.core
 class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
 
    //For pass callback from User
-    fun done(e: NCMBException?, response: NCMBResponse) {
+    fun done(e: NCMBException?, response: NCMBResponse?) {
        //do sthing here for callback
         passCallback(e, response)
     }
@@ -38,7 +38,7 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
     }
 
     //For pass callback from User
-    fun done(e: NCMBException?, obj: NCMBObject) {
+    fun done(e: NCMBException?, obj: NCMBObject?) {
         //do sthing here for callback
         passCallback(e, obj)
     }
