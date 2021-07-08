@@ -624,6 +624,7 @@ class NCMBUserService : NCMBService() {
                     val responseData = getUserCheckResponse(response)
                     val user = NCMBUser(responseData)
                     fetchObject.reflectResponse(responseData)
+                    NCMBBase().mFields = user.mFields
                     //loginCallback done to object
                     fetchCallback.done(null, user);
                 }
@@ -669,12 +670,9 @@ class NCMBUserService : NCMBService() {
                     val responseData = deleteUserCheckResponse(response)
                     val user = NCMBUser(responseData)
                     deleteObject.reflectResponse(responseData)
+
                     NCMBBase().mFields = JSONObject()
                     NCMBBase().mUpdateKeys.clear()
-                    if (userId == NCMBUser().getCurrentUser().getObjectId()) {
-                        // unregister login informations
-                        clearCurrentUser()
-                    }
                     //loginCallback done to object
                     deleteCallback.done(null, user);
                 }
@@ -685,6 +683,10 @@ class NCMBUserService : NCMBService() {
         }
         val reqParams: RequestParamsAsync = deleteUserInBackgroundParams(userId, deleteCallback, deleteHandler)
         sendRequestAsync(reqParams)
+        if (userId == NCMBUser().getCurrentUser().getObjectId()) {
+            // unregister login informations
+            clearCurrentUser()
+        }
     }
 
     /**
