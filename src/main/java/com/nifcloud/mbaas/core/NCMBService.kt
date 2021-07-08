@@ -32,28 +32,28 @@ open class NCMBService {
      */
     protected var mServicePath: String? = null
 
+//    /**
+//     * Data class for params of request
+//     */
+//    data class RequestParams(
+//        var url: String,
+//        var method: String,
+//        var params: JSONObject = JSONObject(),
+//        var contentType: String,
+//        var query: JSONObject = JSONObject()
+//    )
+
     /**
-     * Data class for params of request
+     * Data class for params of request in asynchronously
      */
     data class RequestParams(
         var url: String,
         var method: String,
         var params: JSONObject = JSONObject(),
         var contentType: String,
-        var query: JSONObject = JSONObject()
-    )
-
-    /**
-     * Data class for params of request in asynchronously
-     */
-    data class RequestParamsAsync(
-        var url: String,
-        var method: String,
-        var params: JSONObject = JSONObject(),
-        var contentType: String,
         var query: JSONObject = JSONObject(),
-        var callback: NCMBCallback,
-        var handler: NCMBHandler
+        var callback: NCMBCallback? = null,
+        var handler: NCMBHandler? = null
     )
 
     /**
@@ -127,7 +127,7 @@ open class NCMBService {
         contentType: String,
         query: JSONObject,
         callback: NCMBCallback?,
-        handler: NCMBHandler
+        handler: NCMBHandler?
     ){
         if (NCMB.SESSION_TOKEN == null) {
             NCMB.SESSION_TOKEN = NCMBUser().getSessionToken()
@@ -159,7 +159,7 @@ open class NCMBService {
      * @param content     contnt body
      * @param queryString query string
      */
-    fun sendRequestAsync(params: RequestParamsAsync) {
+    fun sendRequestAsync(params: RequestParams) {
         return this.sendRequestAsync(
             params.url,
             params.method,

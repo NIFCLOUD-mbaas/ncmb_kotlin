@@ -43,7 +43,7 @@ open class NCMBBase(){
             return field
         }
         protected set
-    var mUpdateKeys = HashSet<String>()
+    protected var mUpdateKeys = HashSet<String>()
     protected var mIgnoreKeys: List<String>? = null
     protected var keys = HashSet<String>()
 

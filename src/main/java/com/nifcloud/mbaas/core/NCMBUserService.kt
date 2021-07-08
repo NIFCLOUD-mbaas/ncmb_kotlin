@@ -154,7 +154,7 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams: RequestParamsAsync = logoutParamsInBackground(logoutCallback, logoutHandler)
+        val reqParams: RequestParams = logoutParamsInBackground(logoutCallback, logoutHandler)
         sendRequestAsync(reqParams)
     }
 
@@ -256,11 +256,11 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun registerInBackgroundByNameParams(params: JSONObject, loginCallback: NCMBCallback, loginHandler: NCMBHandler): RequestParamsAsync {
+    fun registerInBackgroundByNameParams(params: JSONObject, loginCallback: NCMBCallback, loginHandler: NCMBHandler): RequestParams {
         val url = NCMB.getApiBaseUrl() + mServicePath
         val method = NCMBRequest.HTTP_METHOD_POST
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParamsAsync(url = url, method = method, params = params, contentType = contentType, callback = loginCallback, handler = loginHandler)
+        return RequestParams(url = url, method = method, params = params, contentType = contentType, callback = loginCallback, handler = loginHandler)
     }
 
     /**
@@ -292,12 +292,12 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun loginInBackgroundByNameParams(query: JSONObject, loginCallback: NCMBCallback, loginHandler: NCMBHandler): RequestParamsAsync {
+    fun loginInBackgroundByNameParams(query: JSONObject, loginCallback: NCMBCallback, loginHandler: NCMBHandler): RequestParams {
         return try {
             val url = NCMB.getApiBaseUrl() + "login"
             val method = NCMBRequest.HTTP_METHOD_GET
             val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-            RequestParamsAsync(url = url, method = method, contentType = contentType, query = query, callback = loginCallback, handler = loginHandler)
+            RequestParams(url = url, method = method, contentType = contentType, query = query, callback = loginCallback, handler = loginHandler)
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.MISSING_VALUE, "userName/password required")
         }
@@ -320,11 +320,11 @@ class NCMBUserService : NCMBService() {
      *
      * @return request params in object
      */
-    protected fun logoutParamsInBackground(logoutCallback: NCMBCallback, logoutHandler: NCMBHandler): RequestParamsAsync {
+    protected fun logoutParamsInBackground(logoutCallback: NCMBCallback, logoutHandler: NCMBHandler): RequestParams {
         val url = NCMB.getApiBaseUrl() + "logout"
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParamsAsync(url = url, method = method, contentType = contentType, callback = logoutCallback, handler = logoutHandler)
+        return RequestParams(url = url, method = method, contentType = contentType, callback = logoutCallback, handler = logoutHandler)
     }
 
     /**
@@ -633,7 +633,7 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams: RequestParamsAsync = getUserParamsInBackground(userId, fetchCallback, fetchHandler)
+        val reqParams: RequestParams = getUserParamsInBackground(userId, fetchCallback, fetchHandler)
         sendRequestAsync(reqParams)
     }
 
@@ -671,8 +671,6 @@ class NCMBUserService : NCMBService() {
                     val user = NCMBUser(responseData)
                     deleteObject.reflectResponse(responseData)
 
-                    NCMBBase().mFields = JSONObject()
-                    NCMBBase().mUpdateKeys.clear()
                     //loginCallback done to object
                     deleteCallback.done(null, user);
                 }
@@ -681,7 +679,7 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams: RequestParamsAsync = deleteUserInBackgroundParams(userId, deleteCallback, deleteHandler)
+        val reqParams: RequestParams = deleteUserInBackgroundParams(userId, deleteCallback, deleteHandler)
         sendRequestAsync(reqParams)
         if (userId == NCMBUser().getCurrentUser().getObjectId()) {
             // unregister login informations
@@ -712,11 +710,11 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun getUserParamsInBackground(userId: String, fetchCallback: NCMBCallback, fetchHandler: NCMBHandler): RequestParamsAsync {
+    protected fun getUserParamsInBackground(userId: String, fetchCallback: NCMBCallback, fetchHandler: NCMBHandler): RequestParams {
         val url = NCMB.getApiBaseUrl() + mServicePath + "/" + userId
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParamsAsync(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler)
+        return RequestParams(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler)
     }
 
     /**
@@ -738,11 +736,11 @@ class NCMBUserService : NCMBService() {
      * @param userId user id
      * @return parameters in object
      */
-    protected fun deleteUserInBackgroundParams(userId: String, deleteCallback: NCMBCallback, deleteHandler: NCMBHandler): RequestParamsAsync {
+    protected fun deleteUserInBackgroundParams(userId: String, deleteCallback: NCMBCallback, deleteHandler: NCMBHandler): RequestParams {
         val url = NCMB.getApiBaseUrl() + mServicePath + "/" + userId
         val method = NCMBRequest.HTTP_METHOD_DELETE
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParamsAsync(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler)
+        return RequestParams(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler)
     }
 
     /**

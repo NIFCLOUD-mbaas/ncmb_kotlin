@@ -441,6 +441,8 @@ open class NCMBUser: NCMBObject {
         try {
             if (objectId != null) {
                 userService.deleteUserInBackground(this, objectId, deleteCallback)
+                mFields = JSONObject()
+                mUpdateKeys.clear()
             }
         } catch (e: NCMBException) {
             throw e
