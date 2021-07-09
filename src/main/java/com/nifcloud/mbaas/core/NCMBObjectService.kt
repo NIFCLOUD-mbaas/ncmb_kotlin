@@ -24,8 +24,9 @@ import org.json.JSONObject
  * SDK handler is also set here.
  *
  */
-class NCMBObjectService() : NCMBService() {
-    val SERVICE_PATH = "classes/"
+open class NCMBObjectService() : NCMBService() {
+
+    open val SERVICE_PATH = "classes/"
 
     /**
      * Initialization

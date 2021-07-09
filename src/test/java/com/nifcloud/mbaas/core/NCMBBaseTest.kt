@@ -23,7 +23,6 @@ import org.junit.Before
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
 
-
 class NCMBBaseTest {
     private var mServer: MockWebServer = MockWebServer()
 
@@ -87,5 +86,42 @@ class NCMBBaseTest {
         baseObj.copyFrom(json)
         var data = baseObj.mFields
         JSONAssert.assertEquals(json, data,false)
+    }
+
+    /**
+     * reflectResponse テスト
+     */
+    @Test
+    fun reflectResponse_test() {
+        val baseObj = NCMBBase()
+        val responseJson = JSONObject("{\"objectId\":\"xxxxx\",\"userName\":\"YamadaTarou\"}")
+        baseObj.reflectResponse(responseJson)
+        Assert.assertEquals("xxxxx", baseObj.mFields.get("objectId"))
+        Assert.assertEquals("YamadaTarou", baseObj.mFields.get("userName"))
+    }
+
+    /**
+     * reflectResponse テスト
+     */
+    @Test
+    fun reflectResponse_object_test() {
+        val baseObj = NCMBObject("TestClass")
+        val responseJson = JSONObject("{\"objectId\":\"xxxxx\",\"createDate\":\"2013-08-28T03:02:29.970Z\"}")
+        baseObj.reflectResponse(responseJson)
+        Assert.assertEquals("xxxxx", baseObj.mFields.get("objectId"))
+        Assert.assertEquals("2013-08-28T03:02:29.970Z", baseObj.mFields.get("createDate"))
+    }
+
+    /**
+     * reflectResponse テスト
+     */
+    @Test
+    fun reflectResponse_user_test() {
+        val baseObj = NCMBUser()
+        val responseJson = JSONObject("{\"objectId\":\"xxxxx\",\"userName\":\"YamadaTarou\",\"createDate\":\"2013-08-28T03:02:29.970Z\",\"sessionToken\":\"xxxxxxxxxx\"}")
+        baseObj.reflectResponse(responseJson)
+        Assert.assertEquals("xxxxx", baseObj.mFields.get("objectId"))
+        Assert.assertEquals("YamadaTarou", baseObj.mFields.get("userName"))
+        Assert.assertEquals("xxxxxxxxxx", baseObj.mFields.get("sessionToken"))
     }
 }

@@ -201,7 +201,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun login(userName: String, password: String): NCMBUser {
         val userService = NCMBUserService()
-        return userService.loginByName(userName, password)
+        return userService.loginByName(this, userName, password)
     }
 
     /**
@@ -348,7 +348,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     fun loginInBackground(userName: String, password: String, loginCallback: NCMBCallback) {
         val userService = NCMBUserService()
-        userService.loginByNameInBackground(userName, password, loginCallback)
+        userService.loginByNameInBackground(this, userName, password, loginCallback)
     }
 
     /**
@@ -368,7 +368,7 @@ open class NCMBUser: NCMBObject {
             for(key in mFields.keys()){
                 params.put(key, mFields[key])
             }
-            user = userService.registerUser(params, false)
+            user = userService.registerUser(this, params, false)
             mFields = user.mFields
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
@@ -392,7 +392,7 @@ open class NCMBUser: NCMBObject {
             for(key in mFields.keys()){
                 params.put(key, mFields[key])
             }
-            userService.registerInBackgroundUser(params, false, loginCallback)
+            userService.registerInBackgroundUser(this, params, false, loginCallback)
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
         }
@@ -457,7 +457,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun logout() {
         val userService = NCMBUserService()
-        userService.logoutUser()
+        userService.logoutUser(this)
     }
 
     /**
@@ -468,6 +468,6 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun logoutInBackground(logoutCallback: NCMBCallback) {
         val userService = NCMBUserService()
-        userService.logoutUserInBackground(logoutCallback)
+        userService.logoutUserInBackground(this, logoutCallback)
     }
 }
