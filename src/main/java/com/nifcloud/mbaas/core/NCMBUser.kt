@@ -201,7 +201,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun login(userName: String, password: String): NCMBUser {
         val objService = NCMBUserService()
-        return objService.loginByName(userName, password)
+        return objService.loginByName(this, userName, password)
     }
 
     /**
@@ -373,7 +373,7 @@ open class NCMBUser: NCMBObject {
             for(key in mFields.keys()){
                 params.put(key, mFields[key])
             }
-            user = objService.registerUser(params, false)
+            user = objService.registerUser(this, params, false)
             mFields = user.mFields
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
@@ -416,6 +416,6 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun logout() {
         val objService = NCMBUserService()
-        objService.logoutUser()
+        objService.logoutUser(this)
     }
 }
