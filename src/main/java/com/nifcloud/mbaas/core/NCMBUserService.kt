@@ -55,7 +55,7 @@ class NCMBUserService : NCMBService() {
      *
      * @param userName user name
      * @param password password
-     * @return new NCMBUser object that logged-in
+     * @return NCMBUser object that logged-in
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
@@ -75,7 +75,7 @@ class NCMBUserService : NCMBService() {
      *
      * @param params parameters
      * @param oauth  use oauth or not
-     * @return new NCMBUser object that logged-in
+     * @return NCMBUser object that logged-in
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
@@ -91,7 +91,6 @@ class NCMBUserService : NCMBService() {
      *
      * @param params parameters
      * @param oauth use oauth or not
-     * @return NCMBUser
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
@@ -106,8 +105,7 @@ class NCMBUserService : NCMBService() {
      * Internal method to save user
      *
      * @param params parameters
-     * @param oauth use oauth or not
-     * @return NCMBUser
+     * @return NCMBUser object that logged-in
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
@@ -134,7 +132,7 @@ class NCMBUserService : NCMBService() {
 
     /**
      * LogoutInBackground from session
-     *
+     * @param logoutCallback callback when process finished
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
@@ -163,7 +161,7 @@ class NCMBUserService : NCMBService() {
      *
      * @param userName user name
      * @param password password
-     * @param callback callback when process finished
+     * @param loginCallback callback when process finished
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
@@ -183,12 +181,12 @@ class NCMBUserService : NCMBService() {
      *
      * @param params parameters
      * @param oauth  use oauth or not
-     * @return new NCMBUser object that logged-in
-     * @throws NCMBException
+     * @param signUpCallback callback when process finished
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun registerInBackgroundUser(params: JSONObject, oauth: Boolean, signUpCallback: NCMBCallback) {
-        val signUpHandler = NCMBHandler { logincallback, response ->
+    fun registerUserInBackground(params: JSONObject, oauth: Boolean, signUpCallback: NCMBCallback) {
+        val signUpHandler = NCMBHandler { signupcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
                     val responseData = registerUserCheckResponse(response, oauth)
@@ -207,11 +205,10 @@ class NCMBUserService : NCMBService() {
     }
 
     /**
-     * Internal method to save user
+     * Internal method to login user
      *
      * @param params parameters
-     * @param oauth use oauth or not
-     * @return NCMBUser
+     * @param loginCallback callback when process finished
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
@@ -253,14 +250,16 @@ class NCMBUserService : NCMBService() {
      *
      * @param params user parameters
      * @return parameters in object
+     * @param signUpCallback callback when process finished
+     * @param signUpHandler sdk after-connection tasks
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun registerInBackgroundByNameParams(params: JSONObject, loginCallback: NCMBCallback, loginHandler: NCMBHandler): RequestParams {
+    fun registerInBackgroundByNameParams(params: JSONObject, signUpCallback: NCMBCallback, signUpHandler: NCMBHandler): RequestParams {
         val url = NCMB.getApiBaseUrl() + mServicePath
         val method = NCMBRequest.HTTP_METHOD_POST
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParams(url = url, method = method, params = params, contentType = contentType, callback = loginCallback, handler = loginHandler)
+        return RequestParams(url = url, method = method, params = params, contentType = contentType, callback = signUpCallback, handler = signUpHandler)
     }
 
     /**
@@ -289,6 +288,8 @@ class NCMBUserService : NCMBService() {
      * @param userName user name
      * @param password password
      * @return parameters in object
+     * @param loginCallback callback when process finished
+     * @param loginHandler sdk after-connection tasks
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
@@ -317,7 +318,9 @@ class NCMBUserService : NCMBService() {
 
     /**
      * Setup parameters to logout
-     *
+
+     * @param logoutCallback callback when process finished
+     * @param logoutHandler sdk after-connection tasks
      * @return request params in object
      */
     protected fun logoutParamsInBackground(logoutCallback: NCMBCallback, logoutHandler: NCMBHandler): RequestParams {
@@ -425,6 +428,12 @@ class NCMBUserService : NCMBService() {
         }
     }
 
+    /**
+     * Check response to login user information
+     *
+     * @param response
+     * @throws NCMBException
+     */
     @Throws(NCMBException::class)
     fun loginByNameCheckResponse(response: NCMBResponse): JSONObject {
         return when(response) {
@@ -440,6 +449,12 @@ class NCMBUserService : NCMBService() {
         }
     }
 
+    /**
+     * Check response to logout user information
+     *
+     * @param response
+     * @throws NCMBException
+     */
     @Throws(NCMBException::class)
     fun logoutCheckResponse(response: NCMBResponse): JSONObject{
         return when(response) {
@@ -476,8 +491,8 @@ class NCMBUserService : NCMBService() {
     /**
      * process after login
      *
-     * @param response response object
-     * @return new NCMBUser object
+     * @param responseData response object
+     * @return NCMBUser object
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
@@ -501,6 +516,7 @@ class NCMBUserService : NCMBService() {
      * Run at the time of "POST" and "PUT"
      * write the currentUser data in the file
      *
+     * @param params update current user values
      * @param responseData user parameters
      */
     @Throws(NCMBException::class)
@@ -613,6 +629,7 @@ class NCMBUserService : NCMBService() {
      * Get user entity from given id
      *
      * @param userId user id
+     * @param fetchCallback callback when process finished
      * @return NCMBUser instance
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
@@ -660,6 +677,7 @@ class NCMBUserService : NCMBService() {
      * Delete user by given id
      *
      * @param userId user id
+     * @param deleteCallback callback when process finished
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
@@ -706,6 +724,8 @@ class NCMBUserService : NCMBService() {
      * Setup params to get user entity
      *
      * @param userId user id
+     * @param fetchCallback callback when process finished
+     * @param fetchHandler sdk after-connection tasks
      * @return parameters for NCMBRequest
      * @throws NCMBException
      */
@@ -734,6 +754,8 @@ class NCMBUserService : NCMBService() {
      * Setup params to delete user
      *
      * @param userId user id
+     * @param deleteCallback callback when process finished
+     * @param deleteHandler sdk after-connection tasks
      * @return parameters in object
      */
     protected fun deleteUserInBackgroundParams(userId: String, deleteCallback: NCMBCallback, deleteHandler: NCMBHandler): RequestParams {

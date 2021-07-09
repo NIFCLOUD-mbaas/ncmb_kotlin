@@ -44,7 +44,7 @@ open class NCMBService {
 //    )
 
     /**
-     * Data class for params of request in asynchronously
+     * Data class for params of request
      */
     data class RequestParams(
         var url: String,
@@ -57,13 +57,13 @@ open class NCMBService {
     )
 
     /**
-     * Send request in asynchronously
+     * Send request in sync
      *
      * @param url         URL
      * @param method      http method
-     * @param params     contnt body
-     * @param queryString query string
-     * @param callback    callback on finished
+     * @param params      content body
+     * @param contentType content type
+     * @param query       query
      */
 
     fun sendRequest(
@@ -94,12 +94,9 @@ open class NCMBService {
     }
 
     /**
-     * Send request in asynchronously
+     * Send request in sync
      *
-     * @param url         URL
-     * @param method      http method
-     * @param content     contnt body
-     * @param queryString query string
+     * @param params      request params
      */
     fun sendRequest(params: RequestParams): NCMBResponse {
         return this.sendRequest(
@@ -116,9 +113,11 @@ open class NCMBService {
      *
      * @param url         URL
      * @param method      http method
-     * @param content     contnt body
+     * @param params      content body
+     * @param contentType content type
      * @param query       query
      * @param callback    callback on finished
+     * @param handler     after-connection tasks
      */
     fun sendRequestAsync(
         url: String,
@@ -154,10 +153,7 @@ open class NCMBService {
     /**
      * Send request in asynchronously
      *
-     * @param url         URL
-     * @param method      http method
-     * @param content     contnt body
-     * @param queryString query string
+     * @param params      request params
      */
     fun sendRequestAsync(params: RequestParams) {
         return this.sendRequestAsync(
