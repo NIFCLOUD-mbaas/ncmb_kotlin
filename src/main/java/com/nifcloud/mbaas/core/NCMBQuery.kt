@@ -1,28 +1,144 @@
-/*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.nifcloud.mbaas.core
+import com.nifcloud.mbaas.core.*
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 
 /**
- * A class of ncmb_kotlin.
- *
- * To do queries for datastore  (TBD)
- *
+ * NCMBQuery is used to search data from NIFCLOUD mobile backend
  */
+class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
+    private var mWhereConditions: JSONObject? = JSONObject()
 
-class NCMBQuery {
+    /**
+     * search data from NIFCLOUD mobile backend
+     * @return NCMBObject(include extend class) list of search result
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun find(): List<T> {
+        return if (mClassName == "user") {
+            val userServ = NCMB.factory(NCMB.ServiceType.USER) as NCMBUserService
+            userServ.searchUser(conditions) as List<T>
+        } else {
+            val objServ = NCMB.factory(NCMB.ServiceType.OBJECT) as NCMBObjectService
+            objServ.searchObject(mClassName, conditions)
+        }
+    }
 
+    /**
+     * search data from NIFCLOUD mobile backend asynchronously
+     * @param callback executed callback after data search
+     */
+    fun findInBackground(callback: NCMBCallback<T>) {
+        if (mClassName == "user") {
+            val userServ = NCMB.factory(NCMB.ServiceType.USER) as NCMBUserService
+            userServ.searchUserInBackground(conditions, object : SearchUserCallback() {
+                fun done(users: ArrayList<NCMBUser>?, e: NCMBException?) {
+                    callback.done(users as List<T>?, e)
+                }
+            })
+        } else if (mClassName == "role") {
+            val roleServ: NCMBRoleService = NCMB.factory(NCMB.ServiceType.ROLE) as NCMBRoleService
+            roleServ.searchRoleInBackground(conditions, object : SearchRoleCallback() {
+                fun done(users: ArrayList<NCMBRole>?, e: NCMBException?) {
+                    callback.done(users as List<T>?, e)
+                }
+            })
+        } else if (mClassName == "push") {
+            val pushServ: NCMBPushService = NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
+            pushServ.searchPushInBackground(conditions, object : SearchPushCallback() {
+                fun done(users: ArrayList<NCMBPush>?, e: NCMBException?) {
+                    callback.done(users as List<T>?, e)
+                }
+            })
+        } else if (mClassName == "installation") {
+            val installationServ: NCMBInstallationService =
+                NCMB.factory(NCMB.ServiceType.INSTALLATION) as NCMBInstallationService
+            installationServ.searchInstallationInBackground(
+                conditions,
+                object : SearchInstallationCallback() {
+                    fun done(users: ArrayList<NCMBInstallation>?, e: NCMBException?) {
+                        callback.done(users as List<T>?, e)
+                    }
+                })
+        } else if (mClassName == "file") {
+            val fileServ: NCMBFileService = NCMB.factory(NCMB.ServiceType.FILE) as NCMBFileService
+            fileServ.searchFileInBackground(conditions, object : SearchFileCallback() {
+                fun done(files: List<NCMBFile>?, e: NCMBException?) {
+                    callback.done(files as List<T>?, e)
+                }
+            })
+        } else {
+            val objServ = NCMB.factory(NCMB.ServiceType.OBJECT) as NCMBObjectService
+            objServ.searchObjectInBackground(
+                mClassName,
+                conditions,
+                object : SearchObjectCallback() {
+                    fun done(objects: List<NCMBObject>?, e: NCMBException?) {
+                        callback.done(objects as List<T>?, e)
+                    }
+                })
+        }
+    }
+
+    /**
+     * get current search condition
+     * @return current search condition
+     */
+    val conditions: JSONObject?
+        get() {
+            val conditions = JSONObject()
+            return try {
+                if (mWhereConditions != null && mWhereConditions.length() > 0) {
+                    conditions.put("where", mWhereConditions)
+                }
+                conditions
+            } catch (e: JSONException) {
+                null
+            }
+        }
+
+    @Throws(JSONException::class)
+    private fun convertConditionValue(value: Any): Any {
+        return if (value is Date) {
+            val dateJson = JSONObject("{'__type':'Date'}")
+            val df: SimpleDateFormat = getIso8601()
+            dateJson.put("iso", df.format(value as Date))
+            dateJson
+        } else if (value is Location) {
+            val locationJson = JSONObject("{'__type':'GeoPoint'}")
+            locationJson.put("latitude", (value as Location).getLatitude())
+            locationJson.put("longitude", (value as Location).getLongitude())
+            locationJson
+        } else if (value is List<*>) {
+            val gson = Gson()
+            JSONArray(gson.toJson(value))
+        } else if (value is Map<*, *>) {
+            val gson = Gson()
+            JSONObject(gson.toJson(value))
+        } else {
+            value
+        }
+    }
+
+    /**
+     * set the conditions to search the data that matches the value of the specified key
+     * @param key field name to set the conditions
+     * @param value condition value
+     */
+    fun whereEqualTo(key: String?, value: Any) {
+        try {
+            mWhereConditions!!.put(key, convertConditionValue(value))
+        } catch (e: JSONException) {
+            throw IllegalArgumentException(e.message)
+        }
+    }
+
+    /**
+     * Constructor
+     * @param className class name string for search data
+     */
+    init {
+        mWhereConditions = JSONObject()
+    }
 }
