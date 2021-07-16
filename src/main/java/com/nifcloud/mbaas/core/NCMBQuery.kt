@@ -17,11 +17,11 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
     @Throws(NCMBException::class)
     fun find(): List<T> {
         return if (mClassName == "user") {
-            val userServ = NCMB.factory(NCMB.ServiceType.USER) as NCMBUserService
-            userServ.searchUser(conditions) as List<T>
+            val userServ = NCMBUserService()
+            userServ.findUser(conditions) as List<T>
         } else {
-            val objServ = NCMB.factory(NCMB.ServiceType.OBJECT) as NCMBObjectService
-            objServ.searchObject(mClassName, conditions)
+            val objServ = NCMBObjectService()
+            objServ.findObject(mClassName, conditions)
         }
     }
 
@@ -31,49 +31,18 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      */
     fun findInBackground(callback: NCMBCallback<T>) {
         if (mClassName == "user") {
-            val userServ = NCMB.factory(NCMB.ServiceType.USER) as NCMBUserService
-            userServ.searchUserInBackground(conditions, object : SearchUserCallback() {
+            val userServ = NCMBUserService()
+            userServ.findUserInBackground(conditions, object : SearchUserCallback() {
                 fun done(users: ArrayList<NCMBUser>?, e: NCMBException?) {
                     callback.done(users as List<T>?, e)
                 }
             })
-        } else if (mClassName == "role") {
-            val roleServ: NCMBRoleService = NCMB.factory(NCMB.ServiceType.ROLE) as NCMBRoleService
-            roleServ.searchRoleInBackground(conditions, object : SearchRoleCallback() {
-                fun done(users: ArrayList<NCMBRole>?, e: NCMBException?) {
-                    callback.done(users as List<T>?, e)
-                }
-            })
-        } else if (mClassName == "push") {
-            val pushServ: NCMBPushService = NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
-            pushServ.searchPushInBackground(conditions, object : SearchPushCallback() {
-                fun done(users: ArrayList<NCMBPush>?, e: NCMBException?) {
-                    callback.done(users as List<T>?, e)
-                }
-            })
-        } else if (mClassName == "installation") {
-            val installationServ: NCMBInstallationService =
-                NCMB.factory(NCMB.ServiceType.INSTALLATION) as NCMBInstallationService
-            installationServ.searchInstallationInBackground(
-                conditions,
-                object : SearchInstallationCallback() {
-                    fun done(users: ArrayList<NCMBInstallation>?, e: NCMBException?) {
-                        callback.done(users as List<T>?, e)
-                    }
-                })
-        } else if (mClassName == "file") {
-            val fileServ: NCMBFileService = NCMB.factory(NCMB.ServiceType.FILE) as NCMBFileService
-            fileServ.searchFileInBackground(conditions, object : SearchFileCallback() {
-                fun done(files: List<NCMBFile>?, e: NCMBException?) {
-                    callback.done(files as List<T>?, e)
-                }
-            })
         } else {
-            val objServ = NCMB.factory(NCMB.ServiceType.OBJECT) as NCMBObjectService
-            objServ.searchObjectInBackground(
+            val objServ = NCMBObjectService()
+            objServ.findObjectInBackground(
                 mClassName,
                 conditions,
-                object : SearchObjectCallback() {
+                object : FindObjectCallback() {
                     fun done(objects: List<NCMBObject>?, e: NCMBException?) {
                         callback.done(objects as List<T>?, e)
                     }
@@ -105,11 +74,6 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
             val df: SimpleDateFormat = getIso8601()
             dateJson.put("iso", df.format(value as Date))
             dateJson
-        } else if (value is Location) {
-            val locationJson = JSONObject("{'__type':'GeoPoint'}")
-            locationJson.put("latitude", (value as Location).getLatitude())
-            locationJson.put("longitude", (value as Location).getLongitude())
-            locationJson
         } else if (value is List<*>) {
             val gson = Gson()
             JSONArray(gson.toJson(value))
