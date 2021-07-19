@@ -283,30 +283,30 @@ class NCMBObjectService() : NCMBService() {
     }
 
 
-    /**
-     * Searching JSONObject data from NIFCLOUD mobile backend
-     * @param className Datastore class name which to search the object
-     * @param conditions JSONObject of search conditions
-     * @return List of NCMBObject of search results
-     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
-     */
-    @Throws(NCMBException::class)
-    fun findObject(className: String, conditions: JSONObject?): List<*>? {
-        if (!validateClassName(className)) {
-            throw NCMBException(
-                NCMBException.REQUIRED,
-                "className / objectId is must not be null or empty"
-            )
-        }
-        val url: String = mContext.baseUrl.toString() + mServicePath + className
-        val type = NCMBRequest.HTTP_METHOD_GET
-        val response: NCMBResponse = sendRequest(url, type, null, conditions)
-        if (response.statusCode !== NCMBResponse.HTTP_STATUS_OK) {
-            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code")
-        }
-        return createSearchResults(className, response.responseData)
-    }
-
+//    /**
+//     * Searching JSONObject data from NIFCLOUD mobile backend
+//     * @param className Datastore class name which to search the object
+//     * @param conditions JSONObject of search conditions
+//     * @return List of NCMBObject of search results
+//     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+//     */
+//    @Throws(NCMBException::class)
+//    fun findObject(className: String, conditions: JSONObject?): List<*>? {
+//        if (!validateClassName(className)) {
+//            throw NCMBException(
+//                NCMBException.REQUIRED,
+//                "className / objectId is must not be null or empty"
+//            )
+//        }
+//        val url: String = mContext.baseUrl.toString() + mServicePath + className
+//        val type = NCMBRequest.HTTP_METHOD_GET
+//        val response: NCMBResponse = sendRequest(url, type, null, conditions)
+//        if (response.statusCode !== NCMBResponse.HTTP_STATUS_OK) {
+//            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code")
+//        }
+//        return createSearchResults(className, response.responseData)
+//    }
+//
     /**
      * Searching JSONObject data to NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to search the object
@@ -316,49 +316,27 @@ class NCMBObjectService() : NCMBService() {
     fun findObjectInBackground(
         className: String,
         conditions: JSONObject?,
-        callback: SearchObjectCallback?
+        findCallback: NCMBCallback
     ) {
-        if (!validateClassName(className)) {
-            callback.done(
-                null,
-                NCMBException(NCMBException.REQUIRED, "className is must not be null or empty")
-            )
-        }
-        val url: String = mContext.baseUrl.toString() + mServicePath + className
-        val type = NCMBRequest.HTTP_METHOD_GET
-        val reqParams = RequestParams()
-        reqParams.url = url
-        reqParams.type = type
-        reqParams.query = conditions!!
-        try {
-            sendRequestAsync(reqParams, object : ObjectServiceCallback(this, callback) {
-                fun handleResponse(response: NCMBResponse) {
-                    val callback: SearchObjectCallback? = mCallback as SearchObjectCallback?
-                    if (callback != null) {
-                        try {
-                            callback.done(
-                                createSearchResults(className, response.responseData),
-                                null
-                            )
-                        } catch (callbackException: NCMBException) {
-                            callback.done(null, callbackException)
-                        }
-                    }
+        val url = NCMB.getApiBaseUrl() + this.mServicePath + className
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        //conditions solving!!
+        val query =  RequestParams(url = url, method = method, contentType = contentType).query
+        val saveHandler = NCMBHandler { findCallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    //findCallback done to object
+                    val listObj = listObject.reflectResponse(response.data)
+                    findCallback.done(null, listObj)
                 }
-
-                fun handleError(e: NCMBException?) {
-                    val callback: FindObjectCallback? = mCallback as SearchObjectCallback?
-                    if (callback != null) {
-                        callback.done(null, e)
-                    }
+                is NCMBResponse.Failure -> {
+                    findCallback.done(response.resException)
                 }
-            })
-        } catch (e: NCMBException) {
-            //Exception handling for NCMBRequest
-            if (callback != null) {
-                callback.done(null, e)
             }
         }
+        sendRequestAsync(url, method, null ,contentType, query, findCallback, saveHandler)
+
     }
 
     private fun validateClassName(className: String?): Boolean {

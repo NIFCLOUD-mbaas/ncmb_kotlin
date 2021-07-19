@@ -110,7 +110,7 @@ open class NCMBService {
     fun sendRequestAsync(
         url: String,
         method: String,
-        params: JSONObject,
+        params: JSONObject?,
         contentType: String,
         query: JSONObject,
         callback: NCMBCallback?,
