@@ -159,7 +159,7 @@ open class NCMBUser: NCMBObject {
      */
     @Throws(NCMBException::class)
     private fun saveWithoutLogin(): NCMBObject {
-        val objService = NCMBUserService()
+        val userService = NCMBUserService()
         val params = JSONObject()
         try {
             if(userName == null || password == null){
@@ -168,7 +168,7 @@ open class NCMBUser: NCMBObject {
             for(key in mFields.keys()){
                 params.put(key, mFields[key])
             }
-            objService.saveUser(this, params, false)
+            userService.saveUser(this, params, false)
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
         }
@@ -178,9 +178,9 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     override fun save(): NCMBObject {
         val objectId = getObjectId() ?: return saveWithoutLogin()
-        val objService = NCMBUserService()
+        val userService = NCMBUserService()
         try {
-            val result: JSONObject = objService.updateUser(this, objectId, createUpdateJsonData())
+            val result: JSONObject = userService.updateUser(this, objectId, createUpdateJsonData())
             if (!result.isNull("updateDate")) {
                 mFields.put("updateDate", result.getString("updateDate"))
             }
@@ -200,8 +200,8 @@ open class NCMBUser: NCMBObject {
      */
     @Throws(NCMBException::class)
     open fun login(userName: String, password: String): NCMBUser {
-        val objService = NCMBUserService()
-        return objService.loginByName(this, userName, password)
+        val userService = NCMBUserService()
+        return userService.loginByName(this, userName, password)
     }
 
     /**
@@ -363,7 +363,7 @@ open class NCMBUser: NCMBObject {
      */
     @Throws(NCMBException::class)
     open fun signUp(): NCMBUser {
-        val objService = NCMBUserService()
+        val userService = NCMBUserService()
         val params = JSONObject()
         var user = NCMBUser()
         try {
@@ -373,7 +373,7 @@ open class NCMBUser: NCMBObject {
             for(key in mFields.keys()){
                 params.put(key, mFields[key])
             }
-            user = objService.registerUser(this, params, false)
+            user = userService.registerUser(this, params, false)
             mFields = user.mFields
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
@@ -384,9 +384,9 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     override fun fetch(): NCMBObject {
         val objectId = getObjectId()
-        val objService = NCMBUserService()
+        val userService = NCMBUserService()
         if (objectId != null) {
-            val user: NCMBUser = objService.fetchUser(this, objectId)
+            val user: NCMBUser = userService.fetchUser(this, objectId)
             mFields = user.mFields
         }
         return this
@@ -395,10 +395,10 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     override fun delete(): NCMBObject? {
         val objectId = getObjectId()
-        val objService = NCMBUserService()
+        val userService = NCMBUserService()
         try {
             if (objectId != null) {
-                objService.deleteUser(this, objectId)
+                userService.deleteUser(this, objectId)
                 mFields = JSONObject()
                 mUpdateKeys.clear()
             }
@@ -415,7 +415,7 @@ open class NCMBUser: NCMBObject {
      */
     @Throws(NCMBException::class)
     open fun logout() {
-        val objService = NCMBUserService()
-        objService.logoutUser(this)
+        val userService = NCMBUserService()
+        userService.logoutUser(this)
     }
 }
