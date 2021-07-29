@@ -21,6 +21,7 @@ import com.nifcloud.mbaas.core.NCMB
 import com.nifcloud.mbaas.core.NCMBErrorDispatcher
 import com.nifcloud.mbaas.core.NCMBException
 import com.nifcloud.mbaas.core.NCMBUser
+import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
 import org.junit.Before
@@ -81,6 +82,50 @@ class NCMBErrorUserTest {
         }
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
+    }
+
+    /**
+     * - 内容：password　が間違っているときの　loginInBackground 後の CurrentUserの情報を確認する。
+     * login失敗後、CurrentUserの更新がないこと。
+     *
+     * - 結果：CurrentUserが変更されない
+     */
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun loginInBackground_invalid_password() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().loginInBackground("Ncmb Ichiro", "invalidPassword", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertEquals(NCMBException.AUTH_FAILURE, (inBackgroundHelper["e"] as NCMBException).code)
+    }
+
+    /**
+     * - 内容：password　が間違っているときの　loginInBackground 後の CurrentUserの情報を確認する。
+     * login失敗後、CurrentUserの更新がないこと。
+     *
+     * - 結果：CurrentUserが変更されない
+     */
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun loginInBackground_invalid_parameter() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().loginInBackground("Ncmb Ichiro", "invalidPassword", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertEquals(NCMBException.AUTH_FAILURE, (inBackgroundHelper["e"] as NCMBException).code)
     }
 
     //    @Test

@@ -123,7 +123,7 @@ class NCMBUserTest {
      * - 内容：loginInBackground 後の CurrentUserの情報を確認する。
      * ユーザーオブジェクトID、ユーザー名、Saveを行ってからセッショントークンの変更がないこと。
      *
-     * - 結果：セッショントークンが変更されない
+     * - 結果：CurrentUserが変更される
      */
     @Test
     @Throws(java.lang.Exception::class)

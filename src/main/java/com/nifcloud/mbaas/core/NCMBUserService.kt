@@ -28,9 +28,9 @@ import java.io.File
 class NCMBUserService : NCMBService() {
 
     /**
-     * Status code of register success
+     * Status code of update success
      */
-    val HTTP_STATUS_REGISTERED = 201
+    val HTTP_STATUS_updateED = 201
 
     /**
      * Status code of authorize success
@@ -71,7 +71,7 @@ class NCMBUserService : NCMBService() {
     }
 
     /**
-     * Internal method to register user
+     * Internal method to update user
      *
      * @param params parameters
      * @param oauth  use oauth or not
@@ -79,10 +79,10 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun registerUser(params: JSONObject, oauth: Boolean): NCMBUser {
-        val reqParams = registerUserParams(params)
+    fun updateUser(params: JSONObject, oauth: Boolean): NCMBUser {
+        val reqParams = updateUserParams(null, params, null, null)
         val response = sendRequest(reqParams)
-        val responseData = registerUserCheckResponse(response, oauth)
+        val responseData = updateUserCheckResponse(response, oauth)
         return postLoginProcess(responseData)
     }
 
@@ -95,9 +95,9 @@ class NCMBUserService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun saveUser(saveObject: NCMBObject, params: JSONObject, oauth: Boolean) {
-        val reqParams = registerUserParams(params)
+        val reqParams = updateUserParams(null, params, null, null)
         val response = sendRequest(reqParams)
-        val responseData = registerUserCheckResponse(response, oauth)
+        val responseData = updateUserCheckResponse(response, oauth)
         saveObject.reflectResponse(responseData)
     }
 
@@ -110,7 +110,7 @@ class NCMBUserService : NCMBService() {
      */
     @Throws(NCMBException::class)
     protected fun loginUser(params: JSONObject): NCMBUser {
-        val reqParams = loginByNameParams(params)
+        val reqParams = loginByNameParams(params, null, null)
         val response = sendRequest(reqParams)
         val responseData = loginByNameCheckResponse(response)
         return postLoginProcess(responseData)
@@ -123,7 +123,7 @@ class NCMBUserService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun logoutUser() {
-        val reqParams = logoutParams()
+        val reqParams = logoutParams(null, null)
         val response = sendRequest(reqParams)
         // clear login informations
         clearCurrentUser()
@@ -152,7 +152,7 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams: RequestParams = logoutParamsInBackground(logoutCallback, logoutHandler)
+        val reqParams: RequestParams = logoutParams(logoutCallback, logoutHandler)
         sendRequestAsync(reqParams)
     }
 
@@ -177,7 +177,7 @@ class NCMBUserService : NCMBService() {
     }
 
     /**
-     * Internal method to register user
+     * Internal method to update user
      *
      * @param params parameters
      * @param oauth  use oauth or not
@@ -185,11 +185,11 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun registerUserInBackground(params: JSONObject, oauth: Boolean, signUpCallback: NCMBCallback) {
+    fun updateUserInBackground(params: JSONObject, oauth: Boolean, signUpCallback: NCMBCallback) {
         val signUpHandler = NCMBHandler { signupcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    val responseData = registerUserCheckResponse(response, oauth)
+                    val responseData = updateUserCheckResponse(response, oauth)
                     val user = postLoginProcess(responseData)
                     NCMBBase().mFields = user.mFields
                     //loginCallback done to object
@@ -200,7 +200,7 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams = registerInBackgroundByNameParams(params, signUpCallback, signUpHandler)
+        val reqParams = updateUserParams(null, params, signUpCallback, signUpHandler)
         sendRequestAsync(reqParams)
     }
 
@@ -226,27 +226,12 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams = loginInBackgroundByNameParams(params, loginCallback, loginHandler)
+        val reqParams = loginByNameParams(params, loginCallback, loginHandler)
         sendRequestAsync(reqParams)
     }
 
     /**
-     * Setup params to register new user
-     *
-     * @param params user parameters
-     * @return parameters in object
-     * @throws NCMBException
-     */
-    @Throws(NCMBException::class)
-    protected fun registerUserParams(params: JSONObject): RequestParams {
-        val url = NCMB.getApiBaseUrl() + mServicePath
-        val method = NCMBRequest.HTTP_METHOD_POST
-        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParams(url = url, method = method, params = params, contentType = contentType)
-    }
-
-    /**
-     * Setup params to register new user in background
+     * Setup params to update new user in background
      *
      * @param params user parameters
      * @return parameters in object
@@ -255,31 +240,19 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun registerInBackgroundByNameParams(params: JSONObject, signUpCallback: NCMBCallback, signUpHandler: NCMBHandler): RequestParams {
-        val url = NCMB.getApiBaseUrl() + mServicePath
-        val method = NCMBRequest.HTTP_METHOD_POST
+    fun updateUserParams(userId: String?, params: JSONObject, signUpCallback: NCMBCallback?, signUpHandler: NCMBHandler?): RequestParams {
+        val url = if(userId != null) {
+            NCMB.getApiBaseUrl() + this.mServicePath + "/" + userId
+        } else{
+            NCMB.getApiBaseUrl() + this.mServicePath
+        }
+        val method = if(userId != null) {
+            NCMBRequest.HTTP_METHOD_PUT
+        } else{
+            NCMBRequest.HTTP_METHOD_POST
+        }
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         return RequestParams(url = url, method = method, params = params, contentType = contentType, callback = signUpCallback, handler = signUpHandler)
-    }
-
-    /**
-     * Setup params to login by user name
-     *
-     * @param userName user name
-     * @param password password
-     * @return parameters in object
-     * @throws NCMBException
-     */
-    @Throws(NCMBException::class)
-    fun loginByNameParams(query: JSONObject): RequestParams {
-        return try {
-            val url = NCMB.getApiBaseUrl() + "login"
-            val method = NCMBRequest.HTTP_METHOD_GET
-            val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-            RequestParams(url = url, method = method, contentType = contentType, query = query)
-        } catch (e: JSONException) {
-            throw NCMBException(NCMBException.MISSING_VALUE, "userName/password required")
-        }
     }
 
     /**
@@ -293,27 +266,11 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun loginInBackgroundByNameParams(query: JSONObject, loginCallback: NCMBCallback, loginHandler: NCMBHandler): RequestParams {
-        return try {
-            val url = NCMB.getApiBaseUrl() + "login"
-            val method = NCMBRequest.HTTP_METHOD_GET
-            val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-            RequestParams(url = url, method = method, contentType = contentType, query = query, callback = loginCallback, handler = loginHandler)
-        } catch (e: JSONException) {
-            throw NCMBException(NCMBException.MISSING_VALUE, "userName/password required")
-        }
-    }
-
-    /**
-     * Setup parameters to logout
-     *
-     * @return request params in object
-     */
-    protected fun logoutParams(): RequestParams {
-        val url = NCMB.getApiBaseUrl() + "logout"
+    fun loginByNameParams(query: JSONObject, loginCallback: NCMBCallback?, loginHandler: NCMBHandler?): RequestParams {
+        val url = NCMB.getApiBaseUrl() + "login"
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParams(url = url, method = method, contentType = contentType)
+        return RequestParams(url = url, method = method, contentType = contentType, query = query, callback = loginCallback, handler = loginHandler)
     }
 
     /**
@@ -323,7 +280,7 @@ class NCMBUserService : NCMBService() {
      * @param logoutHandler sdk after-connection tasks
      * @return request params in object
      */
-    protected fun logoutParamsInBackground(logoutCallback: NCMBCallback, logoutHandler: NCMBHandler): RequestParams {
+    protected fun logoutParams(logoutCallback: NCMBCallback?, logoutHandler: NCMBHandler?): RequestParams {
         val url = NCMB.getApiBaseUrl() + "logout"
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
@@ -340,7 +297,7 @@ class NCMBUserService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun updateUser(updateObject: NCMBObject, userId: String, params: JSONObject): JSONObject {
-        val reqParams = updateUserParams(userId, params)
+        val reqParams = updateUserParams(userId, params, null, null)
         val response = sendRequest(reqParams)
         //update currentUser
         try {
@@ -355,37 +312,17 @@ class NCMBUserService : NCMBService() {
     }
 
     /**
-     * Set up to update user information
-     *
-     * @param userId user id
-     * @param params update values
-     * @return parameters for NCMBRequest
-     */
-    fun updateUserParams(userId: String, params: JSONObject): RequestParams {
-        val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + userId
-        val method = NCMBRequest.HTTP_METHOD_PUT
-        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val reqParams = RequestParams(
-            url = url,
-            method = method,
-            params = params,
-            contentType = contentType
-        )
-        return reqParams
-    }
-
-    /**
-     * Check response to register new user
+     * Check response to update new user
      *
      * @param response
      * @param oauth    use oauth or not
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun registerUserCheckResponse(response: NCMBResponse, oauth: Boolean): JSONObject {
+    fun updateUserCheckResponse(response: NCMBResponse, oauth: Boolean): JSONObject {
         when(response) {
             is NCMBResponse.Success -> {
-                if (response.resCode == HTTP_STATUS_REGISTERED) {
+                if (response.resCode == HTTP_STATUS_updateED) {
                     return response.data
                 }
                 if (response.resCode == HTTP_STATUS_AUTHORIZED && !oauth) {
@@ -500,7 +437,7 @@ class NCMBUserService : NCMBService() {
         try {
             val result: JSONObject = responseData
             val userId = result.getString("objectId")
-            // register with login, sessionToken updated
+            // update with login, sessionToken updated
             val newSessionToken = result.getString("sessionToken")
             NCMB.SESSION_TOKEN = newSessionToken
             NCMB.USER_ID = userId
@@ -548,14 +485,14 @@ class NCMBUserService : NCMBService() {
 
     //Todo 匿名認証
     /**
-     * Setup OAuth parameters to register new user with OAuth
+     * Setup OAuth parameters to update new user with OAuth
      *
      * @param oauthOptions OAuth options
      * @return "authData" params in JSONObject
      * @throws NCMBException
      */
 //    @Throws(NCMBException::class)
-//    fun registerByOauthSetup(oauthOptions: JSONObject): JSONObject {
+//    fun updateByOauthSetup(oauthOptions: JSONObject): JSONObject {
 //        return try {
 //            val authType = oauthOptions.getString("type")
 //            val authData = JSONObject()
@@ -577,16 +514,16 @@ class NCMBUserService : NCMBService() {
 //    }
 
     /**
-     * Register new user by OAuth services
+     * update new user by OAuth services
      *
      * @param oauthOptions OAuth options
-     * @return new NCMBUser object that registered
+     * @return new NCMBUser object that updateed
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
 //    @Throws(NCMBException::class)
-//    fun registerByOauth(oauthOptions: JSONObject): NCMBUser {
-//        val params = registerByOauthSetup(oauthOptions)
-//        return registerUser(params, true)
+//    fun updateByOauth(oauthOptions: JSONObject): NCMBUser {
+//        val params = updateByOauthSetup(oauthOptions)
+//        return updateUser(params, true)
 //    }
 
     /**
@@ -618,7 +555,7 @@ class NCMBUserService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun fetchUser(fetchObject: NCMBObject, userId: String): NCMBUser {
-        val reqParams: RequestParams = getUserParams(userId)
+        val reqParams: RequestParams = getUserParams(userId,null, null)
         val response = sendRequest(reqParams)
         val responseData = getUserCheckResponse(response)
         fetchObject.reflectResponse(responseData)
@@ -650,7 +587,7 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams: RequestParams = getUserParamsInBackground(userId, fetchCallback, fetchHandler)
+        val reqParams: RequestParams = getUserParams(userId, fetchCallback, fetchHandler)
         sendRequestAsync(reqParams)
     }
 
@@ -662,13 +599,13 @@ class NCMBUserService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun deleteUser(deleteObject: NCMBObject, userId: String) {
-        val reqParams: RequestParams = deleteUserParams(userId)
+        val reqParams: RequestParams = deleteUserParams(userId, null, null)
         val response = sendRequest(reqParams)
         val responseData = deleteUserCheckResponse(response)
         deleteObject.reflectResponse(responseData)
 
         if (userId == NCMBUser().getCurrentUser().getObjectId()) {
-            // unregister login informations
+            // unupdate login informations
             clearCurrentUser()
         }
     }
@@ -697,27 +634,12 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams: RequestParams = deleteUserInBackgroundParams(userId, deleteCallback, deleteHandler)
+        val reqParams: RequestParams = deleteUserParams(userId, deleteCallback, deleteHandler)
         sendRequestAsync(reqParams)
         if (userId == NCMBUser().getCurrentUser().getObjectId()) {
-            // unregister login informations
+            // unupdate login informations
             clearCurrentUser()
         }
-    }
-
-    /**
-     * Setup params to get user entity
-     *
-     * @param userId user id
-     * @return parameters for NCMBRequest
-     * @throws NCMBException
-     */
-    @Throws(NCMBException::class)
-    protected fun getUserParams(userId: String): RequestParams {
-        val url = NCMB.getApiBaseUrl() + mServicePath + "/" + userId
-        val method = NCMBRequest.HTTP_METHOD_GET
-        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParams(url = url, method = method, contentType = contentType)
     }
 
     /**
@@ -730,7 +652,7 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun getUserParamsInBackground(userId: String, fetchCallback: NCMBCallback, fetchHandler: NCMBHandler): RequestParams {
+    protected fun getUserParams(userId: String, fetchCallback: NCMBCallback?, fetchHandler: NCMBHandler?): RequestParams {
         val url = NCMB.getApiBaseUrl() + mServicePath + "/" + userId
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
@@ -741,24 +663,11 @@ class NCMBUserService : NCMBService() {
      * Setup params to delete user
      *
      * @param userId user id
-     * @return parameters in object
-     */
-    protected fun deleteUserParams(userId: String): RequestParams {
-        val url = NCMB.getApiBaseUrl() + mServicePath + "/" + userId
-        val method = NCMBRequest.HTTP_METHOD_DELETE
-        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParams(url = url, method = method, contentType = contentType)
-    }
-
-    /**
-     * Setup params to delete user
-     *
-     * @param userId user id
      * @param deleteCallback callback when process finished
      * @param deleteHandler sdk after-connection tasks
      * @return parameters in object
      */
-    protected fun deleteUserInBackgroundParams(userId: String, deleteCallback: NCMBCallback, deleteHandler: NCMBHandler): RequestParams {
+    protected fun deleteUserParams(userId: String, deleteCallback: NCMBCallback?, deleteHandler: NCMBHandler?): RequestParams {
         val url = NCMB.getApiBaseUrl() + mServicePath + "/" + userId
         val method = NCMBRequest.HTTP_METHOD_DELETE
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON

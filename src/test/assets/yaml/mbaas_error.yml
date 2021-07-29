@@ -2,6 +2,16 @@
 request:
     url: /2013-09-01/login
     query:
+        userName: "Ncmb Ichiro"
+        password: invalidPassword
+    method: GET
+response:
+    status: 401
+    file: invalid_get_login_response.json
+---
+request:
+    url: /2013-09-01/login
+    query:
         userName: "Ncmb Tarou"
         password: dummyPassword
     method: GET
@@ -25,3 +35,5 @@ request:
 response:
     status: 404
     file: valid_get_logout_error_response.json
+---
+
