@@ -36,4 +36,14 @@ response:
     status: 404
     file: valid_get_logout_error_response.json
 ---
+request:
+    url: /2013-09-01/users
+    method: POST
+    body:
+        userName: "duplicateUser"
+        password: "Password"
+response:
+    status: 409
+    file: duplicate_post_signup_response.json
+---
 

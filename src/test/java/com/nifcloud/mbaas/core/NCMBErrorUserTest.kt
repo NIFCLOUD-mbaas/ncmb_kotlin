@@ -97,18 +97,21 @@ class NCMBErrorUserTest {
      */
     @Test
     @Throws(java.lang.Exception::class)
-    fun loginInBackground_invalid_password() {
+    fun signUpInBackground_invalid_password() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
             inBackgroundHelper["ncmbUser"] = ncmbUser
             inBackgroundHelper.release() // ブロックをリリース
         }
+        val user = NCMBUser()
+        user.userName = "duplicateUser"
+        user.password = "Password"
         inBackgroundHelper.start()
-        NCMBUser().loginInBackground("Ncmb Ichiro", "invalidPassword", callback)
+        user.signUpInBackground(callback)
         inBackgroundHelper.await()
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
-        Assert.assertEquals(NCMBException.AUTH_FAILURE, (inBackgroundHelper["e"] as NCMBException).code)
+        Assert.assertEquals(NCMBException.DUPLICATE_VALUE, (inBackgroundHelper["e"] as NCMBException).code)
     }
 
     @Test
@@ -124,6 +127,7 @@ class NCMBErrorUserTest {
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
     }
+
     //    @Test
 //    @Throws(NCMBException::class)
 //    fun delete_object_with_data_success_failure() {
