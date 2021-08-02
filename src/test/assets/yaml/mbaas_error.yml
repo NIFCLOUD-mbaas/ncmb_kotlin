@@ -12,17 +12,17 @@ response:
 request:
     url: /2013-09-01/login
     query:
-        userName: "Ncmb Tarou"
-        password: dummyPassword
+        userName: "invalidUser"
+        password: Password
     method: GET
 response:
-    status: 200
-    file: valid_get_login_response.json
+    status: 401
+    file: invalid_get_login_response.json
 ---
 request:
     url: /2013-09-01/login
     query:
-        mailAddress: "sample@example.com"
+        userName: "Ncmb Jirou"
         password: dummyPassword
     method: GET
 response:
