@@ -373,7 +373,7 @@ open class NCMBUser: NCMBObject {
             for(key in mFields.keys()){
                 params.put(key, mFields[key])
             }
-            user = userService.updateUser(params, false)
+            user = userService.signUpUser(params, false)
             mFields = user.mFields
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
@@ -397,7 +397,7 @@ open class NCMBUser: NCMBObject {
             for(key in mFields.keys()){
                 params.put(key, mFields[key])
             }
-            userService.updateUserInBackground(params, false, signUpCallback)
+            userService.signUpUserInBackground(params, false, signUpCallback)
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
         }
