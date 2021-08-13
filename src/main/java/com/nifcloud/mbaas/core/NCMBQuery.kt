@@ -38,10 +38,11 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
 //                }
 //            })
 //        } else {
+            print("In NCMBQuery, mclassName:" + mClassName + "| conditions:" + conditions)
             val objServ = NCMBObjectService()
             objServ.findObjectInBackground(
                 mClassName,
-                conditions,
+                conditions!!,
                 findCallback)
 //        }
     }

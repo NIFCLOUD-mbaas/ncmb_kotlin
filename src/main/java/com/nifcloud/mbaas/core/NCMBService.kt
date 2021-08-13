@@ -16,7 +16,10 @@
 
 package com.nifcloud.mbaas.core
 
+import org.json.JSONException
 import org.json.JSONObject
+import java.net.URLEncoder
+
 
 /**
  * A class of ncmb_kotlin.
@@ -126,7 +129,7 @@ open class NCMBService {
         val request = NCMBRequest(
             url,
             method,
-            params,
+            params!!,
             contentType,
             query,
             sessionToken,
@@ -137,4 +140,53 @@ open class NCMBService {
         val connection = NCMBConnection(request)
         connection.sendRequestAsynchronously(callback, handler)
     }
+
+
+    //クエリ用の検索条件mapを作成
+    fun queryParamMapGenerate(conditions:JSONObject): HashMap<String, String>?{
+        val queryParaMap:HashMap<String, String> = HashMap<String, String> ()
+        if (conditions != null) {
+            val iter: Iterator<String> = conditions.keys()
+            while (iter.hasNext()) {
+                val key = iter.next()
+                try {
+                    val value: Any = conditions.get(key)
+                    print(value)
+                    queryParaMap.put(key, URLEncoder.encode(value.toString(), "utf-8"))
+                } catch (e: JSONException) {
+                    print("JSON data error")
+                }
+            }
+            return  queryParaMap
+        } else {
+            return null
+        }
+    }
+
+    //クエリ用のURLに付ける文字列を作成
+    fun queryUrlStringGenerate(conditions:JSONObject): String {
+        var queryUrlString = "?"
+        if (conditions != null) {
+            val iter: Iterator<String> = conditions.keys()
+            while (iter.hasNext()) {
+                val key = iter.next()
+                try {
+                    val value: Any = conditions.get(key)
+                    print(value)
+                    if( iter.hasNext() ) {
+                        queryUrlString = queryUrlString + key+ "=" +URLEncoder.encode(value.toString(), "utf-8") + "&"
+                    } else {
+                        queryUrlString = queryUrlString + key+ "=" +URLEncoder.encode(value.toString(), "utf-8")
+                    }
+                } catch (e: JSONException) {
+                    print("JSON data error")
+                }
+            }
+            print("Query URL String: "+ queryUrlString)
+            return  queryUrlString
+        } else {
+            return ""
+        }
+    }
+
 }

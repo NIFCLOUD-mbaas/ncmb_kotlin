@@ -315,27 +315,39 @@ class NCMBObjectService() : NCMBService() {
      */
     fun findObjectInBackground(
         className: String,
-        conditions: JSONObject?,
+        conditions: JSONObject,
         findCallback: NCMBCallback
     ) {
-        val url = NCMB.getApiBaseUrl() + this.mServicePath + className
+        print("In NCMBObjectService. className:"+ className + "|Condition:" + conditions)
+        var url:String
+        var queryParamMap:HashMap<String, String>?
+        if(conditions == null) {
+            url = NCMB.getApiBaseUrl() + this.mServicePath + className
+            queryParamMap = null
+        }else {
+            val url = NCMB.getApiBaseUrl() + this.mServicePath + className + queryUrlStringGenerate(conditions)
+            //conditions solving!!
+            val queryParamMap =  queryParamMapGenerate(conditions)
+        }
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        //conditions solving!!
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
-        val saveHandler = NCMBHandler { findCallback, response ->
+
+        val params = null
+        val findHandler = NCMBHandler { findCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
+                    print("IN SUCCESS HANDLER")
                     //findCallback done to object
-                    val listObj = listObject.reflectResponse(response.data)
-                    findCallback.done(null, listObj)
+                    //val listObj = listObject.reflectResponse(response.data)
+                    //findCallback.done(null, listObj)
                 }
                 is NCMBResponse.Failure -> {
-                    findCallback.done(response.resException)
+                    print("IN FAILED HANDLER")
+                    //findCallback.done(response.resException)
                 }
             }
         }
-        sendRequestAsync(url, method, null ,contentType, query, findCallback, saveHandler)
+        //sendRequestAsync(url, method, params ,contentType, queryParamMap, findCallback, findHandler)
 
     }
 
