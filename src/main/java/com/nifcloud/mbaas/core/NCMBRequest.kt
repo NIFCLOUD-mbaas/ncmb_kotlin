@@ -159,7 +159,6 @@ class NCMBRequest(
                     }
                 //}
 
-                println("Before Signature cal: QueryMap" + queryMap)
                 var signature = tmpNCMBSignatureCal.calSignature(
                     this.method,
                     tmpUrl,

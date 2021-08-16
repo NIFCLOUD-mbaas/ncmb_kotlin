@@ -1,8 +1,11 @@
 import com.nifcloud.mbaas.core.*
+import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * NCMBQuery is used to search data from NIFCLOUD mobile backend
@@ -10,7 +13,7 @@ import java.net.URLEncoder
 class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
     private var mWhereConditions: JSONObject? = JSONObject()
 
-//    /**
+//    /**　未対応
 //     * search data from NIFCLOUD mobile backend
 //     * @return NCMBObject(include extend class) list of search result
 //     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
@@ -31,21 +34,22 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      * @param callback executed callback after data search
      */
     fun findInBackground(findCallback: NCMBCallback) {
-//        if (mClassName == "user") {
+        if (mClassName == "user") {
+              //未対応
 //            val userServ = NCMBUserService()
 //            userServ.findUserInBackground(conditions, object : SearchUserCallback() {
 //                fun done(users: ArrayList<NCMBUser>?, e: NCMBException?) {
 //                    callback.done(users as List<T>?, e)
 //                }
 //            })
-//        } else {
-            print("In NCMBQuery, mclassName:" + mClassName + "| conditions:" + conditions)
+        } else {
+            //データストアの検索
             val objServ = NCMBObjectService()
-            objServ.findObjectInBackground(
+            objServ.findObjectsInBackground(
                 mClassName,
                 conditions!!,
                 findCallback)
-//        }
+        }
     }
 
     /**
@@ -67,21 +71,14 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
 
     @Throws(JSONException::class)
     private fun convertConditionValue(value: Any): Any {
-          return value
-//        return if (value is Date) {
-//            val dateJson = JSONObject("{'__type':'Date'}")
-//            val df: SimpleDateFormat = getIso8601()
-//            dateJson.put("iso", df.format(value as Date))
-//            dateJson
-//        } else if (value is List<*>) {
-//            val gson = Gson()
-//            JSONArray(gson.toJson(value))
-//        } else if (value is Map<*, *>) {
-//            val gson = Gson()
-//            JSONObject(gson.toJson(value))
-//        } else {
-//            value
-//        }
+        return if (value is Date) {
+            val dateJson = JSONObject("{'__type':'Date'}")
+            val df: SimpleDateFormat = getIso8601()
+            dateJson.put("iso", df.format(value as Date))
+            dateJson
+        } else {
+            value
+        }
     }
 
     /**
@@ -91,7 +88,6 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      */
     fun whereEqualTo(key: String?, value: Any) {
         try {
-            //val valueConverted = URLEncoder.encode(convertConditionValue(value).toString(), "utf-8"))
             mWhereConditions!!.put(key, convertConditionValue(value) )
         } catch (e: JSONException) {
             throw IllegalArgumentException(e.message)
@@ -106,3 +102,4 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
         mWhereConditions = JSONObject()
     }
 }
+

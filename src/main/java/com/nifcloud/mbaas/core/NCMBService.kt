@@ -63,8 +63,6 @@ open class NCMBService {
         params: JSONObject,
         contentType: String,
         query : JSONObject?
-        //queryMap: HashMap<String, String>?
-
     ): NCMBResponse {
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()
@@ -118,7 +116,6 @@ open class NCMBService {
         method: String,
         params: JSONObject?,
         contentType: String,
-        //queryMap: HashMap<String, String>?,
         query : JSONObject?,
         callback: NCMBCallback?,
         handler: NCMBHandler
@@ -146,30 +143,8 @@ open class NCMBService {
     }
 
 
-    /*
-    //クエリ用の検索条件mapを作成
-    fun queryParamMapGenerate(conditions:JSONObject): HashMap<String, String>?{
-        val queryParaMap:HashMap<String, String> = HashMap<String, String> ()
-        if (conditions != null) {
-            val iter: Iterator<String> = conditions.keys()
-            while (iter.hasNext()) {
-                val key = iter.next()
-                try {
-                    val value: Any = conditions.get(key)
-                    print(value)
-                    queryParaMap.put(key, URLEncoder.encode(value.toString(), "utf-8"))
-                } catch (e: JSONException) {
-                    print("JSON data error")
-                }
-            }
-            return  queryParaMap
-        } else {
-            return null
-        }
-    }
-    */
-
     //クエリ用のURLに付ける文字列を作成
+    @Throws(NCMBException::class)
     fun queryUrlStringGenerate(conditions:JSONObject): String {
         var queryUrlString = ""
         if (conditions != null) {
@@ -185,11 +160,10 @@ open class NCMBService {
                         ) + "&"
                     )
                 } catch (e: JSONException) {
-                    print("JSON data error")
+                    throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
                 }
             }
             queryUrlString.dropLast(1)
-            print("Query URL String: " + queryUrlString + "|")
             return queryUrlString
         } else {
             return ""

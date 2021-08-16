@@ -15,7 +15,11 @@
  */
 
 package com.nifcloud.mbaas.core
+
+import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
+
 
 /**
  * A class of ncmb_kotlin.
@@ -291,20 +295,7 @@ class NCMBObjectService() : NCMBService() {
 //     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
 //     */
 //    @Throws(NCMBException::class)
-//    fun findObject(className: String, conditions: JSONObject?): List<*>? {
-//        if (!validateClassName(className)) {
-//            throw NCMBException(
-//                NCMBException.REQUIRED,
-//                "className / objectId is must not be null or empty"
-//            )
-//        }
-//        val url: String = mContext.baseUrl.toString() + mServicePath + className
-//        val type = NCMBRequest.HTTP_METHOD_GET
-//        val response: NCMBResponse = sendRequest(url, type, null, conditions)
-//        if (response.statusCode !== NCMBResponse.HTTP_STATUS_OK) {
-//            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Invalid status code")
-//        }
-//        return createSearchResults(className, response.responseData)
+//    fun findObjects(className: String, conditions: JSONObject?): List<*>? {
 //    }
 //
     /**
@@ -313,35 +304,31 @@ class NCMBObjectService() : NCMBService() {
      * @param conditions JSONObject of search conditions
      * @param callback callback for after object search
      */
-    fun findObjectInBackground(
+    fun findObjectsInBackground(
         className: String,
         query: JSONObject,
         findCallback: NCMBCallback
     ) {
-        print("In NCMBObjectService. className:"+ className + "|Query:" + query)
         var url = NCMB.getApiBaseUrl() + this.mServicePath + className
         if(query.length() > 0) {
             url = url.plus("?" + queryUrlStringGenerate(query))
         }
-        println("In NCMBObjectService. URL:" + url)
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
 
         val params = JSONObject()
         val findHandler = NCMBHandler { findCallback, response ->
             when (response) {
-
                 is NCMBResponse.Success -> {
-                    print("IN SUCCESS HANDLER")
-                    //findCallback done to object
-                    println (response.data)
-                    val listObj = listObject.reflectResponse(response.data)
-                    //findCallback.done(null, listObj)
+                    var listObj = createSearchResponseList(className, response.data)
+                    if (findCallback != null) {
+                        findCallback.done(null, listObj)
+                    }
                 }
                 is NCMBResponse.Failure -> {
-                    print("IN FAILED HANDLER")
-                    print(response.resException.message)
-                    //findCallback.done(response.resException)
+                    if (findCallback != null) {
+                        findCallback.done(response.resException, null)
+                    }
                 }
             }
         }
@@ -355,5 +342,20 @@ class NCMBObjectService() : NCMBService() {
 
     private fun validateObjectId(objectId: String?): Boolean {
         return (objectId == null || objectId.isEmpty())
+    }
+
+    @Throws(NCMBException::class)
+    fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject>? {
+        return try {
+            val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
+            val array: MutableList<NCMBObject> = ArrayList()
+            for (i in 0 until results.length()) {
+                val tmpObj = NCMBObject(className!!, results.getJSONObject(i))
+                array.add(tmpObj)
+            }
+            array
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+        }
     }
 }
