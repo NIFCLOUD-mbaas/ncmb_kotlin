@@ -82,7 +82,6 @@ class NCMBInBackgroundTestHelper {
         thread {
             Thread.sleep(limitMills)
             semaphore.release()
-            //release()
         }
         semaphore.acquire()
     }

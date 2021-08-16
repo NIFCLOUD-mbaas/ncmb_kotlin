@@ -42,35 +42,23 @@ class NCMBQueryTest {
     }
 
     @Test
-    fun testNCMBObjectDoSearchReal() {
-        var applicationKey =  "3c99589bee9dda8184febdf64cdcfe65f84faf3ec5a2b158e477cea807299b30"
-        var clientKey = "4f77045784c3d667ccf2557cb31e507a1488e37bf0f88ba042610271f4e3f981"
-        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
+    fun testNCMBObject_DoSearchInBackground_() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery<NCMBObject>("TestClass")
         query.whereEqualTo("key", "value");
-        //objects: List<NCMBObject>
-        query.findInBackground (NCMBCallback { e, objects ->
-            if (e != null) {
-                //エラー時の処理
-                println( "検索に失敗しました。エラー:" + e.message)
-            } else {
-                //成功時の処理
-                println("検索に成功しました。")
-                if(objects is List<*>) {
-                    var i = 0
-                    val n = objects.size
-                    while (i < n) {
-                        val o = objects[i]
-                        if(o is NCMBObject) {
-                            println(o.getObjectId())
-                        }
-                        i++
-                    }
-                }
-
-            }
-        })
+        val callback = NCMBCallback { e, objects ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["objects"] = objects
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        query.findInBackground (callback)
+        inBackgroundHelper.await()
+        print("Success searched:  " + ((inBackgroundHelper["objects"] as List<Any>)[0]as NCMBObject).getObjectId() )
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals(((inBackgroundHelper["objects"] as List<Any>)[0]as NCMBObject).getObjectId() , "8FgKqFlH8dZRDrBJ")
 
     }
 }
