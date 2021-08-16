@@ -43,7 +43,8 @@ open class NCMBService {
         var method: String,
         var params: JSONObject = JSONObject(),
         var contentType: String,
-        var query: JSONObject = JSONObject()
+        //var queryMap: HashMap<String, String>? = null
+        var query : JSONObject = JSONObject()
     )
 
     /**
@@ -61,7 +62,9 @@ open class NCMBService {
         method: String,
         params: JSONObject,
         contentType: String,
-        query: JSONObject
+        query : JSONObject?
+        //queryMap: HashMap<String, String>?
+
     ): NCMBResponse {
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()
@@ -115,7 +118,8 @@ open class NCMBService {
         method: String,
         params: JSONObject?,
         contentType: String,
-        query: JSONObject,
+        //queryMap: HashMap<String, String>?,
+        query : JSONObject?,
         callback: NCMBCallback?,
         handler: NCMBHandler
     ){
@@ -142,6 +146,7 @@ open class NCMBService {
     }
 
 
+    /*
     //クエリ用の検索条件mapを作成
     fun queryParamMapGenerate(conditions:JSONObject): HashMap<String, String>?{
         val queryParaMap:HashMap<String, String> = HashMap<String, String> ()
@@ -162,31 +167,34 @@ open class NCMBService {
             return null
         }
     }
+    */
 
     //クエリ用のURLに付ける文字列を作成
     fun queryUrlStringGenerate(conditions:JSONObject): String {
-        var queryUrlString = "?"
+        var queryUrlString = ""
         if (conditions != null) {
             val iter: Iterator<String> = conditions.keys()
             while (iter.hasNext()) {
                 val key = iter.next()
                 try {
                     val value: Any = conditions.get(key)
-                    print(value)
-                    if( iter.hasNext() ) {
-                        queryUrlString = queryUrlString + key+ "=" +URLEncoder.encode(value.toString(), "utf-8") + "&"
-                    } else {
-                        queryUrlString = queryUrlString + key+ "=" +URLEncoder.encode(value.toString(), "utf-8")
-                    }
+                    queryUrlString = queryUrlString.plus(
+                        key + "=" + URLEncoder.encode(
+                            value.toString(),
+                            "utf-8"
+                        ) + "&"
+                    )
                 } catch (e: JSONException) {
                     print("JSON data error")
                 }
             }
-            print("Query URL String: "+ queryUrlString)
-            return  queryUrlString
+            queryUrlString.dropLast(1)
+            print("Query URL String: " + queryUrlString + "|")
+            return queryUrlString
         } else {
             return ""
         }
     }
+
 
 }

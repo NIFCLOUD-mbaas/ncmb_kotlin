@@ -2,6 +2,7 @@ import com.nifcloud.mbaas.core.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.net.URLEncoder
 
 /**
  * NCMBQuery is used to search data from NIFCLOUD mobile backend
@@ -90,7 +91,8 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      */
     fun whereEqualTo(key: String?, value: Any) {
         try {
-            mWhereConditions!!.put(key, convertConditionValue(value))
+            //val valueConverted = URLEncoder.encode(convertConditionValue(value).toString(), "utf-8"))
+            mWhereConditions!!.put(key, convertConditionValue(value) )
         } catch (e: JSONException) {
             throw IllegalArgumentException(e.message)
         }

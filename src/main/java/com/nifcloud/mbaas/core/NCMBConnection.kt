@@ -25,6 +25,7 @@ import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import java.io.IOException
 import java.net.URL
+import java.net.URLEncoder
 
 
 /**
@@ -79,11 +80,19 @@ class NCMBConnection(request: NCMBRequest) {
                 val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
                 val url = Uri.parse(ncmbRequest.url)
                     .buildUpon()
-                for (key in ncmbRequest.query.keys()){
-                    val value = ncmbRequest.query.get(key) as String
-                    url.appendQueryParameter(key, value)
-                }
+
+                if(ncmbRequest.query != null) {
+                    for (key in ncmbRequest.query!!.keys()){
+                        val value = ncmbRequest.query!!.get(key) as String
+                        val valueConverted = URLEncoder.encode(value, "utf-8") //Encode for URL
+                        url.appendQueryParameter(key, valueConverted)
+                    }
                     url.build()
+                }
+
+                println("IN CONNECTION (sendRequest)")
+                println("URL" + url)
+
                 var request: Request
                 synchronized(lock) {
                     request = request(ncmbRequest.method, URL(url.toString()), headers, body)
