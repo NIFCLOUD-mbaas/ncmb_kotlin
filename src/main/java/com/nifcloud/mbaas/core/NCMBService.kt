@@ -113,9 +113,9 @@ open class NCMBService {
     fun sendRequestAsync(
         url: String,
         method: String,
-        params: JSONObject?,
+        params: JSONObject,
         contentType: String,
-        query : JSONObject?,
+        query : JSONObject,
         callback: NCMBCallback?,
         handler: NCMBHandler
     ){
@@ -129,7 +129,7 @@ open class NCMBService {
         val request = NCMBRequest(
             url,
             method,
-            params!!,
+            params,
             contentType,
             query,
             sessionToken,

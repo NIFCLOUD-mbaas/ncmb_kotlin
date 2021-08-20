@@ -39,7 +39,7 @@ class NCMBRequest(
     var method: String,
     var params: JSONObject = JSONObject(),
     var contentType: String = HEADER_CONTENT_TYPE_JSON,
-    var query: JSONObject? = null,
+    var query: JSONObject? = JSONObject(),
     var sessionToken: String? = null,
     var applicationKey: String,
     var clientKey: String,
