@@ -42,7 +42,7 @@ class NCMBQueryTest {
     }
 
     @Test
-    fun testNCMBObject_DoSearchInBackground_() {
+    fun testNCMBObject_DoSearchInBackground_Equal() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery<NCMBObject>("TestClass")
@@ -55,10 +55,28 @@ class NCMBQueryTest {
         inBackgroundHelper.start()
         query.findInBackground (callback)
         inBackgroundHelper.await()
-        print("Success searched:  " + ((inBackgroundHelper["objects"] as List<Any>)[0]as NCMBObject).getObjectId() )
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(((inBackgroundHelper["objects"] as List<Any>)[0]as NCMBObject).getObjectId() , "8FgKqFlH8dZRDrBJ")
-
     }
+
+    @Test
+    fun testNCMBObject_DoSearchInBackground_NoSearchCondition() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery<NCMBObject>("TestClass")
+        val callback = NCMBCallback { e, objects ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["objects"] = objects
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        query.findInBackground (callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals(((inBackgroundHelper["objects"] as List<Any>)[0]as NCMBObject).getObjectId() , "8FgKqFlH8dZRDrBJ")
+        Assert.assertEquals(((inBackgroundHelper["objects"] as List<Any>)[1]as NCMBObject).getObjectId() , "eQRqoObEZmtrfgzH")
+    }
+    
 }
