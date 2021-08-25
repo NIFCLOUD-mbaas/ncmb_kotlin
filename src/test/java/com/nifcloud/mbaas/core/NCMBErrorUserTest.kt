@@ -164,7 +164,7 @@ class NCMBErrorUserTest {
         user.userName = "duplicateUser"
         inBackgroundHelper.start()
         try {
-            user.signUpInBackground(callback)
+            user.loginInBackground(callback)
         }
         catch (e:NCMBException){
             Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
@@ -201,4 +201,3 @@ class NCMBErrorUserTest {
 //        }
 //    }
 }
-

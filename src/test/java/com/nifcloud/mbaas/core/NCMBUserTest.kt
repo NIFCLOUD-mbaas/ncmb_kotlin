@@ -77,6 +77,18 @@ class NCMBUserTest {
 
     @Test
     @Throws(java.lang.Exception::class)
+    fun login_no_argument() {
+        val user = NCMBUser()
+        user.userName = "Ncmb Tarou"
+        user.password = "dummyPassword"
+        user.login()
+        //Assert.assertEquals("dummyObjectId", user.getObjectId())
+        Assert.assertEquals("Ncmb Tarou", user.userName)
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
     fun login() {
         val user: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
         Assert.assertEquals("dummyObjectId", user.getObjectId())
@@ -96,6 +108,29 @@ class NCMBUserTest {
         val user: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
         Assert.assertEquals("dummyObjectId", NCMBUser().getCurrentUser().getObjectId())
         Assert.assertEquals("Ncmb Tarou", NCMBUser().getCurrentUser().userName)
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun loginInBackground_no_argument() {
+        val user = NCMBUser()
+        user.userName = "Ncmb Tarou"
+        user.password = "dummyPassword"
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+
+        inBackgroundHelper.start()
+        user.loginInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("dummyObjectId", (inBackgroundHelper["ncmbUser"] as NCMBUser).getObjectId())
+        Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
     }
 
@@ -226,11 +261,21 @@ class NCMBUserTest {
 
     @Test
     @Throws(java.lang.Exception::class)
-    fun signUp() {
+    fun signUp_no_argument() {
         val user = NCMBUser()
         user.userName = "Ncmb Tarou"
         user.password = "Ncmbtarou"
         user.signUp()
+        Assert.assertEquals("dummyObjectId", user.getObjectId())
+        Assert.assertEquals("Ncmb Tarou", user.userName)
+        Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun signUp() {
+        val user = NCMBUser()
+        user.signUp("Ncmb Tarou", "Ncmbtarou")
         Assert.assertEquals("dummyObjectId", user.getObjectId())
         Assert.assertEquals("Ncmb Tarou", user.userName)
         Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
