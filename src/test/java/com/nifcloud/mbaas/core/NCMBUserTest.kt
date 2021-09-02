@@ -283,6 +283,24 @@ class NCMBUserTest {
 
     @Test
     @Throws(java.lang.Exception::class)
+    fun signUpInBackground_no_argument() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().signUpInBackground("Ncmb Tarou","Ncmbtarou", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("dummyObjectId", (inBackgroundHelper["ncmbUser"] as NCMBUser).getObjectId())
+        Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
+        Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
+    }
+    @Test
+    @Throws(java.lang.Exception::class)
     fun signUpInBackground() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
@@ -302,6 +320,7 @@ class NCMBUserTest {
         Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
         Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
     }
+
 
     @Test
     @Throws(java.lang.Exception::class)
