@@ -374,7 +374,6 @@ open class NCMBUser: NCMBObject {
                 params.put(key, mFields[key])
             }
             user = userService.registerUser(this, params, false)
-            mFields = user.mFields
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
         }
@@ -387,7 +386,6 @@ open class NCMBUser: NCMBObject {
         val userService = NCMBUserService()
         if (objectId != null) {
             val user: NCMBUser = userService.fetchUser(this, objectId)
-            mFields = user.mFields
         }
         return this
     }
@@ -399,7 +397,6 @@ open class NCMBUser: NCMBObject {
         try {
             if (objectId != null) {
                 userService.deleteUser(this, objectId)
-                mFields = JSONObject()
                 mUpdateKeys.clear()
             }
             return null

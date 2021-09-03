@@ -80,6 +80,8 @@ class NCMBUserTest {
     fun login() {
         val user: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
         Assert.assertEquals("dummyObjectId", user.getObjectId())
+        Assert.assertEquals("2013-08-30T05:32:03.868Z", user.mFields.get("updateDate"))
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", user.mFields.get("sessionToken"))
         Assert.assertEquals("Ncmb Tarou", user.userName)
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
     }
@@ -105,6 +107,8 @@ class NCMBUserTest {
         val user = NCMBUser()
         user.setObjectId("dummyUserId")
         user.fetch()
+        Assert.assertEquals("Ncmb Tarou", user.mFields.get("userName"))
+        Assert.assertEquals("dummySessionToken", user.mFields.get("sessionToken"))
         Assert.assertEquals("Ncmb Tarou", user.userName)
         Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
     }
@@ -139,6 +143,9 @@ class NCMBUserTest {
         user.userName = "Ncmb Tarou"
         user.password = "Ncmbtarou"
         user.signUp()
+        Assert.assertEquals("dummyObjectId", user.mFields.get("objectId"))
+        Assert.assertEquals("Ncmb Tarou", user.mFields.get("userName"))
+        Assert.assertEquals("dummySessionToken", user.mFields.get("sessionToken"))
         Assert.assertEquals("dummyObjectId", user.getObjectId())
         Assert.assertEquals("Ncmb Tarou", user.userName)
         Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)

@@ -116,7 +116,6 @@ class NCMBUserService : NCMBObjectService() {
         val reqParams = loginByNameParams(params)
         val response = sendRequest(reqParams)
         val responseData = loginByNameCheckResponse(response)
-        loginUser.reflectResponse(responseData)
         return postLoginProcess(responseData)
     }
 
@@ -476,7 +475,6 @@ class NCMBUserService : NCMBObjectService() {
         val response = sendRequest(reqParams)
         val responseData = deleteUserCheckResponse(response)
         deleteObject.reflectResponse(responseData)
-
         if (userId == NCMBUser().getCurrentUser().getObjectId()) {
             // unregister login informations
             clearCurrentUser()
