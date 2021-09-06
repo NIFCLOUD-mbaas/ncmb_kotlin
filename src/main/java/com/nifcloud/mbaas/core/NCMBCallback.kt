@@ -48,5 +48,7 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
         //do sthing here for callback
         passCallback(e, objList)
     }
-
+    fun done(e: NCMBException?, token: String?){
+        passCallback(e, token)
+    }
 }

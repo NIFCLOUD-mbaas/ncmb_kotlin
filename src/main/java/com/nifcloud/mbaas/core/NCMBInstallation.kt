@@ -243,10 +243,9 @@ class NCMBInstallation : NCMBObject {
 //     *
 //     * @param callback TokenCallback
 //     */
-//    fun getDeviceTokenInternalProcess(callback: TokenCallback) {
-//        if (!FirebaseApp.getApps(NCMB.getCurrentContext().context).isEmpty()) {
-//            FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCompleteListener(object : OnCompleteListener<InstanceIdResult?>() {
+//    fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
+//        if (!FirebaseApp.getApps(NCMB.getCurrentContext()!!.applicationContext).isEmpty()) {
+//            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(object : OnCompleteListener<InstanceIdResult?>() {
 //                    fun onComplete(task: Task<InstanceIdResult?>) {
 //                        if (task.isSuccessful()) {
 //                            callback.done(task.getResult().getToken(), null)
@@ -261,8 +260,7 @@ class NCMBInstallation : NCMBObject {
 //                        }
 //                    }
 //                })
-//            FirebaseInstanceId.getInstance().getInstanceId()
-//                .addOnCanceledListener(object : OnCanceledListener() {
+//            FirebaseInstanceId.getInstance().getInstanceId().addOnCanceledListener(object : OnCanceledListener() {
 //                    fun onCanceled() {
 //                        callback.done(
 //                            null, NCMBException(
@@ -393,7 +391,7 @@ class NCMBInstallation : NCMBObject {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun save() {
+    fun saveInstallation() {
         //connect
         val installationService = NCMBInstallationService()
         val responseData: JSONObject
@@ -414,64 +412,56 @@ class NCMBInstallation : NCMBObject {
         mUpdateKeys.clear()
     }
 
-    /**
-     * Save installation object inBackground
-     * none callback
-     */
-    fun saveInBackground() {
-        saveInBackground(null)
-    }
-
-    /**
-     * Save installation object inBackground
-     *
-     * @param callback DoneCallback
-     */
-    fun saveInBackground(callback: DoneCallback?) {
-        //callback
-        val exeCallback: ExecuteServiceCallback = object : ExecuteServiceCallback() {
-            fun done(responseData: JSONObject, error: NCMBException?) {
-                var error = error
-                if (error == null) {
-                    //instance set data
-                    try {
-                        localData = responseData
-                    } catch (e: NCMBException) {
-                        error = e
-                    }
-                    mUpdateKeys.clear()
-                }
-                if (callback != null) {
-                    callback.done(error)
-                }
-            }
-        }
-
-        //connect
-        val installationService: NCMBInstallationService =
-            NCMB.factory(NCMB.ServiceType.INSTALLATION) as NCMBInstallationService
-        if (getObjectId() == null) {
-            //new create
-            installationService.createInstallationInBackground(
-                localDeviceToken,
-                mFields,
-                exeCallback
-            )
-        } else {
-            //update
-            var updateJson: JSONObject? = null
-            updateJson = try {
-                createUpdateJsonData()
-            } catch (e: JSONException) {
-                throw IllegalArgumentException(e.message)
-            }
-            installationService.updateInstallationInBackground(
-                getObjectId(),
-                updateJson,
-                exeCallback
-            )
-        }
-    }
+//    /**
+//     * Save installation object inBackground
+//     *
+//     * @param callback DoneCallback
+//     */
+//    override fun saveInBackground(saveCallback: NCMBCallback) {
+//        //callback
+//        val exeCallback: ExecuteServiceCallback = object : ExecuteServiceCallback() {
+//            fun done(responseData: JSONObject, error: NCMBException?) {
+//                var error = error
+//                if (error == null) {
+//                    //instance set data
+//                    try {
+//                        localData = responseData
+//                    } catch (e: NCMBException) {
+//                        error = e
+//                    }
+//                    mUpdateKeys.clear()
+//                }
+//                if (callback != null) {
+//                    callback.done(error)
+//                }
+//            }
+//        }
+//
+//        //connect
+//        val installationService: NCMBInstallationService =
+//            NCMB.factory(NCMB.ServiceType.INSTALLATION) as NCMBInstallationService
+//        if (getObjectId() == null) {
+//            //new create
+//            installationService.createInstallationInBackground(
+//                localDeviceToken,
+//                mFields,
+//                exeCallback
+//            )
+//        } else {
+//            //update
+//            var updateJson: JSONObject? = null
+//            updateJson = try {
+//                createUpdateJsonData()
+//            } catch (e: JSONException) {
+//                throw IllegalArgumentException(e.message)
+//            }
+//            installationService.updateInstallationInBackground(
+//                getObjectId(),
+//                updateJson,
+//                exeCallback
+//            )
+//        }
+//    }
 
     companion object {
         /**
@@ -498,7 +488,8 @@ class NCMBInstallation : NCMBObject {
         /**
          * push device
          */
-        var currentInstallation: NCMBInstallation? = null
+        var installation: NCMBInstallation? = null
+
         val ignoreKeys = Arrays.asList(
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
@@ -510,25 +501,26 @@ class NCMBInstallation : NCMBObject {
          * @return NCMBInstallation object that is created from data that is saved to local file.<br></br>
          * If local file is not available, it returns empty NCMBInstallation object
          */
+
         fun getCurrentInstallation(): NCMBInstallation? {
             //null check
             checkNCMBContext()
             try {
                 //create currentInstallation
-                if (currentInstallation == null) {
-                    currentInstallation = NCMBInstallation()
+                if (installation == null) {
+                    installation = NCMBInstallation()
                     //ローカルファイルに配信端末情報があれば取得、なければ新規作成
                     val currentInstallationFile = create(INSTALLATION_FILENAME)
                     if (currentInstallationFile.exists()) {
                         //ローカルファイルから端末情報を取得
                         val localData = readFile(currentInstallationFile)
-                        currentInstallation = NCMBInstallation(localData)
+                        installation = NCMBInstallation(localData)
                     }
                 }
             } catch (error: Exception) {
                 Log.e("Error", error.toString())
             }
-            return currentInstallation
+            return installation
         }
     }
 }

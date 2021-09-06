@@ -97,7 +97,7 @@ open class NCMBObject : NCMBBase {
      * save current NCMBObject to data store asynchronously
      * @param callback callback after object save
      */
-    fun saveInBackground(saveCallback: NCMBCallback) {
+    open fun saveInBackground(saveCallback: NCMBCallback) {
         val objecdId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
