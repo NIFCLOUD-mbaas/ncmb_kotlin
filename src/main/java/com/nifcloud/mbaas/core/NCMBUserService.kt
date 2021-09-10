@@ -59,12 +59,12 @@ class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun loginByName(loginUser: NCMBUser, userName: String, password: String): NCMBUser {
+    fun loginByName(userName: String, password: String): NCMBUser {
         try{
             val params = JSONObject()
             params.put("userName", userName)
             params.put("password", password)
-            return loginUser(loginUser, params)
+            return loginUser(params)
         } catch (e: JSONException){
             throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.message!!)
         }
@@ -112,7 +112,7 @@ class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun loginUser(loginUser: NCMBUser, params: JSONObject): NCMBUser {
+    protected fun loginUser(params: JSONObject): NCMBUser {
         val reqParams = loginByNameParams(params)
         val response = sendRequest(reqParams)
         val responseData = loginByNameCheckResponse(response)
@@ -130,8 +130,7 @@ class NCMBUserService : NCMBObjectService() {
         val response = sendRequest(reqParams)
         // clear login informations
         clearCurrentUser()
-        val responseData = logoutCheckResponse(response)
-        logoutUser.reflectResponse(responseData)
+        logoutCheckResponse(response)
     }
 
     /**

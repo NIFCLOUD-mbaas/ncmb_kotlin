@@ -159,11 +159,15 @@ class NCMBUserTest {
         Assert.assertNotNull(currentUser.getObjectId())
         Assert.assertNotNull(currentUser.userName)
         Assert.assertNotNull(NCMB.SESSION_TOKEN)
+        Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser.mFields.get("updateDate"))
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser.mFields.get("sessionToken"))
         val user = NCMBUser()
         user.logout()
         val logoutUser: NCMBUser = user.getCurrentUser()
         Assert.assertNull(logoutUser.getObjectId())
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
+        Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser.mFields.get("updateDate"))
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser.mFields.get("sessionToken"))
     }
 }

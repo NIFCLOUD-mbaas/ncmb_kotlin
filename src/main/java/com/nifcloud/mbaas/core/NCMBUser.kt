@@ -201,7 +201,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun login(userName: String, password: String): NCMBUser {
         val userService = NCMBUserService()
-        return userService.loginByName(this, userName, password)
+        return userService.loginByName(userName, password)
     }
 
     /**
