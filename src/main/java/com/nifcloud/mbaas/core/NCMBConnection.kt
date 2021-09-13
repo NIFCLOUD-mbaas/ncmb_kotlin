@@ -47,7 +47,7 @@ class NCMBConnection(request: NCMBRequest) {
     //API request object
     var ncmbRequest: NCMBRequest
     //API response object
-    var ncmbResponse: NCMBResponse? = null
+    lateinit var ncmbResponse: NCMBResponse
 
     /**
      * Constructor with NCMBRequest
@@ -82,8 +82,8 @@ class NCMBConnection(request: NCMBRequest) {
                     .buildUpon()
 
                 if(ncmbRequest.query != null) {
-                    for (key in ncmbRequest.query!!.keys()){
-                        val value = ncmbRequest.query!!.get(key) as String
+                    for (key in ncmbRequest.query.keys()){
+                        val value = ncmbRequest.query.get(key) as String
                         val valueConverted = URLEncoder.encode(value, "utf-8") //Encode for URL
                         url.appendQueryParameter(key, valueConverted)
                     }
@@ -101,7 +101,7 @@ class NCMBConnection(request: NCMBRequest) {
                 ncmbResponse = NCMBResponseBuilder.build(response)
             }
         }
-        return ncmbResponse!!;
+        return ncmbResponse;
     }
 
     /**

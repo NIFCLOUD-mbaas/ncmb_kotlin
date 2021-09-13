@@ -21,8 +21,9 @@ class NCMBQueryTest {
     //mockserver preparation
     private var mServer: MockWebServer = MockWebServer()
 
-    //@get:Rule
-    //val rule: TestRule = InstantTaskExecutorRule()
+    @get:Rule
+    val rule: TestRule = InstantTaskExecutorRule()
+
     @Before
     fun setup() {
 

@@ -44,7 +44,7 @@ open class NCMBBase(){
         }
         protected set
     protected var mUpdateKeys = HashSet<String>()
-    protected var mIgnoreKeys: List<String>? = null
+    protected var mIgnoreKeys= listOf<String>()
     protected var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
@@ -66,7 +66,7 @@ open class NCMBBase(){
     }
 
     @Throws(NCMBException::class)
-    open fun setCreateDate(createDate: Date?) {
+    open fun setCreateDate(createDate: Date) {
         try {
             val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
             mFields.put("createDate", df.format(createDate))
@@ -211,10 +211,10 @@ open class NCMBBase(){
      * @return ignore list contains given key or not
      */
     fun isIgnoreKey(key: String?): Boolean {
-        if (this.mIgnoreKeys == null) {
+        if (this.mIgnoreKeys.size >0) {
             return false
         } else {
-            return mIgnoreKeys!!.contains(key)
+            return mIgnoreKeys.contains(key)
         }
     }
 
