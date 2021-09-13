@@ -16,6 +16,7 @@
 package com.nifcloud.mbaas.core
 
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
+import kotlinx.serialization.json.JSON
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -27,9 +28,9 @@ import java.util.Date
  */
 
 class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
-    private var mWhereConditions: JSONObject? = JSONObject()
+    private var mWhereConditions: JSONObject = JSONObject()
 
-//    /**　未対応
+//    /**　TODO
 //     * search data from NIFCLOUD mobile backend
 //     * @return NCMBObject(include extend class) list of search result
 //     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
@@ -51,7 +52,7 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      */
     fun findInBackground(findCallback: NCMBCallback) {
         if (mClassName == "user") {
-              //未対応
+              //TODO
 //            val userServ = NCMBUserService()
 //            userServ.findUserInBackground(conditions, object : SearchUserCallback() {
 //                fun done(users: ArrayList<NCMBUser>?, e: NCMBException?) {
@@ -60,10 +61,10 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
 //            })
         } else {
             //データストアの検索
-            val objServ = NCMBObjectService()
-            objServ.findObjectsInBackground(
+            val objService = NCMBObjectService()
+            objService.findObjectsInBackground(
                 mClassName,
-                conditions!!,
+                conditions,
                 findCallback)
         }
     }
@@ -72,17 +73,13 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      * get current search condition
      * @return current search condition
      */
-    val conditions: JSONObject?
+    val conditions: JSONObject
         get() {
             val conditions = JSONObject()
-            return try {
-                if (mWhereConditions != null && mWhereConditions!!.length() > 0) {
-                    conditions.put("where", mWhereConditions)
-                }
-                conditions
-            } catch (e: JSONException) {
-                null
+            if (mWhereConditions != null && mWhereConditions.length() > 0) {
+                conditions.put("where", mWhereConditions)
             }
+            return  conditions
         }
 
     @Throws(JSONException::class)
@@ -104,7 +101,7 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      */
     fun whereEqualTo(key: String?, value: Any) {
         try {
-            mWhereConditions!!.put(key, convertConditionValue(value) )
+            mWhereConditions.put(key, convertConditionValue(value) )
         } catch (e: JSONException) {
             throw IllegalArgumentException(e.message)
         }

@@ -361,7 +361,7 @@ class NCMBObjectService() : NCMBService() {
             val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
             val array: MutableList<NCMBObject> = ArrayList()
             for (i in 0 until results.length()) {
-                val tmpObj = NCMBObject(className!!, results.getJSONObject(i))
+                val tmpObj = NCMBObject(className, results.getJSONObject(i))
                 array.add(tmpObj)
             }
             array

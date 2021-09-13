@@ -39,7 +39,7 @@ class NCMBRequest(
     var method: String,
     var params: JSONObject = JSONObject(),
     var contentType: String = HEADER_CONTENT_TYPE_JSON,
-    var query: JSONObject? = JSONObject(),
+    var query: JSONObject = JSONObject(),
     var sessionToken: String? = null,
     var applicationKey: String,
     var clientKey: String,
@@ -151,10 +151,10 @@ class NCMBRequest(
                 val tmpNCMBSignatureCal = NCMBSignatureCal()
                 val tmpUrl = URL(url)
                 val queryMap: HashMap<String, String> = HashMap()
-                if(query != null) {
-                    for (key in query!!.keys())
+                if(query.length() > 0) {
+                    for (key in query.keys())
                     {
-                        var value = query!!.get(key).toString();
+                        var value = query.get(key).toString();
                         queryMap.put(key, value)
                     }
                 }

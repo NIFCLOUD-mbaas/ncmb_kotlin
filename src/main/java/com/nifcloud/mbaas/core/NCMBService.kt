@@ -61,7 +61,7 @@ open class NCMBService {
         method: String,
         params: JSONObject,
         contentType: String,
-        query : JSONObject?
+        query : JSONObject
     ): NCMBResponse {
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()
@@ -164,7 +164,7 @@ open class NCMBService {
     @Throws(NCMBException::class)
     fun queryUrlStringGenerate(conditions:JSONObject): String {
         var queryUrlString = ""
-        if (conditions != null) {
+        if (conditions.length() > 0 ) {
             val iter: Iterator<String> = conditions.keys()
             while (iter.hasNext()) {
                 val key = iter.next()
