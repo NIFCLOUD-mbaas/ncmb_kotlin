@@ -53,7 +53,7 @@ open class NCMBBase(){
             mFields.put("objectId", objectId)
             keys.add("objectId")
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -71,7 +71,7 @@ open class NCMBBase(){
             val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
             mFields.put("createDate", df.format(createDate))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -84,9 +84,9 @@ open class NCMBBase(){
             val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
             df.parse(mFields.getString("createDate"))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         } catch (e: ParseException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -99,9 +99,9 @@ open class NCMBBase(){
             val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
             df.parse(mFields.getString("updateDate"))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         } catch (e: ParseException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -164,7 +164,7 @@ open class NCMBBase(){
             mUpdateKeys.add(key)
             keys.add(key)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -185,7 +185,7 @@ open class NCMBBase(){
         return try {
             mFields.get(key)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -242,7 +242,7 @@ open class NCMBBase(){
                 mFields.put(ACCESS_CONTROL_LIST, acl.toJson())
             }
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -257,7 +257,7 @@ open class NCMBBase(){
         return try {
             NCMBAcl(mFields.getJSONObject(ACCESS_CONTROL_LIST))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 }
