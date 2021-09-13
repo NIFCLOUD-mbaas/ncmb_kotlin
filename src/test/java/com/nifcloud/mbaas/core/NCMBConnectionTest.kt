@@ -23,7 +23,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.*
+import org.junit.Before
+import org.junit.Rule
 import org.junit.rules.TestRule
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config

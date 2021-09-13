@@ -1,6 +1,5 @@
 package com.nifcloud.mbaas.core
 
-import NCMBQuery
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
@@ -13,7 +12,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import java.util.*
 
 //Android環境のベースにテスト実装するため
 @RunWith(RobolectricTestRunner::class)
