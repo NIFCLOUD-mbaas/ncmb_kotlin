@@ -286,7 +286,7 @@ class NCMBObjectService() : NCMBService() {
     }
 
 
-//    /**
+//    /**　TODO:
 //     * Searching JSONObject data from NIFCLOUD mobile backend
 //     * @param className Datastore class name which to search the object
 //     * @param conditions JSONObject of search conditions
@@ -308,14 +308,7 @@ class NCMBObjectService() : NCMBService() {
         query: JSONObject,
         findCallback: NCMBCallback
     ) {
-        var url = NCMB.getApiBaseUrl() + this.mServicePath + className
-        if(query.length() > 0) {
-            url = url.plus("?" + queryUrlStringGenerate(query))
-        }
-        val method = NCMBRequest.HTTP_METHOD_GET
-        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-
-        val params = JSONObject()
+        val reqParam = findObjectParams(className, query)
         val findHandler = NCMBHandler { findCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -331,8 +324,27 @@ class NCMBObjectService() : NCMBService() {
                 }
             }
         }
-        sendRequestAsync(url, method, params ,contentType, query, findCallback, findHandler)
+        sendRequestAsync(reqParam, findCallback, findHandler)
+    }
 
+    /**
+     * Setup params to do find request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    protected fun findObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath + className
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        val params = JSONObject()
+        return RequestParams(url = url, method = method, params = params, contentType = contentType)
     }
 
     private fun validateClassName(className: String?): Boolean {

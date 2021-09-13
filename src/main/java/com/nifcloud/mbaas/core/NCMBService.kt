@@ -116,7 +116,7 @@ open class NCMBService {
         params: JSONObject,
         contentType: String,
         query : JSONObject,
-        callback: NCMBCallback?,
+        callback: NCMBCallback,
         handler: NCMBHandler
     ){
         if (NCMB.SESSION_TOKEN == null) {
@@ -141,6 +141,24 @@ open class NCMBService {
         connection.sendRequestAsynchronously(callback, handler)
     }
 
+    /**
+     * Send request in asynchronously
+     *
+     * @param params       Parameters
+     * @param callback     Callback
+     * @param handler     SDK Handler
+     */
+    fun sendRequestAsync(params: RequestParams,callback: NCMBCallback,handler: NCMBHandler ) {
+        return this.sendRequestAsync(
+            params.url,
+            params.method,
+            params.params,
+            params.contentType,
+            params.query,
+            callback,
+            handler
+        )
+    }
 
     //クエリ用のURLに付ける文字列を作成
     @Throws(NCMBException::class)
