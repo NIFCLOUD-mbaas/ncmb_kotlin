@@ -21,6 +21,7 @@ import com.nifcloud.mbaas.core.NCMB
 import com.nifcloud.mbaas.core.NCMBErrorDispatcher
 import com.nifcloud.mbaas.core.NCMBException
 import com.nifcloud.mbaas.core.NCMBUser
+import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
 import org.junit.Before
@@ -66,19 +67,124 @@ class NCMBErrorUserTest {
 //        callbackFlag = false;
     }
 
+    /**
+     * - 内容：username　が間違っているときの　loginInBackground 後の CurrentUserの情報を確認する。
+     * login失敗後、CurrentUserの更新がないこと。
+     *
+     * - 結果：CurrentUserが変更されない
+     */
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun loginInBackground_invalid_username() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().loginInBackground("invalidUser", "Password", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+        Assert.assertEquals(NCMBException.AUTH_FAILURE, (inBackgroundHelper["e"] as NCMBException).code)
+    }
+
+    /**
+     * - 内容：password　が間違っているときの　loginInBackground 後の CurrentUserの情報を確認する。
+     * login失敗後、CurrentUserの更新がないこと。
+     *
+     * - 結果：CurrentUserが変更されない
+     */
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun signUpInBackground_invalid_password() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user = NCMBUser()
+        user.userName = "duplicateUser"
+        user.password = "Password"
+        inBackgroundHelper.start()
+        user.signUpInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+        Assert.assertEquals(NCMBException.DUPLICATE_VALUE, (inBackgroundHelper["e"] as NCMBException).code)
+    }
+
+    /**
+     * - 内容：password　がnullの時 signUpInBackground 後の CurrentUserの情報を確認する。
+     * login失敗後、CurrentUserの更新がないこと。
+     *
+     * - 結果：CurrentUserが変更されない
+     */
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun signUpInBackground_invalid_null_password() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user = NCMBUser()
+        user.userName = "duplicateUser"
+        inBackgroundHelper.start()
+        try {
+            user.signUpInBackground(callback)
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
+        }
+        inBackgroundHelper.await()
+        Assert.assertFalse(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+    }
+
+    /**
+     * - 内容：password　がnullの時 signUpInBackground 後の CurrentUserの情報を確認する。
+     * login失敗後、CurrentUserの更新がないこと。
+     *
+     * - 結果：CurrentUserが変更されない
+     */
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun logInBackground_invalid_null_password() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user = NCMBUser()
+        user.userName = "duplicateUser"
+        inBackgroundHelper.start()
+        try {
+            user.loginInBackground(callback)
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
+        }
+        inBackgroundHelper.await()
+        Assert.assertFalse(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+    }
+
     @Test
     fun logout_failure_connect_error() {
-        val loginUser: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
-        val currentUser: NCMBUser = loginUser.getCurrentUser()
-        Assert.assertNotNull(currentUser.getObjectId())
-        Assert.assertNotNull(currentUser.userName)
-        Assert.assertNotNull(NCMB.SESSION_TOKEN)
+        NCMB.SESSION_TOKEN = "testToken"
+        NCMB.USER_ID = "TestId"
         val user = NCMBUser()
         try {
             user.logout()
         } catch (e: NCMBException) {
             Assert.assertEquals(NCMBException.INTERNAL_SERVER_ERROR, e.code)
         }
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
     }

@@ -18,6 +18,7 @@ package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
+import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
 import org.junit.Before
@@ -57,7 +58,6 @@ class NCMBUserTest {
             "2013-09-01"
         )
         //Todo background method
-
 //        Robolectric.getBackgroundThreadScheduler().pause();
 //        Robolectric.getForegroundThreadScheduler().pause();
 //
@@ -73,6 +73,18 @@ class NCMBUserTest {
         user.save()
         val date: Date = getIso8601().parse("2014-06-04T11:28:30.348Z")
         Assert.assertEquals(user.getUpdateDate(), date)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun login_no_argument() {
+        val user = NCMBUser()
+        user.userName = "Ncmb Tarou"
+        user.password = "dummyPassword"
+        user.login()
+        //Assert.assertEquals("dummyObjectId", user.getObjectId())
+        Assert.assertEquals("Ncmb Tarou", user.userName)
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
     }
 
     @Test
@@ -101,6 +113,74 @@ class NCMBUserTest {
 
     @Test
     @Throws(java.lang.Exception::class)
+    fun loginInBackground_no_argument() {
+        val user = NCMBUser()
+        user.userName = "Ncmb Tarou"
+        user.password = "dummyPassword"
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+
+        inBackgroundHelper.start()
+        user.loginInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("dummyObjectId", (inBackgroundHelper["ncmbUser"] as NCMBUser).getObjectId())
+        Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun loginInBackground() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+
+        inBackgroundHelper.start()
+        NCMBUser().loginInBackground("Ncmb Tarou", "dummyPassword", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("dummyObjectId", (inBackgroundHelper["ncmbUser"] as NCMBUser).getObjectId())
+        Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
+    }
+
+    /**
+     * - 内容：loginInBackground 後の CurrentUserの情報を確認する。
+     * ユーザーオブジェクトID、ユーザー名、Saveを行ってからセッショントークンの変更がないこと。
+     *
+     * - 結果：CurrentUserが変更される
+     */
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun loginInBackground_and_getCurrentUser() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().loginInBackground("Ncmb Tarou", "dummyPassword", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("dummyObjectId", NCMBUser().getCurrentUser().getObjectId())
+        Assert.assertEquals("Ncmb Tarou", NCMBUser().getCurrentUser().userName)
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
     fun fetch() {
         val user = NCMBUser()
         user.setObjectId("dummyUserId")
@@ -111,11 +191,58 @@ class NCMBUserTest {
 
     @Test
     @Throws(java.lang.Exception::class)
+    fun fetchInBackground() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user = NCMBUser()
+        user.setObjectId("dummyUserId")
+        inBackgroundHelper.start()
+        user.fetchInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+
+        Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
+        Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
     fun delete_current_user() {
         NCMBUser().login("Ncmb Tarou", "dummyPassword")
         Assert.assertEquals("dummyObjectId", NCMBUser().getCurrentUser().getObjectId())
         val user: NCMBUser = NCMBUser().getCurrentUser()
         user.delete()
+        Assert.assertNull(NCMB.SESSION_TOKEN)
+        Assert.assertNull(NCMB.USER_ID)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun deleteInBackground_current_user() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val logincallback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().loginInBackground("Ncmb Tarou", "dummyPassword", logincallback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+
+        val deleteCallback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user: NCMBUser = NCMBUser().getCurrentUser()
+        user.deleteInBackground(deleteCallback)
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
     }
@@ -134,7 +261,7 @@ class NCMBUserTest {
 
     @Test
     @Throws(java.lang.Exception::class)
-    fun sign_up() {
+    fun signUp_no_argument() {
         val user = NCMBUser()
         user.userName = "Ncmb Tarou"
         user.password = "Ncmbtarou"
@@ -143,6 +270,57 @@ class NCMBUserTest {
         Assert.assertEquals("Ncmb Tarou", user.userName)
         Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
     }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun signUp() {
+        val user = NCMBUser()
+        user.signUp("Ncmb Tarou", "Ncmbtarou")
+        Assert.assertEquals("dummyObjectId", user.getObjectId())
+        Assert.assertEquals("Ncmb Tarou", user.userName)
+        Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun signUpInBackground_no_argument() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().signUpInBackground("Ncmb Tarou","Ncmbtarou", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("dummyObjectId", (inBackgroundHelper["ncmbUser"] as NCMBUser).getObjectId())
+        Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
+        Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
+    }
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun signUpInBackground() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user = NCMBUser()
+        user.userName = "Ncmb Tarou"
+        user.password = "Ncmbtarou"
+        inBackgroundHelper.start()
+        user.signUpInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("dummyObjectId", (inBackgroundHelper["ncmbUser"] as NCMBUser).getObjectId())
+        Assert.assertEquals("Ncmb Tarou", (inBackgroundHelper["ncmbUser"] as NCMBUser).userName)
+        Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
+    }
+
 
     @Test
     @Throws(java.lang.Exception::class)
@@ -156,6 +334,35 @@ class NCMBUserTest {
         user.logout()
         val logoutUser: NCMBUser = user.getCurrentUser()
         Assert.assertNull(logoutUser.getObjectId())
+        Assert.assertNull(NCMB.SESSION_TOKEN)
+        Assert.assertNull(NCMB.USER_ID)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun logoutInBackground() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val logincallback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        NCMBUser().loginInBackground("Ncmb Tarou", "dummyPassword", logincallback)
+        inBackgroundHelper.await()
+
+        val logoutCallback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbLogoutUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user = NCMBUser()
+        inBackgroundHelper.start()
+        user.logoutInBackground(logoutCallback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertNull((inBackgroundHelper["ncmbLogoutUser"] as NCMBUser).getCurrentUser().getObjectId())
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
     }
