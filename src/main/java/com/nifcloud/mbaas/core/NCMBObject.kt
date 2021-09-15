@@ -155,7 +155,7 @@ open class NCMBObject : NCMBBase {
      * @param fetchCallback callback after fetch data
      */
     open fun fetchInBackground(fetchCallback: NCMBCallback) {
-        val objecdId = getObjectId()
+        val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
         if (objectId != null) {

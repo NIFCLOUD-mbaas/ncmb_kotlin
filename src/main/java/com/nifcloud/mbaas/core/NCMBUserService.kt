@@ -415,7 +415,7 @@ class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun logoutCheckResponse(response: NCMBResponse): JSONObject
+    fun logoutCheckResponse(response: NCMBResponse): JSONObject{
         return when(response) {
             is NCMBResponse.Success -> {
                 if (response.resCode !== HTTP_STATUS_AUTHORIZED) {
@@ -455,7 +455,7 @@ class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun postLoginProcess(responseData: JSONObject): NCMBUser {
+    fun postLoginProcess(responseData: JSONObject): NCMBUser {
         try {
             val result: JSONObject = responseData
             val userId = result.getString("objectId")

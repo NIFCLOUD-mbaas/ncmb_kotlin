@@ -328,25 +328,58 @@ class NCMBUserTest {
         Assert.assertEquals("dummySessionToken", NCMB.SESSION_TOKEN)
     }
 
-
     @Test
     @Throws(java.lang.Exception::class)
     fun logout() {
         val loginUser: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
-        val currentUser: NCMBUser = loginUser.getCurrentUser()
-        Assert.assertNotNull(currentUser.getObjectId())
-        Assert.assertNotNull(currentUser.userName)
-        Assert.assertNotNull(NCMB.SESSION_TOKEN)
         Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser.mFields.get("updateDate"))
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser.mFields.get("sessionToken"))
-        val user = NCMBUser()
-        user.logout()
-        val logoutUser: NCMBUser = user.getCurrentUser()
-        Assert.assertNull(logoutUser.getObjectId())
+        loginUser.logout()
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
         Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser.mFields.get("updateDate"))
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser.mFields.get("sessionToken"))
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun logout_check_current_user() {
+        val loginUser: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
+        val currentUser: NCMBUser = loginUser.getCurrentUser()
+        Assert.assertNotNull(currentUser.getObjectId())
+        Assert.assertNotNull(currentUser.userName)
+        loginUser.logout()
+        val logoutUser = NCMBUser().getCurrentUser()
+        Assert.assertNull(logoutUser.getObjectId())
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun login_to_logout_to_login() {
+        val loginUser: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
+        loginUser.logout()
+        Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser.mFields.get("updateDate"))
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser.mFields.get("sessionToken"))
+        val loginUser2: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
+        Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser2.mFields.get("updateDate"))
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser2.mFields.get("sessionToken"))
+        Assert.assertEquals("dummyObjectId", loginUser2.getObjectId())
+        Assert.assertEquals("Ncmb Tarou", loginUser2.userName)
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun login_to_logout_to_login_current_user() {
+        val loginUser: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
+        loginUser.logout()
+        val currentUser: NCMBUser = loginUser.getCurrentUser()
+        Assert.assertNull(currentUser.getObjectId())
+        NCMBUser().login("Ncmb Tarou", "dummyPassword")
+        val currentUser2: NCMBUser = NCMBUser().getCurrentUser()
+        Assert.assertEquals("dummyObjectId", currentUser2.getObjectId())
+        Assert.assertEquals("2013-08-30T05:32:03.868Z", currentUser2.mFields.get("updateDate"))
+        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", currentUser2.mFields.get("sessionToken"))
+        Assert.assertEquals("Ncmb Tarou", currentUser2.userName)
     }
 
     @Test
