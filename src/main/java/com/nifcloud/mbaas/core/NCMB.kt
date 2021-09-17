@@ -111,7 +111,7 @@ class NCMB {
             TIMEOUT = DEFAULT_API_TIMEOUT
             CURRENT_CONTEXT = context
 
-            NCMBInstallationUtils.saveInstallation(installationCustomFields);
+            //NCMBInstallationUtils.saveInstallation(installationCustomFields);
         }
 
         /**

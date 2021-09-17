@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,20 @@
  */
 package com.nifcloud.mbaas.core
 
-import android.app.Activity
 import android.util.Log
-import com.google.android.gms.tasks.OnCanceledListener
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
-import com.google.firebase.iid.FirebaseInstanceIdReceiver
+//import com.google.android.gms.tasks.OnCanceledListener
+//import com.google.android.gms.tasks.OnCompleteListener
+//import com.google.android.gms.tasks.Task
+//import com.google.firebase.FirebaseApp
+//import com.google.firebase.iid.FirebaseInstanceIdReceiver
 //import com.google.firebase.iid.FirebaseInstanceId
 //import com.google.firebase.iid.InstanceIdResult
-import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
 import com.nifcloud.mbaas.core.NCMBLocalFile.create
-import com.nifcloud.mbaas.core.NCMBLocalFile.deleteFile
 import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
-import com.nifcloud.mbaas.core.NCMBLocalFile.writeFile
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
-import java.io.IOException
-import java.text.DateFormat
 import java.util.*
 
 /**
@@ -216,6 +209,7 @@ class NCMBInstallation : NCMBObject {
             }
         }
 
+    //Todo
 //    /**
 //     * Get device token
 //     *
@@ -237,7 +231,6 @@ class NCMBInstallation : NCMBObject {
 //        }
 //        getDeviceTokenInternalProcess(callback)
 //    }
-
 //    /**
 //     * Get device token (Internal Process)
 //     *
@@ -397,7 +390,7 @@ class NCMBInstallation : NCMBObject {
         val responseData: JSONObject
         if (getObjectId() == null) {
             //new create
-            responseData = installationService.createInstallation(localDeviceToken, mFields)
+            //responseData = installationService.createInstallation(localDeviceToken, mFields)
         } else {
             //update
             var updateJson: JSONObject? = null
@@ -406,62 +399,54 @@ class NCMBInstallation : NCMBObject {
             } catch (e: JSONException) {
                 throw IllegalArgumentException(e.message)
             }
-            responseData = installationService.updateInstallation(getObjectId(), updateJson)
+            //responseData = installationService.updateInstallation(getObjectId(), updateJson)
         }
-        localData = responseData
+        //localData = responseData
         mUpdateKeys.clear()
     }
 
-//    /**
-//     * Save installation object inBackground
-//     *
-//     * @param callback DoneCallback
-//     */
-//    override fun saveInBackground(saveCallback: NCMBCallback) {
-//        //callback
-//        val exeCallback: ExecuteServiceCallback = object : ExecuteServiceCallback() {
-//            fun done(responseData: JSONObject, error: NCMBException?) {
-//                var error = error
-//                if (error == null) {
-//                    //instance set data
-//                    try {
-//                        localData = responseData
-//                    } catch (e: NCMBException) {
-//                        error = e
-//                    }
-//                    mUpdateKeys.clear()
-//                }
-//                if (callback != null) {
-//                    callback.done(error)
-//                }
-//            }
-//        }
-//
-//        //connect
-//        val installationService: NCMBInstallationService =
-//            NCMB.factory(NCMB.ServiceType.INSTALLATION) as NCMBInstallationService
-//        if (getObjectId() == null) {
-//            //new create
-//            installationService.createInstallationInBackground(
-//                localDeviceToken,
-//                mFields,
-//                exeCallback
-//            )
-//        } else {
-//            //update
-//            var updateJson: JSONObject? = null
-//            updateJson = try {
-//                createUpdateJsonData()
-//            } catch (e: JSONException) {
-//                throw IllegalArgumentException(e.message)
-//            }
+    /**
+     * Save installation object inBackground
+     *
+     * @param callback DoneCallback
+     */
+    override fun saveInBackground(saveCallback: NCMBCallback) {
+
+        val exeCallback = NCMBCallback { e, ncmbObj ->
+            val responseData = ncmbObj as JSONObject
+            //instance set data
+            try {
+                localData = responseData
+            } catch (e: NCMBException) {
+                throw e
+            }
+            mUpdateKeys.clear()
+        }
+
+        //connect
+        val installationService = NCMBInstallationService()
+        if (getObjectId() == null) {
+            //new create
+            installationService.createInstallationInBackground(
+                localDeviceToken,
+                mFields,
+                exeCallback
+            )
+        } else {
+            //update
+            var updateJson: JSONObject? = null
+            updateJson = try {
+                createUpdateJsonData()
+            } catch (e: JSONException) {
+                throw IllegalArgumentException(e.message)
+            }
 //            installationService.updateInstallationInBackground(
 //                getObjectId(),
 //                updateJson,
 //                exeCallback
 //            )
-//        }
-//    }
+        }
+    }
 
     companion object {
         /**
@@ -489,7 +474,7 @@ class NCMBInstallation : NCMBObject {
          * push device
          */
         var installation: NCMBInstallation? = null
-
+        var current: NCMBInstallation? = null
         val ignoreKeys = Arrays.asList(
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"

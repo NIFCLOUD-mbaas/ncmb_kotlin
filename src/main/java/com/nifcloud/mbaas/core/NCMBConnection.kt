@@ -102,7 +102,7 @@ class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestAsynchronously(callback: NCMBCallback?, responseHandler: NCMBHandler) {
+    fun sendRequestAsynchronously(callback: NCMBCallback?, responseHandler: NCMBHandler?) {
         val headers: Headers = createHeader()
         val client = OkHttpClient()
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -119,13 +119,13 @@ class NCMBConnection(request: NCMBRequest) {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 ncmbResponse = NCMBResponse.Failure(NCMBException(e))
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
+                responseHandler?.doneSolveResponse(callback, ncmbResponse)
             }
 
             override fun onResponse(call: Call, response: Response) {
                 //NCMBResponse 処理
                 ncmbResponse = NCMBResponseBuilder.build(response)
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
+                responseHandler?.doneSolveResponse(callback, ncmbResponse)
             }
         })
     }

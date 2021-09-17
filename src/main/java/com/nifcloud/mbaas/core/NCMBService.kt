@@ -35,12 +35,15 @@ open class NCMBService {
     /**
      * Data class for params of request
      */
+
     data class RequestParams(
         var url: String,
         var method: String,
         var params: JSONObject = JSONObject(),
         var contentType: String,
-                    var query: JSONObject = JSONObject()
+        var query: JSONObject = JSONObject(),
+        var callback: NCMBCallback? = null,
+        var handler: NCMBHandler? = null
     )
 
     /**
@@ -114,7 +117,7 @@ open class NCMBService {
         contentType: String,
         query: JSONObject,
         callback: NCMBCallback?,
-        handler: NCMBHandler
+        handler: NCMBHandler?
     ){
         if (NCMB.SESSION_TOKEN == null) {
             NCMB.SESSION_TOKEN = NCMBUser().getSessionToken()
@@ -136,5 +139,21 @@ open class NCMBService {
         )
         val connection = NCMBConnection(request)
         connection.sendRequestAsynchronously(callback, handler)
+    }
+    /**
+     * Send request in asynchronously
+     *
+     * @param params      request params
+     */
+    fun sendRequestAsync(params: RequestParams) {
+        return this.sendRequestAsync(
+            params.url,
+            params.method,
+            params.params,
+            params.contentType,
+            params.query,
+            params.callback,
+            params.handler
+        )
     }
 }
