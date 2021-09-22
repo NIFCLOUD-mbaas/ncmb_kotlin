@@ -412,39 +412,39 @@ class NCMBInstallation : NCMBObject {
      */
     override fun saveInBackground(saveCallback: NCMBCallback) {
 
-        val exeCallback = NCMBCallback { e, ncmbObj ->
-            val responseData = ncmbObj as JSONObject
-            //instance set data
-            try {
-                localData = responseData
-            } catch (e: NCMBException) {
-                throw e
-            }
-            mUpdateKeys.clear()
-        }
-
         //connect
         val installationService = NCMBInstallationService()
         if (getObjectId() == null) {
             //new create
             installationService.createInstallationInBackground(
+                this,
                 localDeviceToken,
-                mFields,
-                exeCallback
+                this.mFields,
+                saveCallback
             )
         } else {
-            //update
-            var updateJson: JSONObject? = null
-            updateJson = try {
-                createUpdateJsonData()
+            try {
+                //update
+                var updateJson: JSONObject? = null
+                updateJson = try {
+                    createUpdateJsonData()
+                } catch (e: JSONException) {
+                    throw IllegalArgumentException(e.message)
+                }
+                installationService.updateInstallationInBackground(
+                    this,
+                    getObjectId(),
+                    updateJson,
+                    saveCallback
+                )
             } catch (e: JSONException) {
-                throw IllegalArgumentException(e.message)
+                saveCallback.done(
+                    NCMBException(
+                        NCMBException.INVALID_JSON,
+                        e.message!!
+                    )
+                )
             }
-//            installationService.updateInstallationInBackground(
-//                getObjectId(),
-//                updateJson,
-//                exeCallback
-//            )
         }
     }
 

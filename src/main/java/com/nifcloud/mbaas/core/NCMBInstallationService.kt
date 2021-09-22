@@ -165,48 +165,44 @@ class NCMBInstallationService: NCMBService() {
      * @param callback       JSONCallback
      */
     fun createInstallationInBackground(
+        installationObject: NCMBObject,
         registrationId: String?,
         params: JSONObject,
         callback: NCMBCallback
     ) {
+        //null check
+        val argumentParams = argumentNullCheckForPOST(registrationId, params)
+
+        //set installation data
         try {
-            //null check
-            val argumentParams = argumentNullCheckForPOST(registrationId, params)
+            //set registrationId
+            params.put("deviceToken", registrationId)
+            //set basic data
+            setInstallationBasicData(params)
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
+        } catch (e: PackageManager.NameNotFoundException) {
+            throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
+        }
 
-            //set installation data
-            try {
-                //set registrationId
-                params.put("deviceToken", registrationId)
-                //set basic data
-                setInstallationBasicData(params)
-            } catch (e: JSONException) {
-                throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
-            } catch (e: PackageManager.NameNotFoundException) {
-                throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
-            }
-
-            val installationHandler = NCMBHandler { installationcallback, response ->
-                when (response) {
-                    is NCMBResponse.Success -> {
-                        try {
-                            writeCurrentInstallation(argumentParams, response.data)
-                        } catch (e: NCMBException) {
-                            throw e
-                        }
-                        callback.done(null, response.data)
+        val installationHandler = NCMBHandler { installationcallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    try {
+                        writeCurrentInstallation(argumentParams, response.data)
+                    } catch (e: NCMBException) {
+                        throw e
                     }
-                    is NCMBResponse.Failure -> {
-                        callback.done(response.resException)
-                    }
+                    installationObject.reflectResponse(response.data)
+                    callback.done(null, installationObject)
+                }
+                is NCMBResponse.Failure -> {
+                    callback.done(response.resException)
                 }
             }
-            val request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST,callback, installationHandler)
-            sendRequestAsync(request)
-        } catch (error: NCMBException) {
-            if (callback != null) {
-                callback.done(error, null)
-            }
         }
+        val request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST,callback, installationHandler)
+        sendRequestAsync(request)
     }
 
     //Todo
@@ -258,64 +254,53 @@ class NCMBInstallationService: NCMBService() {
 //        }
 //    }
 
-//    /**
-//     * Update installation object in background
-//     *
-//     * @param objectId objectId
-//     * @param params   installation parameters
-//     * @param callback JSONCallback
-//     */
-//    fun updateInstallationInBackground(
-//        objectId: String?,
-//        params: JSONObject,
-//        callback: ExecuteServiceCallback?
-//    ) {
-//        try {
-//            //null check
-//            val argumentParams = argumentNullCheckForPOST(objectId, params)
-//
-//            //set installation data
-//            try {
-//                //set basic data
-//                setInstallationBasicData(params)
-//            } catch (e: JSONException) {
-//                throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
-//            } catch (e: PackageManager.NameNotFoundException) {
-//                throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
-//            }
-//
-//            //connect
-//            val request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT)
-//            sendRequestAsync(request, object : InstallationServiceCallback(this, callback) {
-//                fun handleResponse(response: NCMBResponse) {
-//                    var error: NCMBException? = null
-//                    //update currentInstallation
-//                    try {
-//                        writeCurrentInstallation(argumentParams, response.responseData)
-//                    } catch (e: NCMBException) {
-//                        error = e
-//                    }
-//                    val callback: ExecuteServiceCallback? = mCallback as ExecuteServiceCallback?
-//                    if (callback != null) {
-//                        callback.done(response.responseData, error)
-//                    }
-//                }
-//
-//                fun handleError(e: NCMBException) {
-//                    //currentInstallation auto delete
-//                    checkDataNotFound(objectId, e.code)
-//                    val callback: ExecuteServiceCallback? = mCallback as ExecuteServiceCallback?
-//                    if (callback != null) {
-//                        callback.done(null, e)
-//                    }
-//                }
-//            })
-//        } catch (error: NCMBException) {
-//            if (callback != null) {
-//                callback.done(null, error)
-//            }
-//        }
-//    }
+    /**
+     * Update installation object in background
+     *
+     * @param objectId objectId
+     * @param params   installation parameters
+     * @param callback JSONCallback
+     */
+    fun updateInstallationInBackground(
+        installationObject: NCMBObject,
+        objectId: String?,
+        params: JSONObject,
+        callback: NCMBCallback
+    ) {
+            //null check
+            val argumentParams = argumentNullCheckForPOST(objectId, params)
+
+            //set installation data
+            try {
+                //set basic data
+                setInstallationBasicData(params)
+            } catch (e: JSONException) {
+                throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
+            } catch (e: PackageManager.NameNotFoundException) {
+                throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
+            }
+
+        val installationHandler = NCMBHandler { installationcallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    try {
+                        writeCurrentInstallation(argumentParams, response.data)
+                    } catch (e: NCMBException) {
+                        throw e
+                    }
+                    installationObject.reflectResponse(response.data)
+                    callback.done(null, installationObject)
+                }
+                is NCMBResponse.Failure -> {
+                    //ToDo installation自動削除
+                    //checkDataNotFound(objectId, response.resException)
+                    callback.done(response.resException)
+                }
+            }
+        }
+        val request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT,callback, installationHandler)
+        sendRequestAsync(request)
+    }
 
     //Todo
 //    /**

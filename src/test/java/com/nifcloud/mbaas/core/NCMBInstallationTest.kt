@@ -71,20 +71,45 @@ class NCMBInstallationTest {
         val installation = NCMBInstallation()
         installation.deviceToken = "xxxxxxxxxxxxxxxxxxx"
         inBackgroundHelper.start()
-        installation.saveInBackground(NCMBCallback {e, ncmbObj ->
+        installation.saveInBackground(NCMBCallback { e, ncmbObj ->
             inBackgroundHelper["e"] = e
             inBackgroundHelper["ncmbObj"] = ncmbObj
             inBackgroundHelper.release() // ブロックをリリース
         })
         inBackgroundHelper.await()
-        //print("Success saved: ObjectID " + (inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId() + " | Response data: CreateDate " + (inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate())
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
-//        //check
-//        Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
-//        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.localDeviceToken)
-//        val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
-//        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
-//        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
+        //check
+        Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.localDeviceToken)
+        val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun saveInBackground_put() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //post
+        val installation = NCMBInstallation()
+        installation.deviceToken = "xxxxxxxxxxxxxxxxxxx"
+        installation.put("key", "value1")
+        inBackgroundHelper.start()
+        installation.saveInBackground(NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        //check
+        Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.localDeviceToken)
+        Assert.assertEquals("value1", installation.getString("key"))
+        val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
     }
 }
