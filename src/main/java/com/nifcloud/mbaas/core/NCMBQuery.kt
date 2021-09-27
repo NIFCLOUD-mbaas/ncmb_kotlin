@@ -99,7 +99,7 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      * @param key field name to set the conditions
      * @param value condition value
      */
-    fun whereEqualTo(key: String?, value: Any) {
+    fun whereEqualTo(key: String, value: Any) {
         try {
             mWhereConditions.put(key, convertConditionValue(value) )
         } catch (e: JSONException) {

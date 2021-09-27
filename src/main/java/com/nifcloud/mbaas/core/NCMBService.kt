@@ -61,7 +61,7 @@ open class NCMBService {
         method: String,
         params: JSONObject,
         contentType: String,
-        query : JSONObject
+        query: JSONObject
     ): NCMBResponse {
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()
@@ -115,7 +115,7 @@ open class NCMBService {
         method: String,
         params: JSONObject,
         contentType: String,
-        query : JSONObject,
+        query: JSONObject,
         callback: NCMBCallback,
         handler: NCMBHandler
     ){
@@ -165,26 +165,22 @@ open class NCMBService {
     fun queryUrlStringGenerate(conditions:JSONObject): String {
         var queryUrlString = ""
         if (conditions.length() > 0 ) {
-            val iter: Iterator<String> = conditions.keys()
-            while (iter.hasNext()) {
-                val key = iter.next()
-                try {
-                    val value: Any = conditions.get(key)
+            val keyIters: Iterator<String> = conditions.keys()
+            try {
+                for (key in keyIters) {
                     queryUrlString = queryUrlString.plus(
                         key + "=" + URLEncoder.encode(
-                            value.toString(),
+                            conditions.get(key).toString(),
                             "utf-8"
                         ) + "&"
                     )
-                } catch (e: JSONException) {
-                    throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
                 }
+            } catch (e: JSONException) {
+                throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
             }
             queryUrlString.dropLast(1)
-            return queryUrlString
-        } else {
-            return ""
         }
+        return queryUrlString
     }
 
 

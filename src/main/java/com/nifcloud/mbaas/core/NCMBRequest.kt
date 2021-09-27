@@ -151,12 +151,10 @@ class NCMBRequest(
                 val tmpNCMBSignatureCal = NCMBSignatureCal()
                 val tmpUrl = URL(url)
                 val queryMap: HashMap<String, String> = HashMap()
-                if(query.length() > 0) {
-                    for (key in query.keys())
-                    {
-                        var value = query.get(key).toString();
-                        queryMap.put(key, value)
-                    }
+                for (key in query.keys())
+                {
+                    var value = query.get(key).toString();
+                    queryMap.put(key, value)
                 }
 
                 var signature = tmpNCMBSignatureCal.calSignature(

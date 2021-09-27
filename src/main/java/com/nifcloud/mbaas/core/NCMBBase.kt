@@ -211,7 +211,7 @@ open class NCMBBase(){
      * @return ignore list contains given key or not
      */
     fun isIgnoreKey(key: String?): Boolean {
-        if (this.mIgnoreKeys.size >0) {
+        if (this.mIgnoreKeys.size > 0) {
             return false
         } else {
             return mIgnoreKeys.contains(key)

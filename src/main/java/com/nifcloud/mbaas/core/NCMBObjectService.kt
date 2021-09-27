@@ -300,7 +300,7 @@ class NCMBObjectService() : NCMBService() {
     /**
      * Searching JSONObject data to NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to search the object
-     * @param conditions JSONObject of search conditions
+     * @param query JSONObject of search conditions
      * @param callback callback for after object search
      */
     fun findObjectsInBackground(
@@ -313,14 +313,11 @@ class NCMBObjectService() : NCMBService() {
             when (response) {
                 is NCMBResponse.Success -> {
                     var listObj = createSearchResponseList(className, response.data)
-                    if (findCallback != null) {
-                        findCallback.done(null, listObj)
-                    }
+                    findCallback.done(null, listObj)
                 }
                 is NCMBResponse.Failure -> {
-                    if (findCallback != null) {
-                        findCallback.done(response.resException, null)
-                    }
+                    var listObj = listOf<NCMBObject>()
+                    findCallback.done(response.resException, listObj)
                 }
             }
         }
@@ -356,7 +353,7 @@ class NCMBObjectService() : NCMBService() {
     }
 
     @Throws(NCMBException::class)
-    fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject>? {
+    fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject> {
         return try {
             val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
             val array: MutableList<NCMBObject> = ArrayList()

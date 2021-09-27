@@ -81,17 +81,12 @@ class NCMBConnection(request: NCMBRequest) {
                 val url = Uri.parse(ncmbRequest.url)
                     .buildUpon()
 
-                if(ncmbRequest.query != null) {
-                    for (key in ncmbRequest.query.keys()){
-                        val value = ncmbRequest.query.get(key) as String
-                        val valueConverted = URLEncoder.encode(value, "utf-8") //Encode for URL
-                        url.appendQueryParameter(key, valueConverted)
-                    }
-                    url.build()
+                for (key in ncmbRequest.query.keys()){
+                    val value = ncmbRequest.query.get(key) as String
+                    val valueConverted = URLEncoder.encode(value, "utf-8") //Encode for URL
+                    url.appendQueryParameter(key, valueConverted)
                 }
-
-                println("IN CONNECTION (sendRequest)")
-                println("URL" + url)
+                url.build()
 
                 var request: Request
                 synchronized(lock) {
@@ -111,7 +106,7 @@ class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestAsynchronously(callback: NCMBCallback?, responseHandler: NCMBHandler) {
+    fun sendRequestAsynchronously(callback: NCMBCallback, responseHandler: NCMBHandler) {
         val headers: Headers = createHeader()
         val client = OkHttpClient()
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
