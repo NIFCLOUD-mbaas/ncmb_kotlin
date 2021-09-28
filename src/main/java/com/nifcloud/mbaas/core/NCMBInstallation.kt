@@ -15,13 +15,7 @@
  */
 package com.nifcloud.mbaas.core
 
-import android.content.ContentValues.TAG
-import android.content.Context
 import android.util.Log
-import com.google.android.gms.tasks.OnCanceledListener
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.FirebaseApp
-import com.google.firebase.messaging.FirebaseMessaging
 //import com.google.android.gms.tasks.OnCanceledListener
 //import com.google.android.gms.tasks.OnCompleteListener
 //import com.google.android.gms.tasks.Task
@@ -35,7 +29,6 @@ import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.IOException
 import java.util.*
 
 /**
@@ -215,65 +208,6 @@ class NCMBInstallation : NCMBObject {
                 throw IllegalArgumentException(error.message)
             }
         }
-
-    //Todo
-    /**
-     * Get device token
-     *
-     * @param callback TokenCallback
-     */
-    fun getDeviceTokenInBackground(callback: NCMBCallback) {
-        val instance = DeviceTokenCallbackQueue.instance
-        if(instance != null) {
-            if (instance.isDuringSaveInstallation) {
-                instance.addQueue(callback)
-                return
-            }
-        }
-        val context = NCMB.getCurrentContext()
-        if(context != null) {
-            if (FirebaseApp.getApps(context.applicationContext).isEmpty()) {
-                callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
-                return
-            }
-        }
-        val deviceToken = localDeviceToken
-        if (deviceToken != null) {
-            callback.done(null, localDeviceToken)
-            return
-        }
-        getDeviceTokenInternalProcess(callback)
-    }
-
-    /**
-     * Get device token (Internal Process)
-     *
-     * @param callback TokenCallback
-     */
-    fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
-        val context = NCMB.getCurrentContext()
-        if(context!= null) {
-            if (!FirebaseApp.getApps(context.applicationContext).isEmpty()) {
-                FirebaseMessaging.getInstance().token
-                    .addOnCompleteListener(OnCompleteListener { task ->
-                        if (!task.isSuccessful) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                            callback.done(null, task.result)
-                            //return@OnCompleteListener
-                        } else {
-                            callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
-                        }
-                        // Get new FCM registration token
-                    }).addOnCanceledListener(OnCanceledListener {
-                        fun onCanceled() {
-                            callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
-                        }
-                    })
-            } else {
-                callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
-            }
-        }
-    }
 
     /**
      * Get device token
