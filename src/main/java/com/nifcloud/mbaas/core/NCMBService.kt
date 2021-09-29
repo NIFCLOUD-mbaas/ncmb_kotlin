@@ -43,7 +43,7 @@ open class NCMBService {
         var method: String,
         var params: JSONObject = JSONObject(),
         var contentType: String,
-        var query : JSONObject = JSONObject()
+        var query: JSONObject = JSONObject()
     )
 
     /**
