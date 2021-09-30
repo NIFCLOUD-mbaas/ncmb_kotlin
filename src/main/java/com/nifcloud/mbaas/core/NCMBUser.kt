@@ -108,13 +108,22 @@ open class NCMBUser: NCMBObject {
      *
      * @return sessionToken
      */
-    open fun getSessionToken(): String? {
-        return if (getCurrentUser().getString("sessionToken") != null) {
-            getCurrentUser().getString("sessionToken")
-        } else {
-            null
+    /**
+     * Set sessionToken
+     *
+     * @param sessionToken String sessionToken
+     */
+    var sessionToken: String?
+        get() {
+            return if (getCurrentUser().getString("sessionToken") != null) {
+                getCurrentUser().getString("sessionToken")
+            } else {
+                null
+            }
         }
-    }
+        set(sessionToken) {
+            setUserInfo("sessionToken", sessionToken)
+        }
 
     /**
      * Get mail address
@@ -142,7 +151,7 @@ open class NCMBUser: NCMBObject {
         }
     }
 
-    private fun setUserInfo(userKey: String, userValue: String){
+    private fun setUserInfo(userKey: String, userValue: String?){
         try {
             mFields.put(userKey, userValue)
             mUpdateKeys.add(userKey)
@@ -544,7 +553,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun logout() {
         val userService = NCMBUserService()
-        userService.logoutUser()
+        userService.logoutUser(this)
     }
 
     /**

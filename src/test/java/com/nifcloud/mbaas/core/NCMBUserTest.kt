@@ -26,6 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
+import org.junit.runners.model.MultipleFailureException.assertEmpty
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
@@ -338,7 +339,7 @@ class NCMBUserTest {
         Assert.assertNull(NCMB.SESSION_TOKEN)
         Assert.assertNull(NCMB.USER_ID)
         Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser.mFields.get("updateDate"))
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser.mFields.get("sessionToken"))
+        Assert.assertEquals("", loginUser.mFields.get("sessionToken"))
     }
 
     @Test
@@ -351,6 +352,7 @@ class NCMBUserTest {
         loginUser.logout()
         val logoutUser = NCMBUser().getCurrentUser()
         Assert.assertNull(logoutUser.getObjectId())
+        Assert.assertNull(NCMB.SESSION_TOKEN)
     }
 
     @Test
@@ -359,7 +361,7 @@ class NCMBUserTest {
         val loginUser: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
         loginUser.logout()
         Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser.mFields.get("updateDate"))
-        Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser.mFields.get("sessionToken"))
+        Assert.assertEquals("", loginUser.mFields.get("sessionToken"))
         val loginUser2: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
         Assert.assertEquals("2013-08-30T05:32:03.868Z", loginUser2.mFields.get("updateDate"))
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", loginUser2.mFields.get("sessionToken"))

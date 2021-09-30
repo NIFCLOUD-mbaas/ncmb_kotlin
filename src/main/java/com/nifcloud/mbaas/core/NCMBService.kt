@@ -129,7 +129,7 @@ open class NCMBService {
         handler: NCMBHandler?
     ){
         if (NCMB.SESSION_TOKEN == null) {
-            NCMB.SESSION_TOKEN = NCMBUser().getSessionToken()
+            NCMB.SESSION_TOKEN = NCMBUser().sessionToken
         }
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()

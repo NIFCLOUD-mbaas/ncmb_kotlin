@@ -122,11 +122,12 @@ class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun logoutUser() {
+    fun logoutUser(logoutUser: NCMBUser) {
         val reqParams = logoutParams(null, null)
         val response = sendRequest(reqParams)
         // clear login informations
         clearCurrentUser()
+        logoutUser.sessionToken = ""
         logoutCheckResponse(response)
     }
 
