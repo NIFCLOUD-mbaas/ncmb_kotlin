@@ -308,6 +308,7 @@ class NCMBObjectService() : NCMBService() {
         query: JSONObject,
         findCallback: NCMBCallback
     ) {
+
         val reqParam = findObjectParams(className, query)
         val findHandler = NCMBHandler { findCallback, response ->
             when (response) {
@@ -341,7 +342,7 @@ class NCMBObjectService() : NCMBService() {
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         val params = JSONObject()
-        return RequestParams(url = url, method = method, params = params, contentType = contentType)
+        return RequestParams(url = url, method = method, params = params, contentType = contentType, query=query)
     }
 
     private fun validateClassName(className: String?): Boolean {

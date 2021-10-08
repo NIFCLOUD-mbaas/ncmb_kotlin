@@ -156,7 +156,6 @@ class NCMBRequest(
                     var value = query.get(key).toString();
                     queryMap.put(key, value)
                 }
-
                 var signature = tmpNCMBSignatureCal.calSignature(
                     this.method,
                     tmpUrl,

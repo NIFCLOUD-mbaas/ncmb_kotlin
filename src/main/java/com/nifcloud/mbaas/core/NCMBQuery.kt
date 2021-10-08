@@ -64,7 +64,7 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
             val objService = NCMBObjectService()
             objService.findObjectsInBackground(
                 mClassName,
-                conditions,
+                query,
                 findCallback)
         }
     }
@@ -73,13 +73,13 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      * get current search condition
      * @return current search condition
      */
-    val conditions: JSONObject
+    val query: JSONObject
         get() {
-            val conditions = JSONObject()
+            val query = JSONObject()
             if (mWhereConditions != null && mWhereConditions.length() > 0) {
-                conditions.put("where", mWhereConditions)
+                query.put("where", mWhereConditions)
             }
-            return  conditions
+            return  query
         }
 
     @Throws(JSONException::class)

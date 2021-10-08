@@ -82,6 +82,7 @@ class NCMBConnection(request: NCMBRequest) {
                 println(ncmbRequest.params.toString())
                 println(ncmbRequest.url)
                 println(headers)
+                println(ncmbRequest.query)
 
                 val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
                 val url = Uri.parse(ncmbRequest.url)
