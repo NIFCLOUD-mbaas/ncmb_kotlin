@@ -27,12 +27,13 @@ class NCMBSignatureCalTest {
     fun testSignatureCal() {
         val tmpNCMBSignatureCal = NCMBSignatureCal()
         val url = URL("https://mbaas.api.nifcloud.com/2013-09-01/classes/test")
+        val queryParamMap = HashMap<String, String>()
         val tmpSignature = tmpNCMBSignatureCal.calSignature("POST",
             url,
             "2020-03-30T05:35:37.974Z",
             "a69ec93ef132f0fdsfdsfds7d24b55d1926bd2c191c0eb054",
             "6afad6056749cb55dfdsggwwcxv54w06bdef688fdsfdsfdsfds3a695d0",
-            null
+            queryParamMap
         )
         Assert.assertEquals("PypCIPOo1vASUWe1IUT5DWky/niMGqS7HWwFwKvj7NA=", tmpSignature)
     }
