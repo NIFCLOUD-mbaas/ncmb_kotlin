@@ -564,6 +564,6 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun logoutInBackground(logoutCallback: NCMBCallback) {
         val userService = NCMBUserService()
-        userService.logoutUserInBackground(logoutCallback)
+        userService.logoutUserInBackground(this, logoutCallback)
     }
 }

@@ -127,7 +127,7 @@ class NCMBUserService : NCMBObjectService() {
         val response = sendRequest(reqParams)
         // clear login informations
         clearCurrentUser()
-        logoutUser.sessionToken = ""
+        logoutUser.sessionToken = null
         logoutCheckResponse(response)
     }
 
@@ -137,13 +137,14 @@ class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun logoutUserInBackground(logoutCallback: NCMBCallback) {
+    fun logoutUserInBackground(logoutUser: NCMBUser, logoutCallback: NCMBCallback) {
         val logoutHandler = NCMBHandler { logoutcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
                     // clear login informations
                     clearCurrentUser()
                     val responseData = logoutCheckResponse(response)
+                    logoutUser.sessionToken = null
                     val user = NCMBUser(responseData)
                     //loginCallback done to object
                     logoutCallback.done(null, user)
