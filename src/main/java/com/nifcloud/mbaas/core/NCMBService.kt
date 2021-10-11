@@ -163,24 +163,16 @@ open class NCMBService {
     //クエリ用のURLに付ける文字列を作成
     @Throws(NCMBException::class)
     fun queryUrlStringGenerate(query:JSONObject): String {
-        var queryUrlString = ""
-        if (query.length() > 0 ) {
-            val keyIters: Iterator<String> = query.keys()
+        val queryItemlist: MutableList<String> = mutableListOf()
+        for (key in query.keys()) {
             try {
-                for (key in keyIters) {
-                    queryUrlString = queryUrlString.plus(
-                        key + "=" + URLEncoder.encode(
-                            query.get(key).toString(),
-                            "utf-8"
-                        ) + "&")
-                }
-                queryUrlString = queryUrlString.dropLast(1)
+                val value = query.get(key).toString()
+                queryItemlist.add("%s=%s".format(key, URLEncoder.encode(value, "utf-8")))
             } catch (e: JSONException) {
                 throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
             }
         }
-        return queryUrlString
+        return queryItemlist.joinToString(separator = "&")
     }
-
 
 }
