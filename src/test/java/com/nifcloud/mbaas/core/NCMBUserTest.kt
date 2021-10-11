@@ -352,6 +352,7 @@ class NCMBUserTest {
         val logoutUser = NCMBUser().getCurrentUser()
         Assert.assertNull(logoutUser.getObjectId())
         Assert.assertNull(NCMB.SESSION_TOKEN)
+        Assert.assertNull(NCMB.USER_ID)
     }
 
     @Test
