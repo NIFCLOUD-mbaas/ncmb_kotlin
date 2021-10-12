@@ -57,8 +57,8 @@ class NCMBSignatureCal {
         url: URL,
         timestamp: String,
         applicationKey: String,
-        clientKey: String?,
-        queryParamMap: HashMap<String, String>?
+        clientKey: String,
+        queryParamMap: HashMap<String, String>
     ): String {
         return this.createSignature(
             method,
@@ -130,14 +130,10 @@ class NCMBSignatureCal {
         return url.path
     }
 
-    private fun encodeParamMap(queryParamMap: HashMap<String, String>): HashMap<String, String>?{
-        return if (queryParamMap != null) {
-            for((k, v) in queryParamMap) {
-                queryParamMap.put(k, URLEncoder.encode(v, "utf-8"))
-            }
-            queryParamMap
-        } else {
-            null
+    private fun encodeParamMap(queryParamMap: HashMap<String, String>): HashMap<String, String>{
+        for((k, v) in queryParamMap) {
+            queryParamMap.put(k, URLEncoder.encode(v, "utf-8"))
         }
+        return queryParamMap
     }
 }

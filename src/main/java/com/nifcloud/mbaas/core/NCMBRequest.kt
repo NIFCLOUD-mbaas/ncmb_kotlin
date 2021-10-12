@@ -153,7 +153,7 @@ class NCMBRequest(
                 val queryMap: HashMap<String, String> = HashMap()
                 for (key in query.keys())
                 {
-                    var value = query.get(key) as String;
+                    var value = query.get(key).toString();
                     queryMap.put(key, value)
                 }
                 var signature = tmpNCMBSignatureCal.calSignature(

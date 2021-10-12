@@ -86,7 +86,7 @@ open class NCMBObject : NCMBBase {
             } catch (e: JSONException) {
                 throw NCMBException(
                     NCMBException.INVALID_JSON,
-                    e.message!!
+                    e.localizedMessage
                 )
             }
             return this
@@ -124,7 +124,7 @@ open class NCMBObject : NCMBBase {
                 saveCallback.done(
                     NCMBException(
                         NCMBException.INVALID_JSON,
-                        e.message!!
+                        e.localizedMessage
                     )
                 )
             }

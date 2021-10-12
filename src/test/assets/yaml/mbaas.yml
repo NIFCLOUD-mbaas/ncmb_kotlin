@@ -459,14 +459,27 @@ response:
     file: valid_post_trackAppOpened_response.json
 ---
 request:
+    url: /2013-09-01/classes/TestClassNoData
+    method: GET
+response:
+    status: 200
+    file: valid_search_response_no_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
     url: /2013-09-01/classes/TestClass
     method: GET
     query:
         where: '{"key":"value"}'
-        limit: 1
 response:
     status: 200
-    file: valid_search_response.json
+    file: valid_search_response_one_obj.json
 ---
 request:
     url: /2013-09-01/classes/TestClass
@@ -478,6 +491,7 @@ request:
 response:
     status: 200
     file: valid_count_response.json
+
 ---
 request:
     url: /2013-09-01/classes/TestClass
@@ -490,7 +504,7 @@ request:
         order: 'ascendingKey,-descendingKey'
 response:
     status: 200
-    file: valid_search_response.json
+    file: valid_search_response_one_obj.json
 ---
 request:
     url: /2013-09-01/classes/TestClass
@@ -499,7 +513,7 @@ request:
         where: '{"stringKey":"string","intKey":10,"longKey":10000000000000000,"floatKey":1.23,"doubleKey":1.23,"boolKey":true,"arrayKey":["array"],"mapKey":{"key":"value"},"dateKey":{"__type":"Date","iso":"2016-01-26T00:00:00.000Z"}}'
 response:
     status: 200
-    file: valid_search_response.json
+    file: valid_search_response_one_obj.json
 ---
 request:
     url: /2013-09-01/classes/TestClass

@@ -26,10 +26,10 @@ package com.nifcloud.mbaas.core
  * @constructor Creates a handler to receveive handlerCallback with parameters as callback and response.
  */
 
-class NCMBHandler(val handlerCallback: (NCMBCallback?, NCMBResponse?) -> Unit) {
+class NCMBHandler(val handlerCallback: (NCMBCallback, NCMBResponse) -> Unit) {
 
     //For NCMBConnection to solve NCMBResponse
-    fun doneSolveResponse(callback: NCMBCallback?, response: NCMBResponse?) {
+    fun doneSolveResponse(callback: NCMBCallback, response: NCMBResponse) {
         //do sthing here for handler callback and response
         handlerCallback(callback, response)
     }

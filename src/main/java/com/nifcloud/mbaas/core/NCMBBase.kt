@@ -44,7 +44,7 @@ open class NCMBBase(){
         }
         protected set
     protected var mUpdateKeys = HashSet<String>()
-    protected var mIgnoreKeys: List<String>? = null
+    protected var mIgnoreKeys= listOf<String>()
     protected var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
@@ -53,7 +53,7 @@ open class NCMBBase(){
             mFields.put("objectId", objectId)
             keys.add("objectId")
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -66,12 +66,12 @@ open class NCMBBase(){
     }
 
     @Throws(NCMBException::class)
-    open fun setCreateDate(createDate: Date?) {
+    open fun setCreateDate(createDate: Date) {
         try {
             val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
             mFields.put("createDate", df.format(createDate))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -84,9 +84,9 @@ open class NCMBBase(){
             val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
             df.parse(mFields.getString("createDate"))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         } catch (e: ParseException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -99,9 +99,9 @@ open class NCMBBase(){
             val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
             df.parse(mFields.getString("updateDate"))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         } catch (e: ParseException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -164,7 +164,7 @@ open class NCMBBase(){
             mUpdateKeys.add(key)
             keys.add(key)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -185,7 +185,7 @@ open class NCMBBase(){
         return try {
             mFields.get(key)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -211,10 +211,10 @@ open class NCMBBase(){
      * @return ignore list contains given key or not
      */
     fun isIgnoreKey(key: String?): Boolean {
-        if (this.mIgnoreKeys == null) {
+        if (this.mIgnoreKeys.size > 0) {
             return false
         } else {
-            return mIgnoreKeys!!.contains(key)
+            return mIgnoreKeys.contains(key)
         }
     }
 
@@ -242,7 +242,7 @@ open class NCMBBase(){
                 mFields.put(ACCESS_CONTROL_LIST, acl.toJson())
             }
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
@@ -257,7 +257,7 @@ open class NCMBBase(){
         return try {
             NCMBAcl(mFields.getJSONObject(ACCESS_CONTROL_LIST))
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 }

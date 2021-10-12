@@ -16,7 +16,10 @@
 
 package com.nifcloud.mbaas.core
 
+import org.json.JSONException
 import org.json.JSONObject
+import java.net.URLEncoder
+
 
 /**
  * A class of ncmb_kotlin.
@@ -113,7 +116,7 @@ open class NCMBService {
         params: JSONObject,
         contentType: String,
         query: JSONObject,
-        callback: NCMBCallback?,
+        callback: NCMBCallback,
         handler: NCMBHandler
     ){
         if (NCMB.SESSION_TOKEN == null) {
@@ -137,4 +140,39 @@ open class NCMBService {
         val connection = NCMBConnection(request)
         connection.sendRequestAsynchronously(callback, handler)
     }
+
+    /**
+     * Send request in asynchronously
+     *
+     * @param params       Parameters
+     * @param callback     Callback
+     * @param handler     SDK Handler
+     */
+    fun sendRequestAsync(params: RequestParams,callback: NCMBCallback,handler: NCMBHandler ) {
+        return this.sendRequestAsync(
+            params.url,
+            params.method,
+            params.params,
+            params.contentType,
+            params.query,
+            callback,
+            handler
+        )
+    }
+
+    //クエリ用のURLに付ける文字列を作成
+    @Throws(NCMBException::class)
+    fun queryUrlStringGenerate(query:JSONObject): String {
+        val queryItemlist: MutableList<String> = mutableListOf()
+        for (key in query.keys()) {
+            try {
+                val value = query.get(key).toString()
+                queryItemlist.add("%s=%s".format(key, URLEncoder.encode(value, "utf-8")))
+            } catch (e: JSONException) {
+                throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+            }
+        }
+        return queryItemlist.joinToString(separator = "&")
+    }
+
 }
