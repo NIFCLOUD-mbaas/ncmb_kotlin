@@ -813,16 +813,6 @@ response:
 ---
 request:
     url: /2013-09-01/login
-    method: GET
-    body:
-        userName: "Ncmb Tarou"
-        password: dummyPassword
-response:
-    status: 200
-    file: valid_get_login_response.json
----
-request:
-    url: /2013-09-01/login
     query:
         mailAddress: "sample@example.com"
         password: dummyPassword

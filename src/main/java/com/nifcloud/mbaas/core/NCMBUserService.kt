@@ -25,7 +25,7 @@ import java.io.File
 /**
  * Service for user api
  */
-class NCMBUserService : NCMBService() {
+class NCMBUserService : NCMBObjectService() {
 
     /**
      * Status code of signup success
@@ -40,7 +40,7 @@ class NCMBUserService : NCMBService() {
     /**
      * service path for API category
      */
-    val SERVICE_PATH = "users"
+    override val SERVICE_PATH = "users"
 
     /**
      * Initialization
@@ -122,11 +122,12 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun logoutUser() {
+    fun logoutUser(logoutUser: NCMBUser) {
         val reqParams = logoutParams(null, null)
         val response = sendRequest(reqParams)
         // clear login informations
         clearCurrentUser()
+        logoutUser.sessionToken = null
         logoutCheckResponse(response)
     }
 
@@ -136,13 +137,14 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun logoutUserInBackground(logoutCallback: NCMBCallback) {
+    fun logoutUserInBackground(logoutUser: NCMBUser, logoutCallback: NCMBCallback) {
         val logoutHandler = NCMBHandler { logoutcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
                     // clear login informations
                     clearCurrentUser()
                     val responseData = logoutCheckResponse(response)
+                    logoutUser.sessionToken = null
                     val user = NCMBUser(responseData)
                     //loginCallback done to object
                     logoutCallback.done(null, user)
@@ -455,7 +457,7 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun postLoginProcess(responseData: JSONObject): NCMBUser {
+    fun postLoginProcess(responseData: JSONObject): NCMBUser {
         try {
             val result: JSONObject = responseData
             val userId = result.getString("objectId")
@@ -625,7 +627,6 @@ class NCMBUserService : NCMBService() {
         val response = sendRequest(reqParams)
         val responseData = deleteUserCheckResponse(response)
         deleteObject.reflectResponse(responseData)
-
         if (userId == NCMBUser().getCurrentUser().getObjectId()) {
             // unsignUp login informations
             clearCurrentUser()
