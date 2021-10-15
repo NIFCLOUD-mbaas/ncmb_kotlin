@@ -550,9 +550,9 @@ class NCMBInstallationService: NCMBService() {
         params: JSONObject,
         queryParams: JSONObject?,
         method: String,
-        signUpCallback: NCMBCallback?,
-        signUpHandler: NCMBHandler?
-    ): RequestParams {
+        signUpCallback: NCMBCallback,
+        signUpHandler: NCMBHandler
+    ): RequestParamsAsync {
 
         //url set
         val url: String = if (objectId != null) {
@@ -577,7 +577,7 @@ class NCMBInstallationService: NCMBService() {
 //        //type set
 //        reqParams.type = method
 
-        return RequestParams(
+        return RequestParamsAsync(
             url = url,
             method = method,
             params = params,

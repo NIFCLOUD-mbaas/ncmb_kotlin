@@ -82,7 +82,6 @@ class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className
         val method = NCMBRequest.HTTP_METHOD_POST
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val saveHandler = NCMBHandler { savecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -95,6 +94,7 @@ class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = saveCallback, handler = saveHandler).query
         sendRequestAsync(url, method, params, contentType, query, saveCallback, saveHandler)
     }
 
@@ -142,8 +142,6 @@ class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className + "/" + objectId;
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val params = RequestParams(url = url, method = method, contentType = contentType).params
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val fetchHandler = NCMBHandler{ fetchcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -156,6 +154,8 @@ class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val params = RequestParamsAsync(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).params
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).query
         sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
     }
 
@@ -205,7 +205,6 @@ class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className + "/" + objectId;
         val method = NCMBRequest.HTTP_METHOD_PUT
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val updateHandler = NCMBHandler { updatecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -218,6 +217,7 @@ class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = updateCallback, handler = updateHandler).query
         sendRequestAsync(url, method, params, contentType, query, updateCallback, updateHandler)
     }
 
@@ -265,8 +265,6 @@ class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className + "/" + objectId;
         val method = NCMBRequest.HTTP_METHOD_DELETE
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val params = RequestParams(url = url, method = method, contentType = contentType).params
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val deleteHandler = NCMBHandler{ deletecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -279,6 +277,8 @@ class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val params = RequestParamsAsync(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).params
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).query
         sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
     }
 }

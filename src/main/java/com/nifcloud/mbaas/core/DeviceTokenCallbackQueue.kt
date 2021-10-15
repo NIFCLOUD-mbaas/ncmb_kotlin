@@ -1,6 +1,7 @@
 package com.nifcloud.mbaas.core
 
-import java.util.*
+import java.util.Queue
+import java.util.LinkedList
 
 internal class DeviceTokenCallbackQueue private constructor() {
     private var queue: Queue<NCMBCallback>? = null

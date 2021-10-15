@@ -29,12 +29,13 @@ import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.*
+import java.util.Arrays
 
 /**
  * NCMBInstallation is used to retrieve and upload the installation data
  */
 class NCMBInstallation : NCMBObject {
+
     //region getter
     /**
      * Get application name
@@ -419,6 +420,7 @@ class NCMBInstallation : NCMBObject {
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
         )
+
         //endregion
         /**
          * Get current installation object
