@@ -65,7 +65,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_DoSearchInBackground_NoResult() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-        //TestClassクラスを検索するクエリを作成
+        //TestClassNoDataクラスを検索するクエリを作成
         val query = NCMBQuery<NCMBObject>("TestClassNoData")
         val callback = NCMBCallback { e, objects ->
             inBackgroundHelper["e"] = e
@@ -117,6 +117,32 @@ class NCMBQueryTest {
         Assert.assertEquals(
             (objects[0] as NCMBObject).getObjectId(),
             "8FgKqFlH8dZRDrBJ"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_DoSearchSync_NoResult() {
+        //TestClassNoDataクラスを検索するクエリを作成
+        val query = NCMBQuery<NCMBObject>("TestClassNoData")
+        val objects = query.find()
+        Assert.assertEquals(
+            0,
+            objects.size
+        )
+    }
+
+    @Test
+    fun testNCMBObject_DoSearchSync_NoSearchCondition_TwoResults() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery<NCMBObject>("TestClass")
+        val objects = query.find()
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
         )
     }
 
