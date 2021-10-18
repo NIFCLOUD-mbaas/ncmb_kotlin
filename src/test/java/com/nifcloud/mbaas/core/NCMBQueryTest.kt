@@ -108,4 +108,16 @@ class NCMBQueryTest {
         )
     }
 
+    @Test
+    fun testNCMBObject_DoSearchSync_Equal_OneResult() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery<NCMBObject>("TestClass")
+        query.whereEqualTo("key", "value");
+        val objects = query.find()
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+    }
+
 }

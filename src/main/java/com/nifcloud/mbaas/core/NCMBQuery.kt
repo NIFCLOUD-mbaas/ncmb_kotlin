@@ -30,21 +30,21 @@ import java.util.Date
 class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
     private var mWhereConditions: JSONObject = JSONObject()
 
-//    /**　TODO
-//     * search data from NIFCLOUD mobile backend
-//     * @return NCMBObject(include extend class) list of search result
-//     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
-//     */
-//    @Throws(NCMBException::class)
-//    fun find(): List<T> {
-//        return if (mClassName == "user") {
+    /**　TODO
+     * search data from NIFCLOUD mobile backend
+     * @return NCMBObject(include extend class) list of search result
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun find(): List<Any> {
+//        TODO
+//        if (mClassName == "user") {
 //            val userServ = NCMBUserService()
 //            userServ.findUser(conditions) as List<T>
-//        } else {
-//            val objServ = NCMBObjectService()
-//            objServ.findObject(mClassName, conditions)
-//        //}
-//    }
+//        } else
+        val objServ = NCMBObjectService()
+        return objServ.findObjects(mClassName, query)
+    }
 
     /**
      * search data from NIFCLOUD mobile backend asynchronously
