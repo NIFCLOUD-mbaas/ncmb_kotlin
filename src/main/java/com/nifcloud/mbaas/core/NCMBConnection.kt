@@ -78,26 +78,16 @@ class NCMBConnection(request: NCMBRequest) {
                 val client = OkHttpClient()
                 val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
-                println("Request Info:")
+                println("Request Info (Sync):")
                 println(ncmbRequest.params.toString())
                 println(ncmbRequest.url)
                 println(headers)
                 println(ncmbRequest.query)
 
                 val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
-                val url = Uri.parse(ncmbRequest.url)
-                    .buildUpon()
-
-                for (key in ncmbRequest.query.keys()){
-                    val value = ncmbRequest.query.get(key) as String
-                    val valueConverted = URLEncoder.encode(value, "utf-8") //Encode for URL
-                    url.appendQueryParameter(key, valueConverted)
-                }
-                url.build()
-
                 var request: Request
                 synchronized(lock) {
-                    request = request(ncmbRequest.method, URL(url.toString()), headers, body)
+                    request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
                 }
                 val response = client.newCall(request).execute()
                 ncmbResponse = NCMBResponseBuilder.build(response)
@@ -118,7 +108,7 @@ class NCMBConnection(request: NCMBRequest) {
         val client = OkHttpClient()
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
-        println("Request Info:")
+        println("Request Info(Async):")
         println(ncmbRequest.params.toString())
         println(ncmbRequest.url)
         println(headers)
