@@ -86,6 +86,25 @@ class NCMBErrorInstallationTest {
 
     @Test
     @Throws(Exception::class)
+    fun saveInBackground_post_duplicate_deviceToken() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //post
+        val installation = NCMBInstallation()
+        installation.deviceToken = "duplicateDeviceToken"
+        inBackgroundHelper.start()
+        val callback = NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val throwable = assertFails { installation.saveInBackground(callback)}
+        inBackgroundHelper.await()
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals("deviceToken is duplication.", throwable.message)
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun saveInBackground_put() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //post

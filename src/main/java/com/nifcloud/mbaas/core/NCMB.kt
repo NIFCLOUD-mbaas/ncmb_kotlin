@@ -110,8 +110,6 @@ class NCMB {
             API_BASE_URL = "$DOMAINURL$APIVERSION/"
             TIMEOUT = DEFAULT_API_TIMEOUT
             CURRENT_CONTEXT = context
-
-            //NCMBInstallationUtils.saveInstallation(installationCustomFields);
         }
 
         /**
