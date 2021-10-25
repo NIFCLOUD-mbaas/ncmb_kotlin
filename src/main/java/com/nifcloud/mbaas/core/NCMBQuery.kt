@@ -30,6 +30,7 @@ import java.util.Date
 class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
     private var mWhereConditions: JSONObject = JSONObject()
 
+
     /**　TODO
      * search data from NIFCLOUD mobile backend
      * @return NCMBObject(include extend class) list of search result
@@ -37,13 +38,15 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      */
     @Throws(NCMBException::class)
     fun find(): List<T> {
-//        TODO
-//        if (mClassName == "user") {
-//            val userServ = NCMBUserService()
-//            userServ.findUser(conditions) as List<T>
-//        } else
-        val objServ = NCMBObjectService()
-        return objServ.findObjects(mClassName, query) as List<T>
+        when (mClassName) {
+//TODO
+//          "user" -> {
+//                return NCMBUser.getServiceInstance().findObjects(mClassName, query) as List<T>
+//            }
+            else -> {
+                return NCMBObject.getServiceInstance().findObjects(mClassName, query) as List<T>
+            }
+        }
     }
 
     /**
@@ -53,16 +56,14 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
     fun findInBackground(findCallback: NCMBCallback) {
         if (mClassName == "user") {
               //TODO
-//            val userServ = NCMBUserService()
-//            userServ.findUserInBackground(conditions, object : SearchUserCallback() {
+//            NCMBUser.getServiceInstance().findUserInBackground(conditions, object : SearchUserCallback() {
 //                fun done(users: ArrayList<NCMBUser>?, e: NCMBException?) {
 //                    callback.done(users as List<T>?, e)
 //                }
 //            })
         } else {
             //データストアの検索
-            val objService = NCMBObjectService()
-            objService.findObjectsInBackground(
+            NCMBObject.getServiceInstance().findObjectsInBackground(
                 mClassName,
                 query,
                 findCallback)
@@ -114,5 +115,6 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
     init {
         mWhereConditions = JSONObject()
     }
+
 }
 

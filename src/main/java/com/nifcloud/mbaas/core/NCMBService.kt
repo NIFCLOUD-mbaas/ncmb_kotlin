@@ -175,4 +175,5 @@ open class NCMBService {
         return queryItemlist.joinToString(separator = "&")
     }
 
+
 }

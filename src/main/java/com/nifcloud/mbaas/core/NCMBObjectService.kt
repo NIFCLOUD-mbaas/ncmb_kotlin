@@ -294,7 +294,7 @@ class NCMBObjectService() : NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun findObjects(className: String, query: JSONObject): List<Any> {
+    fun findObjects(className: String, query: JSONObject): List<NCMBObject> {
         //return emptyList()
         var listObj = listOf<NCMBObject>()
         val reqParam = findObjectParams(className, query)

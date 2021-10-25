@@ -418,4 +418,10 @@ open class NCMBUser: NCMBObject {
         val objService = NCMBUserService()
         objService.logoutUser()
     }
+
+    companion object {
+        fun getServiceInstance(): NCMBUserService {
+            return NCMBUserService()
+        }
+    }
 }

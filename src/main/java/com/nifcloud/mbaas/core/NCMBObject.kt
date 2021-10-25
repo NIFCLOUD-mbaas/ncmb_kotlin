@@ -204,4 +204,10 @@ open class NCMBObject : NCMBBase {
             deleteCallback.done(ex)
         }
     }
+
+    companion object {
+        fun getServiceInstance(): NCMBObjectService {
+            return NCMBObjectService()
+        }
+    }
 }
