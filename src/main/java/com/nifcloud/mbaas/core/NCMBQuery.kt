@@ -36,14 +36,14 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun find(): List<Any> {
+    fun find(): List<T> {
 //        TODO
 //        if (mClassName == "user") {
 //            val userServ = NCMBUserService()
 //            userServ.findUser(conditions) as List<T>
 //        } else
         val objServ = NCMBObjectService()
-        return objServ.findObjects(mClassName, query)
+        return objServ.findObjects(mClassName, query) as List<T>
     }
 
     /**
