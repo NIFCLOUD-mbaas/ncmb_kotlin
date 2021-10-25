@@ -303,6 +303,9 @@ class NCMBObjectService() : NCMBService() {
             is NCMBResponse.Success -> {
                 listObj = createSearchResponseList(className, response.data)
             }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
         }
         return listObj
     }
