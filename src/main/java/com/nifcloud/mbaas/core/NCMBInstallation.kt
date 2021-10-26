@@ -102,7 +102,7 @@ class NCMBInstallation : NCMBObject {
      *
      * @param value applicationName
      */
-    var badge: Int
+    var badge: Int?
         get() {
             return try {
                 if (mFields.isNull(BADGE)) {
@@ -159,11 +159,11 @@ class NCMBInstallation : NCMBObject {
      *
      * @param value device type
      */
-    var deviceType: String?
+    var deviceType: String
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TYPE)) {
-                    null
+                    ""
                 } else mFields.getString(DEVICE_TYPE)
             } catch (error: JSONException) {
                 throw IllegalArgumentException(error.message)
@@ -187,15 +187,11 @@ class NCMBInstallation : NCMBObject {
      *
      * @param value device token
      */
-    @get:Deprecated(
-        """replaced by {@link #getDeviceTokenInBackground}
-      """
-    )
-    var deviceToken: String?
+    var deviceToken: String
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TOKEN)) {
-                    null
+                    ""
                 } else mFields.getString(DEVICE_TOKEN)
             } catch (error: JSONException) {
                 throw IllegalArgumentException(error.message)
@@ -319,32 +315,10 @@ class NCMBInstallation : NCMBObject {
     }
     // endregion
     //region save
-    /**
-     * Save installation object
-     *
-     * @throws NCMBException exception from NIFCLOUD mobile backend
-     */
-    @Throws(NCMBException::class)
-    fun saveInstallation() {
-        //connect
-        val installationService = NCMBInstallationService()
-        val responseData: JSONObject
-        if (getObjectId() == null) {
-            //new create
-            //responseData = installationService.createInstallation(localDeviceToken, mFields)
-        } else {
-            //update
-            var updateJson: JSONObject? = null
-            updateJson = try {
-                createUpdateJsonData()
-            } catch (e: JSONException) {
-                throw IllegalArgumentException(e.message)
-            }
-            //responseData = installationService.updateInstallation(getObjectId(), updateJson)
-        }
-        //localData = responseData
-        mUpdateKeys.clear()
-    }
+    //todo
+//    @Throws(NCMBException::class)
+//    fun saveInstallation() {
+//    }
 
     /**
      * Save installation object inBackground
@@ -352,29 +326,31 @@ class NCMBInstallation : NCMBObject {
      * @param callback DoneCallback
      */
     override fun saveInBackground(saveCallback: NCMBCallback) {
-
         //connect
         val installationService = NCMBInstallationService()
-        if (getObjectId() == null) {
-            //new create
-            installationService.saveInstallationInBackground(
-                this,
-                localDeviceToken,
-                this.mFields,
-                saveCallback
-            )
+        val objectId = getObjectId()
+        if (objectId == null) {
+            val deviceToken = localDeviceToken
+            if(deviceToken != null) {
+                //new create
+                installationService.saveInstallationInBackground(
+                    this,
+                    deviceToken,
+                    this.mFields,
+                    saveCallback
+                )
+            }
         } else {
             try {
                 //update
-                var updateJson: JSONObject? = null
-                updateJson = try {
+                val updateJson = try {
                     createUpdateJsonData()
                 } catch (e: JSONException) {
                     throw IllegalArgumentException(e.message)
                 }
                 installationService.updateInstallationInBackground(
                     this,
-                    getObjectId(),
+                    objectId,
                     updateJson,
                     saveCallback
                 )
@@ -382,7 +358,7 @@ class NCMBInstallation : NCMBObject {
                 saveCallback.done(
                     NCMBException(
                         NCMBException.INVALID_JSON,
-                        e.message!!
+                        e.localizedMessage!!
                     )
                 )
             }

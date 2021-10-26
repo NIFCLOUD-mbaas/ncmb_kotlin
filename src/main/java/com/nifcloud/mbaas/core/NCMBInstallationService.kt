@@ -114,13 +114,10 @@ class NCMBInstallationService: NCMBService() {
      */
     fun saveInstallationInBackground(
         installationObject: NCMBObject,
-        registrationId: String?,
+        registrationId: String,
         params: JSONObject,
         callback: NCMBCallback
     ) {
-        //null check
-        val argumentParams = argumentNullCheckForPOST(registrationId, params)
-
         //set installation data
         try {
             //set registrationId
@@ -137,7 +134,7 @@ class NCMBInstallationService: NCMBService() {
             when (response) {
                 is NCMBResponse.Success -> {
                     try {
-                        writeCurrentInstallation(argumentParams, response.data)
+                        writeCurrentInstallation(params, response.data)
                     } catch (e: NCMBException) {
                         throw e
                     }
@@ -167,13 +164,10 @@ class NCMBInstallationService: NCMBService() {
      */
     fun updateInstallationInBackground(
         installationObject: NCMBObject,
-        objectId: String?,
+        objectId: String,
         params: JSONObject,
         callback: NCMBCallback
     ) {
-            //null check
-            val argumentParams = argumentNullCheckForPOST(objectId, params)
-
             //set installation data
             try {
                 //set basic data
@@ -188,7 +182,7 @@ class NCMBInstallationService: NCMBService() {
             when (response) {
                 is NCMBResponse.Success -> {
                     try {
-                        writeCurrentInstallation(argumentParams, response.data)
+                        writeCurrentInstallation(params, response.data)
                     } catch (e: NCMBException) {
                         throw e
                     }
@@ -299,24 +293,24 @@ class NCMBInstallationService: NCMBService() {
             handler = installationHandler
         )
     }
-        /**
-         * Argument checking of POST
-         *
-         * @param registrationId registration id
-         * @param params         installation parameters
-         * @throws NCMBException
-         */
-    @Throws(NCMBException::class)
-    fun argumentNullCheckForPOST(registrationId: String?, params: JSONObject?): JSONObject {
-        var params = params
-        if (registrationId == null) {
-            throw NCMBException(IllegalArgumentException("registrationId is must not be null."))
-        }
-        if (params == null) {
-            params = JSONObject()
-        }
-        return params
-    }
+//        /**
+//         * Argument checking of POST
+//         *
+//         * @param registrationId registration id
+//         * @param params         installation parameters
+//         * @throws NCMBException
+//         */
+//    @Throws(NCMBException::class)
+//    fun argumentNullCheckForPOST(registrationId: String?, params: JSONObject?): JSONObject {
+//        var params = params
+//        if (registrationId == null) {
+//            throw NCMBException(IllegalArgumentException("registrationId is must not be null."))
+//        }
+//        if (params == null) {
+//            params = JSONObject()
+//        }
+//        return params
+//    }
 
         /**
          * Argument checking of PUT
