@@ -146,7 +146,7 @@ class NCMBInstallationService: NCMBService() {
                 }
             }
         }
-        val request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST,callback, installationHandler)
+        val request = createRequestParams(null, params, NCMBRequest.HTTP_METHOD_POST,callback, installationHandler)
         sendRequestAsync(request)
     }
 
@@ -168,15 +168,15 @@ class NCMBInstallationService: NCMBService() {
         params: JSONObject,
         callback: NCMBCallback
     ) {
-            //set installation data
-            try {
-                //set basic data
-                setInstallationBasicData(params)
-            } catch (e: JSONException) {
-                throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
-            } catch (e: PackageManager.NameNotFoundException) {
-                throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
-            }
+        //set installation data
+        try {
+            //set basic data
+            setInstallationBasicData(params)
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
+        } catch (e: PackageManager.NameNotFoundException) {
+            throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
+        }
 
         val installationHandler = NCMBHandler { installationcallback, response ->
             when (response) {
@@ -196,7 +196,7 @@ class NCMBInstallationService: NCMBService() {
                 }
             }
         }
-        val request = createRequestParams(objectId, params, null, NCMBRequest.HTTP_METHOD_PUT,callback, installationHandler)
+        val request = createRequestParams(objectId, params, NCMBRequest.HTTP_METHOD_PUT, callback, installationHandler)
         sendRequestAsync(request)
     }
 
@@ -254,7 +254,6 @@ class NCMBInstallationService: NCMBService() {
     fun createRequestParams(
         objectId: String?,
         params: JSONObject,
-        queryParams: JSONObject?,
         method: String,
         installationCallback: NCMBCallback,
         installationHandler: NCMBHandler
@@ -270,65 +269,14 @@ class NCMBInstallationService: NCMBService() {
         }
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
 
-//        //content set
-//        if (params != null) {
-//            reqParams.content = params.toString()
-//        }
-        var query = JSONObject()
-        if (queryParams == null && method == NCMBRequest.HTTP_METHOD_GET) {
-            if (queryParams != null && method == NCMBRequest.HTTP_METHOD_GET) {
-                query = queryParams
-            }
-        }
-//        //type set
-//        reqParams.type = method
-
         return RequestParamsAsync(
             url = url,
             method = method,
             params = params,
-            query = query,
             contentType = contentType,
             callback = installationCallback,
             handler = installationHandler
         )
-    }
-//        /**
-//         * Argument checking of POST
-//         *
-//         * @param registrationId registration id
-//         * @param params         installation parameters
-//         * @throws NCMBException
-//         */
-//    @Throws(NCMBException::class)
-//    fun argumentNullCheckForPOST(registrationId: String?, params: JSONObject?): JSONObject {
-//        var params = params
-//        if (registrationId == null) {
-//            throw NCMBException(IllegalArgumentException("registrationId is must not be null."))
-//        }
-//        if (params == null) {
-//            params = JSONObject()
-//        }
-//        return params
-//    }
-
-        /**
-         * Argument checking of PUT
-         *
-         * @param objectId objectId
-         * @param params   installation parameters
-         * @throws NCMBException
-         */
-    @Throws(NCMBException::class)
-    fun argumentNullCheckForPUT(objectId: String?, params: JSONObject?): JSONObject {
-        var params = params
-        if (objectId == null) {
-            throw NCMBException(IllegalArgumentException("objectId is must not be null."))
-        }
-        if (params == null) {
-            params = JSONObject()
-        }
-        return params
     }
 
     //Todo
@@ -349,7 +297,7 @@ class NCMBInstallationService: NCMBService() {
 
         //merge params to the currentData
         val currentInstallation = NCMBInstallation.getCurrentInstallation()
-        val currentData = currentInstallation!!.localData
+        val currentData = currentInstallation.localData
         mergeJSONObject(currentData, params)
 
         //write file

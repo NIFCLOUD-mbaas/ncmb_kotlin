@@ -26,7 +26,6 @@ import android.util.Log
 import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
 import com.nifcloud.mbaas.core.NCMBLocalFile.create
 import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.Arrays
@@ -340,6 +339,9 @@ class NCMBInstallation : NCMBObject {
                     saveCallback
                 )
             }
+            else {
+                throw NCMBException(IllegalArgumentException("registrationId is must not be null."));
+            }
         } else {
             try {
                 //update
@@ -356,10 +358,7 @@ class NCMBInstallation : NCMBObject {
                 )
             } catch (e: JSONException) {
                 saveCallback.done(
-                    NCMBException(
-                        NCMBException.INVALID_JSON,
-                        e.localizedMessage!!
-                    )
+                    NCMBException(e)
                 )
             }
         }
@@ -413,8 +412,7 @@ class NCMBInstallation : NCMBObject {
          * @return NCMBInstallation object that is created from data that is saved to local file.<br></br>
          * If local file is not available, it returns empty NCMBInstallation object
          */
-
-        fun getCurrentInstallation(): NCMBInstallation? {
+        fun getCurrentInstallation(): NCMBInstallation {
             //null check
             checkNCMBContext()
             try {
@@ -432,7 +430,7 @@ class NCMBInstallation : NCMBObject {
             } catch (error: Exception) {
                 Log.e("Error", error.toString())
             }
-            return installation
+            return installation as NCMBInstallation
         }
     }
 }

@@ -29,14 +29,20 @@ response:
 request:
     url: /2013-09-01/installations
     method: POST
+response:
+    status: 409
+    file: valid_post_devicetoken_duplicate_error_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
     body:
         deviceToken: "duplicateDeviceToken"
         deviceType: "android"
-        applicationName: "ncmb-core"
-        appVersion: "1.0"
-        sdkVersion: "3.0.4"
-        timeZone: "Asia/Tokyo"
+        applicationName: "ncmb_kotlin"
+        sdkVersion: "0.1.1"
+        timeZone: "Asia\/Tokyo"
         pushType: "fcm"
 response:
-    status: 201
+    status: 409
     file: valid_post_devicetoken_duplicate_error_response.json

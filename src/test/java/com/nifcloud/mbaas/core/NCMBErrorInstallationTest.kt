@@ -17,9 +17,7 @@
 package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
-import kotlinx.coroutines.flow.callbackFlow
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
 import org.junit.Before
@@ -27,16 +25,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowLooper
-import java.lang.AssertionError
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.test.assertFails
-import kotlin.test.assertFailsWith
 
 /**
  * 主に通信を行う自動化テストクラス
@@ -46,13 +38,14 @@ import kotlin.test.assertFailsWith
 class NCMBErrorInstallationTest {
 
     private var mServer: MockWebServer = MockWebServer()
-    private var callbackFlag = false
+    //Todo background method
+    //private var callbackFlag = false
 
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        val ncmbDispatcher = NCMBDispatcher()
+        var ncmbDispatcher = NCMBErrorDispatcher()
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -62,8 +55,7 @@ class NCMBErrorInstallationTest {
             mServer.url("/").toString(),
             "2013-09-01"
         )
-
-        callbackFlag = false;
+        //Todo background method
     }
 
     @Test
@@ -83,49 +75,25 @@ class NCMBErrorInstallationTest {
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals("registrationId is must not be null.", throwable.message)
     }
-
-    @Test
-    @Throws(Exception::class)
-    fun saveInBackground_post_duplicate_deviceToken() {
-        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-        //post
-        val installation = NCMBInstallation()
-        installation.deviceToken = "duplicateDeviceToken"
-        inBackgroundHelper.start()
-        val callback = NCMBCallback { e, ncmbObj ->
-            inBackgroundHelper["e"] = e
-            inBackgroundHelper["ncmbObj"] = ncmbObj
-            inBackgroundHelper.release() // ブロックをリリース
-        }
-        val throwable = assertFails { installation.saveInBackground(callback)}
-        inBackgroundHelper.await()
-        Assert.assertNull(inBackgroundHelper["e"])
-        Assert.assertEquals("deviceToken is duplication.", throwable.message)
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun saveInBackground_put() {
-        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-        //post
-        val installation = NCMBInstallation()
-        installation.deviceToken = "xxxxxxxxxxxxxxxxxxx"
-        installation.put("key", "value1")
-        inBackgroundHelper.start()
-        installation.saveInBackground(NCMBCallback { e, ncmbObj ->
-            inBackgroundHelper["e"] = e
-            inBackgroundHelper["ncmbObj"] = ncmbObj
-            inBackgroundHelper.release() // ブロックをリリース
-        })
-        inBackgroundHelper.await()
-        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
-        Assert.assertNull(inBackgroundHelper["e"])
-        //check
-        Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.localDeviceToken)
-        Assert.assertEquals("value1", installation.getString("key"))
-        val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
-        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
-        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
-    }
+//Todo duplicate deviceToken
+    
+//    @Test
+//    @Throws(Exception::class)
+//    fun saveInBackground_post_duplicate_deviceToken() {
+//        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+//        //post
+//        val installation = NCMBInstallation()
+//        installation.deviceToken = "duplicateDeviceToken"
+//        inBackgroundHelper.start()
+//        val callback = NCMBCallback { e, ncmbObj ->
+//            inBackgroundHelper["e"] = e
+//            inBackgroundHelper["ncmbObj"] = ncmbObj
+//            inBackgroundHelper.release() // ブロックをリリース
+//        }
+//        val throwable = assertFails { installation.saveInBackground(callback)}
+//        installation.saveInBackground(callback)
+//        inBackgroundHelper.await()
+//        Assert.assertNull(inBackgroundHelper["e"])
+//        Assert.assertEquals("Duplication Error.", throwable.message)
+//    }
 }
