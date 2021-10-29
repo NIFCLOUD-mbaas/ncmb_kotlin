@@ -75,25 +75,22 @@ class NCMBErrorInstallationTest {
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals("registrationId is must not be null.", throwable.message)
     }
-//Todo duplicate deviceToken
-    
-//    @Test
-//    @Throws(Exception::class)
-//    fun saveInBackground_post_duplicate_deviceToken() {
-//        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-//        //post
-//        val installation = NCMBInstallation()
-//        installation.deviceToken = "duplicateDeviceToken"
-//        inBackgroundHelper.start()
-//        val callback = NCMBCallback { e, ncmbObj ->
-//            inBackgroundHelper["e"] = e
-//            inBackgroundHelper["ncmbObj"] = ncmbObj
-//            inBackgroundHelper.release() // ブロックをリリース
-//        }
-//        val throwable = assertFails { installation.saveInBackground(callback)}
-//        installation.saveInBackground(callback)
-//        inBackgroundHelper.await()
-//        Assert.assertNull(inBackgroundHelper["e"])
-//        Assert.assertEquals("Duplication Error.", throwable.message)
-//    }
+
+    @Test
+    @Throws(Exception::class)
+    fun saveInBackground_post_duplicate_deviceToken() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //post
+        val installation = NCMBInstallation()
+        installation.deviceToken = "duplicateDeviceToken"
+        inBackgroundHelper.start()
+        val callback = NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        installation.saveInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertEquals("Duplication Error.", (inBackgroundHelper["e"] as NCMBException).message)
+    }
 }
