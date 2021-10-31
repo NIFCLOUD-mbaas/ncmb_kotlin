@@ -1,5 +1,9 @@
 package com.nifcloud.mbaas.core;
 
+import org.json.JSONException
+import org.json.JSONObject
+
+
 class NCMBGeoPoint {
 
     var mlatitude: Double
@@ -21,6 +25,25 @@ class NCMBGeoPoint {
             )
         }
         return Pair(latitude, longitude)
+    }
+
+    /**
+     * put Location value to given key
+     *
+     * @param key   field name for put the value
+     * @param value value to put
+     */
+    @Throws(NCMBException::class)
+    fun put(key: String, value: NCMBGeoPoint) {
+        try {
+            val locationJson = JSONObject("{'__type':'GeoPoint'}")
+            locationJson.put("longitude", value.mlongitude)
+            locationJson.put("latitude", value.mlatitude)
+            NCMBBase().mFields.put(key, locationJson)
+            NCMBBase().mUpdateKeys.add(key)
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
+        }
     }
 
     constructor(latitude: Double = 0.0, longitude: Double = 0.0) {
