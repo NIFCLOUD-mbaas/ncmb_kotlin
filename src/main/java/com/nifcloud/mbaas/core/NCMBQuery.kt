@@ -45,7 +45,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     @Throws(NCMBException::class)
     fun find(): List<T> {
-        return service.findObjects(mClassName, query)
+        return service.find(mClassName, query)
     }
 
     /**
@@ -53,7 +53,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      * @param callback executed callback after data search
      */
     fun findInBackground(findCallback: NCMBCallback) {
-        service.findObjectsInBackground(mClassName, query, findCallback)
+        service.findInBackground(mClassName, query, findCallback)
     }
 
     /**

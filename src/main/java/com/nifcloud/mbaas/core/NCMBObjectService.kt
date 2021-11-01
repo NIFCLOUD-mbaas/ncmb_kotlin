@@ -294,7 +294,7 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun findObjects(className: String, query: JSONObject): List<NCMBObject> {
+    override fun find(className: String, query: JSONObject): List<NCMBObject> {
         //return emptyList()
         var listObj = listOf<NCMBObject>()
         val reqParam = findObjectParams(className, query)
@@ -316,7 +316,7 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
      * @param query JSONObject of search conditions
      * @param callback callback for after object search
      */
-    override fun findObjectsInBackground(
+    override fun findInBackground(
         className: String,
         query: JSONObject,
         findCallback: NCMBCallback
