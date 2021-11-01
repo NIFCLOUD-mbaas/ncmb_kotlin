@@ -66,7 +66,7 @@ class NCMBErrorQueryTest {
     @Throws(Exception::class)
     fun testNCMBObject_DoSearchSync_503error() {
         //TestClassクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClass503")
+        val query = NCMBQuery.forObject("TestClass503")
         val throwable = assertFails{ val objects = query.find() }
         Assert.assertEquals("Service unavailable.",throwable.message)
     }
@@ -75,7 +75,7 @@ class NCMBErrorQueryTest {
     @Throws(Exception::class)
     fun testNCMBObject_DoSearchSync_500error() {
         //TestClassクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClass500")
+        val query = NCMBQuery.forObject("TestClass500")
         val throwable = assertFails{ val objects = query.find() }
         Assert.assertEquals("System error.",throwable.message)
     }
@@ -84,7 +84,7 @@ class NCMBErrorQueryTest {
     @Throws(Exception::class)
     fun testNCMBObject_DoSearchSync_429error() {
         //TestClassクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClass429")
+        val query = NCMBQuery.forObject("TestClass429")
         val throwable = assertFails{ val objects = query.find() }
         Assert.assertEquals("Too many requests.",throwable.message)
     }

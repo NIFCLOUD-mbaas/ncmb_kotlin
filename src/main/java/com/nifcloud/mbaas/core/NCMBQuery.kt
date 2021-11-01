@@ -27,8 +27,15 @@ import java.util.Date
  * NCMBQuery is used to search data from NIFCLOUD mobile backend
  */
 
-class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
+//プライベートコンストラクターとしてcompanion object内にあるfor〇〇メソッドを用いて、インスタンスを取得する
+class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val service:NCMBServiceInterface<T>){
     private var mWhereConditions: JSONObject = JSONObject()
+
+    companion object {
+        fun forObject(className: String): NCMBQuery<NCMBObject> {
+            return NCMBQuery<NCMBObject>(className, NCMBObjectService())
+        }
+    }
 
 
     /**　TODO
@@ -38,15 +45,7 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      */
     @Throws(NCMBException::class)
     fun find(): List<T> {
-        when (mClassName) {
-//TODO
-//          "user" -> {
-//                return NCMBUser.getServiceInstance().findObjects(mClassName, query) as List<T>
-//            }
-            else -> {
-                return NCMBObject.getServiceInstance().findObjects(mClassName, query) as List<T>
-            }
-        }
+        return service.findObjects(mClassName, query)
     }
 
     /**
@@ -54,20 +53,7 @@ class NCMBQuery<T : NCMBBase?>(private val mClassName: String) {
      * @param callback executed callback after data search
      */
     fun findInBackground(findCallback: NCMBCallback) {
-        if (mClassName == "user") {
-              //TODO
-//            NCMBUser.getServiceInstance().findUserInBackground(conditions, object : SearchUserCallback() {
-//                fun done(users: ArrayList<NCMBUser>?, e: NCMBException?) {
-//                    callback.done(users as List<T>?, e)
-//                }
-//            })
-        } else {
-            //データストアの検索
-            NCMBObject.getServiceInstance().findObjectsInBackground(
-                mClassName,
-                query,
-                findCallback)
-        }
+        service.findObjectsInBackground(mClassName, query, findCallback)
     }
 
     /**

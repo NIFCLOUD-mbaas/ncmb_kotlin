@@ -205,9 +205,4 @@ open class NCMBObject : NCMBBase {
         }
     }
 
-    companion object {
-        fun getServiceInstance(): NCMBObjectService {
-            return NCMBObjectService()
-        }
-    }
 }

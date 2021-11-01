@@ -27,7 +27,7 @@ import org.json.JSONObject
  * SDK handler is also set here.
  *
  */
-class NCMBObjectService() : NCMBService() {
+class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
     val SERVICE_PATH = "classes/"
 
     /**
@@ -294,7 +294,7 @@ class NCMBObjectService() : NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun findObjects(className: String, query: JSONObject): List<NCMBObject> {
+    override fun findObjects(className: String, query: JSONObject): List<NCMBObject> {
         //return emptyList()
         var listObj = listOf<NCMBObject>()
         val reqParam = findObjectParams(className, query)
@@ -316,7 +316,7 @@ class NCMBObjectService() : NCMBService() {
      * @param query JSONObject of search conditions
      * @param callback callback for after object search
      */
-    fun findObjectsInBackground(
+    override fun findObjectsInBackground(
         className: String,
         query: JSONObject,
         findCallback: NCMBCallback

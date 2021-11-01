@@ -44,7 +44,7 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchInBackground_Equal_OneResult() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClass")
+        val query = NCMBQuery.forObject("TestClass")
         query.whereEqualTo("key", "value");
         val callback = NCMBCallback { e, objects ->
             inBackgroundHelper["e"] = e
@@ -66,7 +66,7 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchInBackground_NoResult() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassNoDataクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClassNoData")
+        val query = NCMBQuery.forObject("TestClassNoData")
         val callback = NCMBCallback { e, objects ->
             inBackgroundHelper["e"] = e
             inBackgroundHelper["objects"] = objects
@@ -87,7 +87,7 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchInBackground_NoSearchCondition_TwoResults() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClass")
+        val query = NCMBQuery.forObject("TestClass")
         val callback = NCMBCallback { e, objects ->
             inBackgroundHelper["e"] = e
             inBackgroundHelper["objects"] = objects
@@ -111,7 +111,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_DoSearchSync_Equal_OneResult() {
         //TestClassクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClass")
+        val query = NCMBQuery.forObject("TestClass")
         query.whereEqualTo("key", "value");
         val objects = query.find()
         Assert.assertEquals(
@@ -123,7 +123,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_DoSearchSync_NoResult() {
         //TestClassNoDataクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClassNoData")
+        val query = NCMBQuery.forObject("TestClassNoData")
         val objects = query.find()
         Assert.assertEquals(
             0,
@@ -134,7 +134,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_DoSearchSync_NoSearchCondition_TwoResults() {
         //TestClassクラスを検索するクエリを作成
-        val query = NCMBQuery<NCMBObject>("TestClass")
+        val query = NCMBQuery.forObject("TestClass")
         val objects = query.find()
         Assert.assertEquals(
             (objects[0] as NCMBObject).getObjectId(),
