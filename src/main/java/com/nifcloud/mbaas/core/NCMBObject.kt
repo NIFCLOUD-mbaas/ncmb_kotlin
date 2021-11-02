@@ -204,4 +204,5 @@ open class NCMBObject : NCMBBase {
             deleteCallback.done(ex)
         }
     }
+
 }

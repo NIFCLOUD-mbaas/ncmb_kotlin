@@ -27,7 +27,7 @@ import org.json.JSONObject
  * SDK handler is also set here.
  *
  */
-class NCMBObjectService() : NCMBService() {
+class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
     val SERVICE_PATH = "classes/"
 
     /**
@@ -286,24 +286,37 @@ class NCMBObjectService() : NCMBService() {
     }
 
 
-//    /**　TODO:
-//     * Searching JSONObject data from NIFCLOUD mobile backend
-//     * @param className Datastore class name which to search the object
-//     * @param conditions JSONObject of search conditions
-//     * @return List of NCMBObject of search results
-//     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
-//     */
-//    @Throws(NCMBException::class)
-//    fun findObjects(className: String, conditions: JSONObject?): List<*>? {
-//    }
-//
+    /**　
+     * Searching JSONObject data from NIFCLOUD mobile backend
+     * @param className Datastore class name which to search the object
+     * @param query JSONObject of search conditions
+     * @return List of NCMBObject of search results
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun find(className: String, query: JSONObject): List<NCMBObject> {
+        //return emptyList()
+        var listObj = listOf<NCMBObject>()
+        val reqParam = findObjectParams(className, query)
+        val response = sendRequest(reqParam)
+        when (response) {
+            is NCMBResponse.Success -> {
+                listObj = createSearchResponseList(className, response.data)
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+        return listObj
+    }
+
     /**
      * Searching JSONObject data to NIFCLOUD mobile backend in background thread
      * @param className Datastore class name which to search the object
      * @param query JSONObject of search conditions
      * @param callback callback for after object search
      */
-    fun findObjectsInBackground(
+    override fun findInBackground(
         className: String,
         query: JSONObject,
         findCallback: NCMBCallback
