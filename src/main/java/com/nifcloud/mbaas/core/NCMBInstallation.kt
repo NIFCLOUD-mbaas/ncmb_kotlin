@@ -52,14 +52,14 @@ class NCMBInstallation : NCMBObject {
                 null
             } else mFields.getString(APPLICATION_NAME)
         } catch (e: JSONException) {
-            throw IllegalArgumentException(e.message)
+            throw NCMBException(IllegalArgumentException(e.message))
         }
         set(value) {
             try {
                 mFields.put(APPLICATION_NAME, value)
                 mUpdateKeys.add(APPLICATION_NAME)
             } catch (e: JSONException) {
-                throw IllegalArgumentException(e.message)
+                throw NCMBException(IllegalArgumentException(e.message))
             }
         }
     /**
@@ -80,7 +80,7 @@ class NCMBInstallation : NCMBObject {
                     null
                 } else mFields.getString(APP_VERSION)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -88,7 +88,7 @@ class NCMBInstallation : NCMBObject {
                 mFields.put(APP_VERSION, value)
                 mUpdateKeys.add(APP_VERSION)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
     /**
@@ -108,7 +108,7 @@ class NCMBInstallation : NCMBObject {
                     0
                 } else mFields.getInt(BADGE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -116,7 +116,7 @@ class NCMBInstallation : NCMBObject {
                 mFields.put(BADGE, value)
                 mUpdateKeys.add(BADGE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
     /**
@@ -136,7 +136,7 @@ class NCMBInstallation : NCMBObject {
                     null
                 } else arrayOf(mFields.getString(CHANNELS))
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -144,7 +144,7 @@ class NCMBInstallation : NCMBObject {
                 mFields.put(CHANNELS, value)
                 mUpdateKeys.add(CHANNELS)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
     /**
@@ -165,7 +165,7 @@ class NCMBInstallation : NCMBObject {
                     ""
                 } else mFields.getString(DEVICE_TYPE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -173,7 +173,7 @@ class NCMBInstallation : NCMBObject {
                 mFields.put(DEVICE_TYPE, value)
                 mUpdateKeys.add(DEVICE_TYPE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
     /**
@@ -186,14 +186,14 @@ class NCMBInstallation : NCMBObject {
      *
      * @param value device token
      */
-    var deviceToken: String
+    internal var localDeviceToken: String
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TOKEN)) {
                     ""
                 } else mFields.getString(DEVICE_TOKEN)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -201,25 +201,25 @@ class NCMBInstallation : NCMBObject {
                 mFields.put(DEVICE_TOKEN, value)
                 mUpdateKeys.add(DEVICE_TOKEN)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
 
-    /**
-     * Get device token
-     *
-     * @return device token
-     */
-    val localDeviceToken: String?
-        get() {
-            return try {
-                if (mFields.isNull(DEVICE_TOKEN)) {
-                    null
-                } else mFields.getString(DEVICE_TOKEN)
-            } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
-            }
-        }
+//    /**
+//     * Get device token
+//     *
+//     * @return device token
+//     */
+//    val localDeviceToken: String?
+//        get() {
+//            return try {
+//                if (mFields.isNull(DEVICE_TOKEN)) {
+//                    null
+//                } else mFields.getString(DEVICE_TOKEN)
+//            } catch (error: JSONException) {
+//                throw NCMBException(IllegalArgumentException(error.message))
+//            }
+//        }
     /**
      * Get SDK version
      *
@@ -238,7 +238,7 @@ class NCMBInstallation : NCMBObject {
                     null
                 } else mFields.getString(SDK_VERSION)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -246,7 +246,7 @@ class NCMBInstallation : NCMBObject {
                 mFields.put(SDK_VERSION, value)
                 mUpdateKeys.add(SDK_VERSION)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
     /**
@@ -267,7 +267,7 @@ class NCMBInstallation : NCMBObject {
                     null
                 } else mFields.getString(TIME_ZONE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -275,7 +275,7 @@ class NCMBInstallation : NCMBObject {
                 mFields.put(TIME_ZONE, value)
                 mUpdateKeys.add(TIME_ZONE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
 
@@ -291,7 +291,7 @@ class NCMBInstallation : NCMBObject {
                 null
             } else mFields.get(name)
         } catch (error: JSONException) {
-            throw IllegalArgumentException(error.message)
+            throw NCMBException(IllegalArgumentException(error.message))
         }
     }
     //endregion
@@ -348,7 +348,7 @@ class NCMBInstallation : NCMBObject {
                 val updateJson = try {
                     createUpdateJsonData()
                 } catch (e: JSONException) {
-                    throw IllegalArgumentException(e.message)
+                    throw NCMBException(IllegalArgumentException(e.message))
                 }
                 installationService.updateInstallationInBackground(
                     this,
@@ -374,6 +374,9 @@ class NCMBInstallation : NCMBObject {
         const val DEVICE_TOKEN = "deviceToken"
         const val SDK_VERSION = "sdkVersion"
         const val TIME_ZONE= "timeZone"
+        const val PUSH_TYPE= "pushType"
+        const val ANDROID= "android"
+        const val FCM= "fcm"
 
         /**
          * currentInstallation fileName

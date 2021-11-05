@@ -241,12 +241,12 @@ class NCMBInstallationService: NCMBService() {
                 pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
             val appVersion = pm.getPackageInfo(packageName, 0).versionName
             //value set
-            params.put("deviceType", "android")
-            params.put("applicationName", applicationName)
-            params.put("appVersion", appVersion)
-            params.put("sdkVersion", NCMB.SDK_VERSION)
-            params.put("timeZone", timeZone)
-            params.put("pushType", "fcm")
+            params.put(NCMBInstallation.DEVICE_TYPE, NCMBInstallation.ANDROID)
+            params.put(NCMBInstallation.APPLICATION_NAME, applicationName)
+            params.put(NCMBInstallation.APP_VERSION, appVersion)
+            params.put(NCMBInstallation.SDK_VERSION, NCMB.SDK_VERSION)
+            params.put(NCMBInstallation.TIME_ZONE, timeZone)
+            params.put(NCMBInstallation.PUSH_TYPE, NCMBInstallation.FCM)
         }
     }
 
