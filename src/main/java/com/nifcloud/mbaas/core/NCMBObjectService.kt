@@ -380,4 +380,74 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
             throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
         }
     }
+
+    /**　
+     * Searching JSONObject data from NIFCLOUD mobile backend
+     * @param className Datastore class name which to search the object
+     * @param query JSONObject of search conditions
+     * @return List of NCMBObject of search results
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun count(className: String, query: JSONObject): Int {
+        var countNumber = 0
+        val reqParam = countObjectParams(className, query)
+        val response = sendRequest(reqParam)
+        when (response) {
+            is NCMBResponse.Success -> {
+                countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+        return countNumber
+    }
+
+    /**
+     * Searching JSONObject data to NIFCLOUD mobile backend in background thread
+     * @param className Datastore class name which to search the object
+     * @param query JSONObject of search conditions
+     * @param callback callback for after object search
+     */
+    override fun countInBackground(
+        className: String,
+        query: JSONObject,
+        countCallback: NCMBCallback
+    ) {
+        val reqParam = countObjectParams(className, query)
+        val countHandler = NCMBHandler { countCallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    var countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                    countCallback.done(null, countNumber)
+                }
+                is NCMBResponse.Failure -> {
+                    countCallback.done(response.resException, 0)
+                }
+            }
+        }
+        sendRequestAsync(reqParam, countCallback, countHandler)
+    }
+
+    /**
+     * Setup params to do count request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    protected fun countObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath + className
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        val params = JSONObject()
+        return RequestParams(url = url, method = method, params = params, contentType = contentType, query=query)
+    }
+
 }
