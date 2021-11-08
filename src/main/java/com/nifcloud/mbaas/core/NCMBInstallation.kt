@@ -186,7 +186,7 @@ class NCMBInstallation : NCMBObject {
      *
      * @param value device token
      */
-    internal var localDeviceToken: String
+    internal var deviceToken: String
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TOKEN)) {
@@ -205,21 +205,6 @@ class NCMBInstallation : NCMBObject {
             }
         }
 
-//    /**
-//     * Get device token
-//     *
-//     * @return device token
-//     */
-//    val localDeviceToken: String?
-//        get() {
-//            return try {
-//                if (mFields.isNull(DEVICE_TOKEN)) {
-//                    null
-//                } else mFields.getString(DEVICE_TOKEN)
-//            } catch (error: JSONException) {
-//                throw NCMBException(IllegalArgumentException(error.message))
-//            }
-//        }
     /**
      * Get SDK version
      *
@@ -329,8 +314,8 @@ class NCMBInstallation : NCMBObject {
         val installationService = NCMBInstallationService()
         val objectId = getObjectId()
         if (objectId == null) {
-            val deviceToken = localDeviceToken
-            if(deviceToken != null) {
+            val deviceToken = deviceToken
+            if(deviceToken != "") {
                 //new create
                 installationService.saveInstallationInBackground(
                     this,

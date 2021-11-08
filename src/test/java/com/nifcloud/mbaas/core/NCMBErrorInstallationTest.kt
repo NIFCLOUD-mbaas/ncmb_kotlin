@@ -74,6 +74,11 @@ class NCMBErrorInstallationTest {
         inBackgroundHelper.await()
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals("registrationId is must not be null.", throwable.message)
+
+//        installation.saveInBackground(callback)
+//        inBackgroundHelper.await()
+//        Assert.assertNull(inBackgroundHelper["e"])
+//        Assert.assertEquals("registrationId is must not be null.", (inBackgroundHelper["e"] as NCMBException).message)
     }
 
     @Test

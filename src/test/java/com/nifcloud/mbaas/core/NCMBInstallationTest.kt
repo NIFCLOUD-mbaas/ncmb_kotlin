@@ -81,7 +81,7 @@ class NCMBInstallationTest {
         Assert.assertNull(inBackgroundHelper["e"])
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.localDeviceToken)
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.deviceToken)
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
@@ -106,7 +106,7 @@ class NCMBInstallationTest {
         Assert.assertNull(inBackgroundHelper["e"])
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
-        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.localDeviceToken)
+        Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.deviceToken)
         Assert.assertEquals("value1", installation.getString("key"))
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
