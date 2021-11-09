@@ -16,7 +16,6 @@
 
 package com.nifcloud.mbaas.core
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
