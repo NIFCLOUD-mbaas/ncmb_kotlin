@@ -378,8 +378,6 @@ class NCMBInstallation : NCMBObject {
             }
         }
     }
-
-    //Todo
     /**
      * Get device token
      *
@@ -400,9 +398,9 @@ class NCMBInstallation : NCMBObject {
                 return
             }
         }
-        val deviceToken = localDeviceToken
-        if (deviceToken != null) {
-            callback.done(null, localDeviceToken)
+        val deviceToken = deviceToken
+        if (deviceToken != "") {
+            callback.done(null, deviceToken)
             return
         }
         getDeviceTokenInternalProcess(callback)
@@ -420,22 +418,18 @@ class NCMBInstallation : NCMBObject {
                 FirebaseMessaging.getInstance().token
                     .addOnCompleteListener(OnCompleteListener { task ->
                         if (!task.isSuccessful) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.exception)
                             callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
                             //return@OnCompleteListener
                         } else {
-                            Log.w(TAG, "Fetching FCM registration token success!!")
                             callback.done(null, task.result)
                         }
                         // Get new FCM registration token
                     }).addOnCanceledListener(OnCanceledListener {
                         fun onCanceled() {
-                            Log.w(TAG, "Fetching FCM registration token failed333")
                             callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
                         }
                     })
             } else {
-                Log.w(TAG, "Fetching FCM registration token failed444")
                 callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
             }
         }

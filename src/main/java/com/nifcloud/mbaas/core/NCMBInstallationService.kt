@@ -367,14 +367,8 @@ class NCMBInstallationService: NCMBService() {
             NCMB.getApiBaseUrl() + this.mServicePath
         }
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        var query = JSONObject()
-        if (queryParams == null && method == NCMBRequest.HTTP_METHOD_GET) {
-            if (queryParams != null && method == NCMBRequest.HTTP_METHOD_GET) {
-                query = queryParams
-            }
-        }
 
-        return RequestParams(
+        return RequestParamsAsync(
             url = url,
             method = method,
             params = params,
