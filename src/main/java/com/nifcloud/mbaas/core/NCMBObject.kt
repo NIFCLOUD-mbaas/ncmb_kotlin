@@ -187,7 +187,7 @@ open class NCMBObject : NCMBBase {
      * delete current NCMBObject from data store asynchronously
      * @param callback callback after delete object
      */
-    fun deleteInBackground(deleteCallback: NCMBCallback) {
+    open fun deleteInBackground(deleteCallback: NCMBCallback) {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()

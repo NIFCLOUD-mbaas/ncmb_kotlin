@@ -83,7 +83,7 @@ class NCMB {
         // SharedPreferences file name
         private const val PREFERENCE_FILE_NAME = "NCMB"
 
-        private var CURRENT_CONTEXT: Context? = null
+        var CURRENT_CONTEXT: Context? = null
         var APPLICATION_KEY = ""
         var CLIENT_KEY = ""
         var API_BASE_URL = ""
