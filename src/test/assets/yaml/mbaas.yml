@@ -19,6 +19,15 @@ response:
     file: valid_post_with_acl_response.json
 ---
 request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
+        geopoint: {"__type":"GeoPoint","longitude":139.765607,"latitude":35.6666269}
+response:
+    status: 200
+    file: valid_post_geopoint_response.json
+---
+request:
     url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
     method: PUT
 response:
