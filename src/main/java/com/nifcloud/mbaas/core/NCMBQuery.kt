@@ -31,6 +31,9 @@ import java.util.Date
 class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val service:NCMBServiceInterface<T>){
     private var mWhereConditions: JSONObject = JSONObject()
 
+    var limit: Int = 0 // default value is 0 (valid limit value is >0 )
+    var skip: Int = 0 // default value is 0 (valid limit value is >0 )
+
     companion object {
         fun forObject(className: String): NCMBQuery<NCMBObject> {
             return NCMBQuery<NCMBObject>(className, NCMBObjectService())
@@ -65,6 +68,12 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             val query = JSONObject()
             if (mWhereConditions != null && mWhereConditions.length() > 0) {
                 query.put("where", mWhereConditions)
+            }
+            if (limit > 0 ) {
+                query.put(NCMBQueryConstants.REQUEST_PARAMETER_LIMIT, limit)
+            }
+            if (skip > 0 ) {
+                query.put(NCMBQueryConstants.REQUEST_PARAMETER_SKIP, skip)
             }
             return  query
         }
