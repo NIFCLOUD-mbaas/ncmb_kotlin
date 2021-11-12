@@ -153,7 +153,6 @@ open class NCMBBase(){
      */
     @Throws(NCMBException::class)
     fun put(key: String, value: Any) {
-        println("put_of_any")
         if (isIgnoreKey(key)) {
             throw NCMBException(
                 NCMBException.INVALID_SETTING_NAME,
@@ -162,7 +161,6 @@ open class NCMBBase(){
         }
         try {
             if(value is NCMBGeoPoint){
-                println("value_is_geopoint")
                 val locationJson = JSONObject("{'__type':'GeoPoint'}")
                 locationJson.put("longitude", value.mlongitude)
                 locationJson.put("latitude", value.mlatitude)
