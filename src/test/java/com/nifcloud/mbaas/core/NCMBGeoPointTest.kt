@@ -2,6 +2,8 @@ package com.nifcloud.mbaas.core
 
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
+import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
 import org.junit.Before
@@ -12,6 +14,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = intArrayOf(27), manifest = Config.NONE)
@@ -79,13 +82,29 @@ class NCMBGeoPointTest {
     }
 
     @Test
+    fun test_geopoint_save(){
+        val latitude : Double = 35.6666269
+        val longitude : Double = 139.765607
+        var obj = NCMBObject("TestClassGeo")
+        val geopoint = NCMBGeoPoint(latitude, longitude)
+        obj.put("geoPoint", geopoint)
+        obj = obj.save()
+        Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
+    }
+
+    @Test
     fun test_geopoint_put(){
+        val inBackgroundHelper = NCMBInBackgroundTestHelper()
         val latitude : Double = 35.6666269
         val longitude : Double = 139.765607
         val obj = NCMBObject("TestClass")
         val geopoint = NCMBGeoPoint(latitude, longitude)
         obj.put("geo", geopoint)
+        inBackgroundHelper.start()
         obj.saveInBackground(NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release()
             if (e != null) {
                 //保存に失敗した場合の処理
                 Log.d("error","保存に失敗しました : " + e.message)
@@ -95,5 +114,11 @@ class NCMBGeoPointTest {
                 Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
             }
         })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
+        val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
     }
 }
