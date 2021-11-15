@@ -44,6 +44,7 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // ...
+        print("in NCMB Message receiver")
         if (remoteMessage != null && remoteMessage.data != null) {
             val recentPushIdPref = getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE)
             val recentPushId = recentPushIdPref.getString("recentPushId", "")
@@ -55,7 +56,7 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
                 editor.apply()
                 super.onMessageReceived(remoteMessage)
                 val bundle: Bundle = getBundleFromRemoteMessage(remoteMessage)
-                println("send start ; " + bundle)
+                println("NCMB send start : " + bundle)
                 sendNotification(bundle)
             }
 //            val from: String? = remoteMessage.from
@@ -103,10 +104,12 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
 
     private fun sendNotification(pushData: Bundle) {
 
+        print("NCMB: in sendNotification")
         //サイレントプッシュ
         if (!pushData.containsKey("message") && !pushData.containsKey("title")) {
             return
         }
+        print("NCMB: in sendNotification prepare to show")
         val notificationBuilder: NotificationCompat.Builder = notificationSettings(pushData)
 
         /*
@@ -120,8 +123,8 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
         } catch (e: PackageManager.NameNotFoundException) {
             throw IllegalArgumentException(e)
         }
-        val containsKey = appInfo.metaData.containsKey(NOTIFICATION_OVERLAP_KEY)
-        val overlap = appInfo.metaData.getInt(NOTIFICATION_OVERLAP_KEY)
+        val containsKey = appInfo!!.metaData.containsKey(NOTIFICATION_OVERLAP_KEY)
+        val overlap = appInfo!!.metaData.getInt(NOTIFICATION_OVERLAP_KEY)
 
         //デフォルト複数表示
         var notificationId: Int = Random().nextInt()
@@ -218,7 +221,7 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
         intent.putExtras(pushData)
         val pendingIntent = PendingIntent.getActivity(
             this, Random().nextInt(), intent,
-            PendingIntent.FLAG_CANCEL_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         //pushDataから情報を取得

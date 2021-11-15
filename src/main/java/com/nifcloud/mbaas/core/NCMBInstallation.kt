@@ -350,7 +350,7 @@ class NCMBInstallation : NCMBObject {
                 installationService.saveInstallationInBackground(
                     this,
                     deviceToken,
-                    this.mFields,
+                    this.createRegisterJsonData(),
                     saveCallback
                 )
             }

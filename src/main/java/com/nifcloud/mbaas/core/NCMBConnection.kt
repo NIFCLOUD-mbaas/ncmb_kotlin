@@ -17,6 +17,7 @@
 package com.nifcloud.mbaas.core
 
 import android.net.Uri
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -75,7 +76,6 @@ class NCMBConnection(request: NCMBRequest) {
                 println(ncmbRequest.params.toString())
                 println(ncmbRequest.url)
                 println(headers)
-
                 val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
                 val url = Uri.parse(ncmbRequest.url)
                     .buildUpon()
