@@ -193,7 +193,7 @@ class NCMBInstallation : NCMBObject {
      *
      * @param value device token
      */
-    internal var deviceToken: String
+    var deviceToken: String
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TOKEN)) {
@@ -350,7 +350,7 @@ class NCMBInstallation : NCMBObject {
                 installationService.saveInstallationInBackground(
                     this,
                     deviceToken,
-                    this.mFields,
+                    this.createRegisterJsonData(),
                     saveCallback
                 )
             }

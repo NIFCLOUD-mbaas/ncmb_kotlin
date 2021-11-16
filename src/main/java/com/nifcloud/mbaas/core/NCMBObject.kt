@@ -51,8 +51,7 @@ open class NCMBObject : NCMBBase {
         }
         this.mClassName = className
         this.mIgnoreKeys = mutableListOf(
-            "objectId", "acl",
-            "createDate", "updateDate"
+            "acl", "createDate", "updateDate"
         )
     }
 
