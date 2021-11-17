@@ -272,31 +272,4 @@ class NCMBQueryTest {
         )
     }
 
-//    @Test
-//    fun testNCMBObjectDoSearchReal() {
-//        var applicationKey =  "3c99589bee9dda8184febdf64cdcfe65f84faf3ec5a2b158e477cea807299b30"
-//        var clientKey = "4f77045784c3d667ccf2557cb31e507a1488e37bf0f88ba042610271f4e3f981"
-//        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
-//        //TestClassクラスを検索するクエリを作成
-//        val query = NCMBQuery.forObject("TODO")
-//        query.limit = 3
-//        query.skip = 0
-//        query.addOrderByDescending("todo")
-//        query.addOrderByDescending("text")
-//        //query.whereEqualTo("key", "value");
-//        //objects: List<NCMBObject>
-//        try {
-//            val objects = query.find()
-//            println("FIND SUCCESS")
-//            for (obj: Any in objects) {
-//                if(obj is NCMBObject) {
-//                    println(obj.getObjectId() + "|" + obj.getString("todo"))
-//                    //println(obj.getObjectId())
-//                }
-//            }
-//        }catch(e: NCMBException) {
-//            print("SEARCH SYNC ERROR, EXCEPTION:" + e.message)
-//        }
-//    }
-
 }
