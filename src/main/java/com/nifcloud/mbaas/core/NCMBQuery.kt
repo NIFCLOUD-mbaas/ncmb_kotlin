@@ -31,8 +31,16 @@ import java.util.Date
 class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val service:NCMBServiceInterface<T>){
     private var mWhereConditions: JSONObject = JSONObject()
     private var order: List<String> = ArrayList()
-    var limit: Int = 0 // default value is 0 (valid limit value is >0 )
-    var skip: Int = 0 // default value is 0 (valid limit value is >0 )
+    var limit: Int = 0 // default value is 0 (valid limit value is 1 to 1000)
+        set(value) {
+            if (value < 1 || value >1000 ) {
+                throw NCMBException(
+                    NCMBException.GENERIC_ERROR,
+                    "Need to set limit value from 1 to 1000"
+                )
+            }
+        }
+    var skip: Int = 0 // default value is 0 (valid skip value is >0 )
 
     companion object {
         fun forObject(className: String): NCMBQuery<NCMBObject> {
