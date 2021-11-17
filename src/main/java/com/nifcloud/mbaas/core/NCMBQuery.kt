@@ -30,7 +30,7 @@ import java.util.Date
 //プライベートコンストラクターとしてcompanion object内にあるfor〇〇メソッドを用いて、インスタンスを取得する
 class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val service:NCMBServiceInterface<T>){
     private var mWhereConditions: JSONObject = JSONObject()
-
+    private var order: List<String> = ArrayList()
     var limit: Int = 0 // default value is 0 (valid limit value is >0 )
     var skip: Int = 0 // default value is 0 (valid limit value is >0 )
 
@@ -75,6 +75,10 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             if (skip > 0 ) {
                 query.put(NCMBQueryConstants.REQUEST_PARAMETER_SKIP, skip)
             }
+
+            if (order.size > 0) {
+                query.put("order", order.joinToString(separator = "," ))
+            }
             return  query
         }
 
@@ -102,6 +106,27 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             throw IllegalArgumentException(e.message)
         }
     }
+
+    /**
+     * set the conditions to search the data by ascending order with specified field name (key)
+     * @param key field name for order by ascending
+     */
+    fun addOrderByAscending(key: String) {
+        if(key != "") {
+            order += key
+        }
+    }
+
+    /**
+     * set the conditions to search the data by descending order with specified field name (key)
+     * @param key field name for order by ascending
+     */
+    fun addOrderByDescending(key: String) {
+        if(key != "") {
+            order += "-"+key
+        }
+    }
+
 
     /**
      * Constructor
