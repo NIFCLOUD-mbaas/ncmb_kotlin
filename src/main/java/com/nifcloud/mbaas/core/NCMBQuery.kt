@@ -41,7 +41,14 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             }
         }
     var skip: Int = 0 // default value is 0 (valid skip value is >0 )
-
+        set(value) {
+            if (value < 0 ) {
+                throw NCMBException(
+                    NCMBException.GENERIC_ERROR,
+                    "Need to set skip value > 0"
+                )
+            }
+        }
     companion object {
         fun forObject(className: String): NCMBQuery<NCMBObject> {
             return NCMBQuery<NCMBObject>(className, NCMBObjectService())

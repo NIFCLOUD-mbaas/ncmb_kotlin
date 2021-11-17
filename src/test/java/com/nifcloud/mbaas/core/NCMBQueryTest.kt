@@ -149,6 +149,16 @@ class NCMBQueryTest {
 
     @Test
     @Throws(Exception::class)
+    fun testSkip_Invalid_value_under0() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        val throwable = assertFails { query.skip = -1 }
+        Assert.assertEquals("Need to set skip value > 0", throwable.message)
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun testLimit_Invalid_value_under0() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
