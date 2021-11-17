@@ -509,7 +509,7 @@ class NCMBInstallation : NCMBObject {
     }
 
     @Throws(NCMBException::class)
-    override fun fetch(): NCMBObject {
+    override fun fetch(): NCMBInstallation {
         val objectId = getObjectId()
         val installationService = NCMBInstallationService()
         if (objectId != null) {
@@ -524,7 +524,7 @@ class NCMBInstallation : NCMBObject {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun delete(): NCMBObject? {
+    override fun delete(): NCMBInstallation? {
         val objectId = getObjectId()
         val installationService = NCMBInstallationService()
         if (objectId != null) {

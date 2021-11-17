@@ -112,4 +112,24 @@ class NCMBInstallationTest {
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
     }
+
+
+    @Test
+    @Throws(NCMBException::class)
+    fun fetch_installation_with_get_success() {
+        val obj = NCMBInstallation()
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        val result = obj.fetch()
+        Assert.assertEquals(result.getObjectId(), "7FrmPTBKSNtVjajm")
+        Assert.assertEquals(result.get("key"), "value")
+    }
+
+    @Test
+    @Throws(NCMBException::class)
+    fun delete_installation_success() {
+        val obj = NCMBInstallation()
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        val result = obj.delete()
+        Assert.assertNull(result)
+    }
 }

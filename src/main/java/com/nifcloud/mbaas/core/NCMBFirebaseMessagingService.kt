@@ -44,6 +44,7 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         // ...
+        print("in NCMB Message receiver")
         if (remoteMessage != null && remoteMessage.data != null) {
             val recentPushIdPref = getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE)
             val recentPushId = recentPushIdPref.getString("recentPushId", "")
@@ -55,42 +56,17 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
                 editor.apply()
                 super.onMessageReceived(remoteMessage)
                 val bundle: Bundle = getBundleFromRemoteMessage(remoteMessage)
-                println("send start ; " + bundle)
+                println("NCMB send start : " + bundle)
                 sendNotification(bundle)
             }
-//            val from: String? = remoteMessage.from
-//            val data: Map<*, *> = remoteMessage.data
-//
-//            Log.d(TAG, "from:$from")
-//            Log.d(TAG, "data:$data")
-//
-//            val msg = data["data"].toString()
-//            sendNotification(msg)
         }
         // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: ${remoteMessage.from}")
-
-//        // Check if message contains a data payload.
-//        if (remoteMessage.data.isNotEmpty()) {
-//            Log.d(TAG, "Message data payload: ${remoteMessage.data}")
-//
-//            if (/* Check if data needs to be processed by long running job */ true) {
-//                // For long-running tasks (10 seconds or more) use WorkManager.
-//                scheduleJob()
-//            } else {
-//                // Handle message within 10 seconds
-//                handleNow()
-//            }
-//        }
 
         // Check if message contains a notification payload.
         remoteMessage.notification?.let {
             Log.d(TAG, "Message Notification Body: ${it.body}")
         }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
     }
     private fun getBundleFromRemoteMessage(remoteMessage: RemoteMessage): Bundle {
         val bundle = Bundle()
@@ -103,10 +79,12 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
 
     private fun sendNotification(pushData: Bundle) {
 
+        print("NCMB: in sendNotification")
         //サイレントプッシュ
         if (!pushData.containsKey("message") && !pushData.containsKey("title")) {
             return
         }
+        print("NCMB: in sendNotification prepare to show")
         val notificationBuilder: NotificationCompat.Builder = notificationSettings(pushData)
 
         /*
@@ -130,7 +108,6 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
             notificationId = 0
         }
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        println("notificationManager ; " + notificationId)
         try {
             notificationManager.notify(notificationId, notificationBuilder.build())
         }
@@ -159,11 +136,6 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
             activityName =
                 appInfo.packageName + appInfo.metaData.getString(OPEN_PUSH_START_ACTIVITY_KEY)
             packageName = appInfo.packageName
-            println("push info")
-            println("appInfo : " + appInfo)
-            println("applicationName ; " + applicationName)
-            println("activityName ; " + activityName)
-            println("packageName ; " + packageName)
             /*
             プッシュデータにチャネルが指定されているかつ、チャネルファイルが登録されている場合は、
             通知タップ起動時のactivityNameをファイル内指定のactivityNameに更新する
@@ -195,19 +167,15 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
                         packageName = json.getString("activityPackage")
                     }
                 }
-                println("appInfo2 : " + appInfo)
-                println("applicationName2 ; " + applicationName)
-                println("activityName2 ; " + activityName)
-                println("packageName2 ; " + packageName)
             }
             //通知起動時のActivityクラスを作成
             startClass = Class.forName(activityName!!)
         } catch (e: PackageManager.NameNotFoundException) {
-            throw IllegalArgumentException(e)
+            throw NCMBException(IllegalArgumentException(e))
         } catch (e: ClassNotFoundException) {
-            throw IllegalArgumentException(e)
+            throw NCMBException(IllegalArgumentException(e))
         } catch (e: JSONException) {
-            throw IllegalArgumentException(e)
+            throw NCMBException(IllegalArgumentException(e))
         }
 
         //通知エリアに表示されるプッシュ通知をタップした際に起動するアクティビティ画面を設定する
@@ -218,7 +186,7 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
         intent.putExtras(pushData)
         val pendingIntent = PendingIntent.getActivity(
             this, Random().nextInt(), intent,
-            PendingIntent.FLAG_CANCEL_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         //pushDataから情報を取得
