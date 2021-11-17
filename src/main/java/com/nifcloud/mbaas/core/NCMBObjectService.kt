@@ -446,8 +446,7 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
         }
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val params = JSONObject()
-        return RequestParams(url = url, method = method, params = params, contentType = contentType, query=query)
+        return RequestParams(url = url, method = method, contentType = contentType, query = query)
     }
 
 }
