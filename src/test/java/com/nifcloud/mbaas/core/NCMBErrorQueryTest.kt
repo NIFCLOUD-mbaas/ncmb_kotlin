@@ -20,6 +20,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.NCMB
 import com.nifcloud.mbaas.core.NCMBErrorDispatcher
 import com.nifcloud.mbaas.core.NCMBException
+import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
 import org.junit.Before
@@ -87,6 +88,99 @@ class NCMBErrorQueryTest {
         val query = NCMBQuery.forObject("TestClass429")
         val throwable = assertFails{ val objects = query.find() }
         Assert.assertEquals("Too many requests.",throwable.message)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testNCMBObject_DoCountSync_503error() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass503")
+        val throwable = assertFails{ val objects = query.count() }
+        Assert.assertEquals("Service unavailable.",throwable.message)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testNCMBObject_DoCountSync_500error() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass500")
+        val throwable = assertFails{ val objects = query.count() }
+        Assert.assertEquals("System error.",throwable.message)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testNCMBObject_DoCountSync_429error() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass429")
+        val throwable = assertFails{ val objects = query.count() }
+        Assert.assertEquals("Too many requests.",throwable.message)
+    }
+
+    @Test
+    fun testNCMBObject_DoCountInBackground_Equal_Fail503() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass503")
+        val callback = NCMBCallback { e, number ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["number"] = number
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        query.countInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertEquals(inBackgroundHelper["number"] as Int, 0)
+        Assert.assertNotNull(inBackgroundHelper["e"])
+        Assert.assertEquals(
+            (inBackgroundHelper["e"] as NCMBException).message ,
+            "Service unavailable."
+        )
+    }
+
+    @Test
+    fun testNCMBObject_DoCountInBackground_Equal_Fail500() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass500")
+        val callback = NCMBCallback { e, number ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["number"] = number
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        query.countInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertEquals(inBackgroundHelper["number"] as Int, 0)
+        Assert.assertNotNull(inBackgroundHelper["e"])
+        Assert.assertEquals(
+            (inBackgroundHelper["e"] as NCMBException).message ,
+            "System error."
+        )
+    }
+
+    @Test
+    fun testNCMBObject_DoCountInBackground_Equal_Fail429() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass429")
+        val callback = NCMBCallback { e, number ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["number"] = number
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        query.countInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertEquals(inBackgroundHelper["number"] as Int, 0)
+        Assert.assertNotNull(inBackgroundHelper["e"])
+        Assert.assertEquals(
+            (inBackgroundHelper["e"] as NCMBException).message ,
+            "Too many requests."
+        )
     }
 
 }

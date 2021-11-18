@@ -46,3 +46,30 @@ request:
 response:
     status: 429
     file: E429002_error_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass503
+    query:
+        count: 1
+    method: GET
+response:
+    status: 503
+    file: E503001_error_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass500
+    query:
+        count: 1
+    method: GET
+response:
+    status: 500
+    file: E500001_error_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass429
+    query:
+        count: 1
+    method: GET
+response:
+    status: 429
+    file: E429002_error_response.json
