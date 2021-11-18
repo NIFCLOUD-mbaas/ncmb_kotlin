@@ -482,6 +482,15 @@ response:
     file: valid_search_response_one_obj.json
 ---
 request:
+    url: /2013-09-01/classes/TestClassNotEqual
+    method: GET
+    query:
+        where: {"key":{"$ne":"value"}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
     url: /2013-09-01/classes/TestClassCount
     method: GET
     query:

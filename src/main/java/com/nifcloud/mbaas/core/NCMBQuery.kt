@@ -114,8 +114,34 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         try {
             mWhereConditions.put(key, convertConditionValue(value) )
         } catch (e: JSONException) {
-            throw IllegalArgumentException(e.message)
+            throw NCMBException(IllegalArgumentException(e.message))
         }
+    }
+
+    /**
+     * set the conditions to search the data that does not match the value of the specified key
+     * @param key field name to set the conditions
+     * @param value condition value
+     */
+    fun whereNotEqualTo(key: String, value: Any) {
+        try {
+            mWhereConditions.put(key, addSearchCondition(key, "\$ne" , value) )
+        } catch (e: JSONException) {
+            throw NCMBException(IllegalArgumentException(e.message))
+        }
+    }
+
+    //Add new search condition (new 'operand' and 'value') for 'key', and return added search Condition for key
+    internal fun addSearchCondition(key: String, operand: String, value: Any):JSONObject {
+        var newCondition = JSONObject()
+        if (mWhereConditions.has(key)) {
+            val currentCondition = mWhereConditions[key]
+            if (currentCondition is JSONObject) {
+                newCondition = currentCondition
+            }
+        }
+        newCondition.put(operand, convertConditionValue(value))
+        return newCondition
     }
 
     /**

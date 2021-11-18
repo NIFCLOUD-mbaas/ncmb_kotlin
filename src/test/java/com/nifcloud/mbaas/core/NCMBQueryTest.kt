@@ -179,4 +179,23 @@ class NCMBQueryTest {
         )
     }
 
+    @Test
+    fun testNCMBObject_NotEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassNotEqual")
+        query.whereNotEqualTo("key", "value");
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
 }
