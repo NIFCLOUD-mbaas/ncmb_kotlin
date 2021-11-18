@@ -1,5 +1,14 @@
 ---
 request:
+    url: /2013-09-01/classes/TestClassGeo403
+    method: POST
+    body:
+        geo: {"__type":"GeoPoint","longitude":139.765607,"latitude":35.6666269}
+response:
+    status: 403
+    file: valid_post_geopoint_error_response.json
+---
+request:
     url: /2013-09-01/login
     query:
         userName: "Ncmb Tarou"

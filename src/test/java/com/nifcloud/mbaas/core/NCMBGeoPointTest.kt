@@ -105,14 +105,6 @@ class NCMBGeoPointTest {
             inBackgroundHelper["e"] = e
             inBackgroundHelper["ncmbObj"] = ncmbObj
             inBackgroundHelper.release()
-            if (e != null) {
-                //保存に失敗した場合の処理
-                Log.d("error","保存に失敗しました : " + e.message)
-            } else {
-                //保存に成功した場合の処理
-                val result = ncmbObj as NCMBObject
-                Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
-            }
         })
         inBackgroundHelper.await()
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())

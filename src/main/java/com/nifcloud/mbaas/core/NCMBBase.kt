@@ -39,11 +39,11 @@ open class NCMBBase(){
 
     var mFields = JSONObject()
     var localData = JSONObject()
+    internal var mUpdateKeys = HashSet<String>()
         @Throws(NCMBException::class) get() {
             return field
         }
-        protected set
-    protected var mUpdateKeys = HashSet<String>()
+        internal set
     protected var mIgnoreKeys: List<String>? = null
     protected var keys = HashSet<String>()
 
