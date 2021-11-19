@@ -13,6 +13,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
+
 //Android環境のベースにテスト実装するため
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = intArrayOf(27), manifest = Config.NONE)
@@ -183,6 +184,82 @@ class NCMBQueryTest {
     fun testNCMBObject_NotEqual_Success() {
         val query = NCMBQuery.forObject("TestClassNotEqual")
         query.whereNotEqualTo("key", "value");
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_GreaterThan_Success() {
+        val query = NCMBQuery.forObject("TestClassGreaterThan")
+        query.whereGreaterThan("key", 2);
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_GreaterThanOrEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassGreaterThanOrEqual")
+        query.whereGreaterThanOrEqualTo("key", 2);
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_LessThan_Success() {
+        val query = NCMBQuery.forObject("TestClassLessThan")
+        query.whereLessThan("key", 100);
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_LessThanOrEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassLessThanOrEqual")
+        query.whereLessThanOrEqualTo("key", 100);
         val objects = query.find()
         Assert.assertEquals(
             2,
