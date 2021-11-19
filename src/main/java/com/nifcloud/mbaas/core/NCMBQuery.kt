@@ -144,6 +144,46 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         }
     }
 
+    /**
+     * set the conditions to search the data that less than the value of the specified key
+     * @param key field name to set the conditions
+     * @param value condition value
+     */
+    fun whereLessThan(key: String, value: Any) {
+        try {
+            mWhereConditions.put(key,addSearchCondition(key, "\$lt", value))
+        } catch (e: JSONException) {
+            throw java.lang.IllegalArgumentException(e.message)
+        }
+    }
+
+    /**
+     * set the conditions to search the data that greater than or equal to the value of the specified key
+     * @param key field name to set the conditions
+     * @param value condition value
+     */
+    fun whereGreaterThanOrEqualTo(key: String, value: Any) {
+        try {
+            mWhereConditions.put(key,addSearchCondition(key, "\$gte", value))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * set the conditions to search the data that less than or equal to the value of the specified key
+     * @param key field name to set the conditions
+     * @param value condition value
+     */
+    fun whereLessThanOrEqualTo(key: String, value: Any) {
+        try {
+            mWhereConditions.put(key,addSearchCondition(key, "\$lte", value))
+        } catch (e: JSONException) {
+            throw java.lang.IllegalArgumentException(e.message)
+        }
+    }
+
+
     //Add new search condition (new 'operand' and 'value') for 'key', and return added search Condition for key
     internal fun addSearchCondition(key: String, operand: String, value: Any):JSONObject {
         var newCondition = JSONObject()
