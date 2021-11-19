@@ -12,6 +12,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import java.lang.Exception
+import kotlin.test.assertFails
 
 
 //Android環境のベースにテスト実装するため
@@ -272,6 +274,31 @@ class NCMBQueryTest {
         Assert.assertEquals(
             (objects[1] as NCMBObject).getObjectId(),
             "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testNCMBObject_EqualToAndLessThanOrEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassLessThanOrEqual")
+        query.whereEqualTo("key", 10)
+        val throwable = assertFails {query.whereLessThanOrEqualTo("key", 100) }
+        Assert.assertEquals("Cannot set other search condition for key which already set whereEqualTo search condition", throwable.message)
+    }
+
+    @Test
+    fun testNCMBObject_LessThanOrEqualAndEqual_Success() {
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereLessThanOrEqualTo("key", 100);
+        query.whereEqualTo("key", "value");
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
         )
     }
 

@@ -106,7 +106,9 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that matches the value of the specified key
+     * set the conditions to search the data that matches the value of the specified key.
+     * NOTICE that if this search condition is set, you can not set other search condition for this key.
+     * OR if this search condition is set last, other set search condition for same key will be overwrite.
      * @param key field name to set the conditions
      * @param value condition value
      */
@@ -114,7 +116,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         try {
             mWhereConditions.put(key, convertConditionValue(value) )
         } catch (e: JSONException) {
-            throw NCMBException(IllegalArgumentException(e.message))
+            throw NCMBException(e)
         }
     }
 
@@ -127,7 +129,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         try {
             mWhereConditions.put(key, addSearchCondition(key, "\$ne" , value))
         } catch (e: JSONException) {
-            throw NCMBException(IllegalArgumentException(e.message))
+            throw NCMBException(e)
         }
     }
 
@@ -153,7 +155,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         try {
             mWhereConditions.put(key,addSearchCondition(key, "\$lt", value))
         } catch (e: JSONException) {
-            throw java.lang.IllegalArgumentException(e.message)
+            throw NCMBException(e)
         }
     }
 
@@ -179,7 +181,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         try {
             mWhereConditions.put(key,addSearchCondition(key, "\$lte", value))
         } catch (e: JSONException) {
-            throw java.lang.IllegalArgumentException(e.message)
+            throw NCMBException(e)
         }
     }
 
@@ -191,6 +193,9 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             val currentCondition = mWhereConditions[key]
             if (currentCondition is JSONObject) {
                 newCondition = currentCondition
+            }
+            else {
+                throw NCMBException(NCMBException.GENERIC_ERROR, "Cannot set other search condition for key which already set whereEqualTo search condition")
             }
         }
         newCondition.put(operand, convertConditionValue(value))
