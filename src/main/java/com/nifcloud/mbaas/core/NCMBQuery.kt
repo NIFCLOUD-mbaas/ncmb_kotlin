@@ -125,7 +125,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereNotEqualTo(key: String, value: Any) {
         try {
-            mWhereConditions.put(key, addSearchCondition(key, "\$ne" , value) )
+            mWhereConditions.put(key, addSearchCondition(key, "\$ne" , value))
         } catch (e: JSONException) {
             throw NCMBException(IllegalArgumentException(e.message))
         }
