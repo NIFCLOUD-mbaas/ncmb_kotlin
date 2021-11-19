@@ -131,6 +131,19 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         }
     }
 
+    /**
+     * set the conditions to search the data that greater than the value of the specified key
+     * @param key field name to set the conditions
+     * @param value condition value
+     */
+    fun whereGreaterThan(key: String, value: Any) {
+        try {
+            mWhereConditions.put(key,addSearchCondition(key, "\$gt", value))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
     //Add new search condition (new 'operand' and 'value') for 'key', and return added search Condition for key
     internal fun addSearchCondition(key: String, operand: String, value: Any):JSONObject {
         var newCondition = JSONObject()
