@@ -52,7 +52,7 @@ class NCMBGeoPoint {
     }
 
     /**
-     * initialize latitude and longitude. (default latitude:0.0, default longitude:0.0)
+     * initialize NCMBGeoPoint object with latitude and longitude. (default latitude:0.0, default longitude:0.0)
      *
      * @param latitude  value set as latitude
      * @param longitude value set as longitude

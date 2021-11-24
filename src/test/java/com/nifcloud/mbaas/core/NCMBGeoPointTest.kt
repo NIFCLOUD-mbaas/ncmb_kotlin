@@ -99,7 +99,7 @@ class NCMBGeoPointTest {
         val longitude : Double = 139.765607
         val obj = NCMBObject("TestClassGeo")
         val geopoint = NCMBGeoPoint(latitude, longitude)
-        obj.put("geo", geopoint)
+        obj.put("geoPoint", geopoint)
         inBackgroundHelper.start()
         obj.saveInBackground(NCMBCallback { e, ncmbObj ->
             inBackgroundHelper["e"] = e
