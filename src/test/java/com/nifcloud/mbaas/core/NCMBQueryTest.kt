@@ -319,6 +319,26 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testNCMBObject_WhereContainedIn_Success() {
+        val query = NCMBQuery.forObject("TestClassContainedIn")
+        val objs = setOf<Int>(1,2,3)
+        query.whereContainedIn("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+    
+    @Test
     fun testNCMBObject_NotEqual_Success() {
         val query = NCMBQuery.forObject("TestClassNotEqual")
         query.whereNotEqualTo("key", "value");
@@ -337,6 +357,26 @@ class NCMBQueryTest {
         )
     }
 
+    @Test
+    fun testNCMBObject_WhereContainedInArray_Success() {
+        val query = NCMBQuery.forObject("TestClassContainedInArray")
+        val objs = setOf<Int>(1,2,3)
+        query.whereContainedInArray("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+    
     @Test
     fun testNCMBObject_GreaterThan_Success() {
         val query = NCMBQuery.forObject("TestClassGreaterThan")
@@ -357,6 +397,26 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testNCMBObject_WhereNotContainedInArray_Success() {
+        val query = NCMBQuery.forObject("TestClassNotContainedInArray")
+        val objs = setOf<Int>(1,2,3)
+        query.whereNotContainedInArray("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }        
+        
+    @Test
     fun testNCMBObject_GreaterThanOrEqual_Success() {
         val query = NCMBQuery.forObject("TestClassGreaterThanOrEqual")
         query.whereGreaterThanOrEqualTo("key", 2);
@@ -375,6 +435,26 @@ class NCMBQueryTest {
         )
     }
 
+    @Test    
+    fun testNCMBObject_WhereNotContainedIn_Success() {
+        val query = NCMBQuery.forObject("TestClassNotContainedIn")
+        val objs = setOf<Int>(1,2,3)
+        query.whereNotContainedIn("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }      
+    
     @Test
     fun testNCMBObject_LessThan_Success() {
         val query = NCMBQuery.forObject("TestClassLessThan")
@@ -395,9 +475,49 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testNCMBObject_WhereContainedAll_Success() {
+        val query = NCMBQuery.forObject("TestClassContainedAll")
+        val objs = setOf<Int>(1,2,3)
+        query.whereContainsAll("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }       
+    
+    @Test
     fun testNCMBObject_LessThanOrEqual_Success() {
         val query = NCMBQuery.forObject("TestClassLessThanOrEqual")
         query.whereLessThanOrEqualTo("key", 100);
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_WhereContainedIn_StringArray_Success() {
+        val query = NCMBQuery.forObject("TestClassContainedIn_String")
+        val objs = setOf<String>("1","2","3")
+        query.whereContainedIn("keyArray", objs)
         val objects = query.find()
         Assert.assertEquals(
             2,

@@ -466,6 +466,60 @@ response:
     file: valid_search_response_no_obj.json
 ---
 request:
+    url: /2013-09-01/classes/TestClassContainedIn
+    method: GET
+    query:
+        where: {"keyArray":{"$in":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedIn_String
+    method: GET
+    query:
+        where: {"keyArray":{"$in":["1","2","3"]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedInArray
+    method: GET
+    query:
+        where: {"keyArray":{"$inArray":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotContainedInArray
+    method: GET
+    query:
+        where: {"keyArray":{"$ninArray":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotContainedIn
+    method: GET
+    query:
+        where: {"keyArray":{"$nin":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedAll
+    method: GET
+    query:
+        where: {"keyArray":{"$all":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
     url: /2013-09-01/classes/TestClass
     method: GET
 response:
