@@ -475,6 +475,15 @@ response:
     file: valid_search_response_all_obj.json
 ---
 request:
+    url: /2013-09-01/classes/TestClassContainedIn_String
+    method: GET
+    query:
+        where: {"keyArray":{"$in":["1","2","3"]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
     url: /2013-09-01/classes/TestClassContainedInArray
     method: GET
     query:

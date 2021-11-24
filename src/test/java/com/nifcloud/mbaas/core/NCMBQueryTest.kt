@@ -279,4 +279,24 @@ class NCMBQueryTest {
         )
     }
 
+    @Test
+    fun testNCMBObject_WhereContainedIn_StringArray_Success() {
+        val query = NCMBQuery.forObject("TestClassContainedIn_String")
+        val objs = setOf<String>("1","2","3")
+        query.whereContainedIn("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
 }
