@@ -12,6 +12,8 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import java.lang.Exception
+import kotlin.test.assertFails
 
 //Android環境のベースにテスト実装するため
 @RunWith(RobolectricTestRunner::class)
@@ -147,6 +149,75 @@ class NCMBQueryTest {
     }
 
     @Test
+    @Throws(Exception::class)
+    fun testSkip_Invalid_value_under0() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        val throwable = assertFails { query.skip = -1 }
+        Assert.assertEquals("Need to set skip value > 0", throwable.message)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testLimit_Invalid_value_under0() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        val throwable = assertFails { query.limit = -100 }
+        Assert.assertEquals("Need to set limit value from 1 to 1000", throwable.message)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testLimit_Invalid_value_over1000() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        val throwable = assertFails { query.limit = 1001 }
+        Assert.assertEquals("Need to set limit value from 1 to 1000", throwable.message)
+    }
+
+    @Test
+    fun testNCMBObject_DoSearchSync_Skip() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClassSkip")
+        query.whereEqualTo("key", "value");
+        query.skip = 10
+        val objects = query.find()
+        Assert.assertEquals(2,objects.count())
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_DoSearchSync_Limit() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClassLimit")
+        query.limit = 3
+        val objects = query.find()
+        Assert.assertEquals(3,objects.count())
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+        Assert.assertEquals(
+            (objects[2] as NCMBObject).getObjectId(),
+            "YpfmeOtRkZJeRQWZ"
+        )
+    }
+
+    @Test
     fun testNCMBObject_DoCountInBackground_Equal_Success() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassクラスを検索するクエリを作成
@@ -169,6 +240,74 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testNCMBObject_DoSearchSync_Asc() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClassAsc")
+        query.limit = 3
+        query.addOrderByAscending("key")
+        val objects = query.find()
+        Assert.assertEquals(3,objects.count())
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getString("key"),
+            "value1"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getString("key"),
+            "value2"
+        )
+        Assert.assertEquals(
+            (objects[2] as NCMBObject).getObjectId(),
+            "YpfmeOtRkZJeRQWZ"
+        )
+        Assert.assertEquals(
+            (objects[2] as NCMBObject).getString("key"),
+            "value3"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_DoSearchSync_Desc() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClassDesc")
+        query.limit = 3
+        query.addOrderByDescending("key")
+        val objects = query.find()
+        Assert.assertEquals(3,objects.count())
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "YpfmeOtRkZJeRQWZ"
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getString("key"),
+            "value3"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getString("key"),
+            "value2"
+        )
+        Assert.assertEquals(
+            (objects[2] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[2] as NCMBObject).getString("key"),
+            "value1"
+        )
+    }
+    
+    @Test    
     fun testNCMBObject_DoCount_Equal_Success() {
         val query = NCMBQuery.forObject("TestClassCount")
         query.whereEqualTo("key", "value");
@@ -184,6 +323,25 @@ class NCMBQueryTest {
         val query = NCMBQuery.forObject("TestClassContainedIn")
         val objs = setOf<Int>(1,2,3)
         query.whereContainedIn("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+    
+    @Test
+    fun testNCMBObject_NotEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassNotEqual")
+        query.whereNotEqualTo("key", "value");
         val objects = query.find()
         Assert.assertEquals(
             2,
@@ -218,6 +376,25 @@ class NCMBQueryTest {
             "eQRqoObEZmtrfgzH"
         )
     }
+    
+    @Test
+    fun testNCMBObject_GreaterThan_Success() {
+        val query = NCMBQuery.forObject("TestClassGreaterThan")
+        query.whereGreaterThan("key", 2);
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
 
     @Test
     fun testNCMBObject_WhereNotContainedInArray_Success() {
@@ -237,13 +414,51 @@ class NCMBQueryTest {
             (objects[1] as NCMBObject).getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
+    }        
+        
+    @Test
+    fun testNCMBObject_GreaterThanOrEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassGreaterThanOrEqual")
+        query.whereGreaterThanOrEqualTo("key", 2);
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
     }
 
-    @Test
+    @Test    
     fun testNCMBObject_WhereNotContainedIn_Success() {
         val query = NCMBQuery.forObject("TestClassNotContainedIn")
         val objs = setOf<Int>(1,2,3)
         query.whereNotContainedIn("keyArray", objs)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }      
+    
+    @Test
+    fun testNCMBObject_LessThan_Success() {
+        val query = NCMBQuery.forObject("TestClassLessThan")
+        query.whereLessThan("key", 100);
         val objects = query.find()
         Assert.assertEquals(
             2,
@@ -277,6 +492,25 @@ class NCMBQueryTest {
             (objects[1] as NCMBObject).getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
+    }       
+    
+    @Test
+    fun testNCMBObject_LessThanOrEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassLessThanOrEqual")
+        query.whereLessThanOrEqualTo("key", 100);
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[1] as NCMBObject).getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
     }
 
     @Test
@@ -296,6 +530,31 @@ class NCMBQueryTest {
         Assert.assertEquals(
             (objects[1] as NCMBObject).getObjectId(),
             "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun testNCMBObject_EqualToAndLessThanOrEqual_Success() {
+        val query = NCMBQuery.forObject("TestClassLessThanOrEqual")
+        query.whereEqualTo("key", 10)
+        val throwable = assertFails {query.whereLessThanOrEqualTo("key", 100) }
+        Assert.assertEquals("Cannot set other search condition for key which already set whereEqualTo search condition", throwable.message)
+    }
+
+    @Test
+    fun testNCMBObject_LessThanOrEqualAndEqual_Success() {
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereLessThanOrEqualTo("key", 100);
+        query.whereEqualTo("key", "value");
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            (objects[0] as NCMBObject).getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
         )
     }
 

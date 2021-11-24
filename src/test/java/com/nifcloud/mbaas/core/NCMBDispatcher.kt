@@ -103,8 +103,8 @@ class NCMBDispatcher: Dispatcher() {
                     val mockBody = requestMap["body"]
                     val gson: Gson = GsonBuilder().serializeNulls().create()
                     val mockBodyStr: String = gson.toJson(mockBody)
-                    println("mock:$mockBodyStr")
-                    println("req:$requestBody")
+                    //println("mock:$mockBodyStr")
+                    //println("req:$requestBody")
                     if (requestBody?.let { checkRequestBody(mockBodyStr, it) }!!) {
                         //Responseをreturn
                         MockResponse().setResponseCode(responseMap!!["status"] as Int)
@@ -124,8 +124,8 @@ class NCMBDispatcher: Dispatcher() {
                 try {
                     val mockHeaders =
                         JSONObject(requestMap["header"].toString())
-                    //println("mock:" + mockHeaders);
-                    //println("req:" + requestHeaders);
+                    //println("mockHeader:" + mockHeaders);
+                    //println("reqHeader:" + requestHeaders);
                     val keys: Iterator<*> = mockHeaders.keys()
                     while (keys.hasNext()) {
                         val key = keys.next() as String
