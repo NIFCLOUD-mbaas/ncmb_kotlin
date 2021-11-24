@@ -172,11 +172,11 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
             //通知起動時のActivityクラスを作成
             startClass = Class.forName(activityName!!)
         } catch (e: PackageManager.NameNotFoundException) {
-            throw NCMBException(IllegalArgumentException(e))
+            throw NCMBException(e)
         } catch (e: ClassNotFoundException) {
-            throw NCMBException(IllegalArgumentException(e))
+            throw NCMBException(e)
         } catch (e: JSONException) {
-            throw NCMBException(IllegalArgumentException(e))
+            throw NCMBException(e)
         }
 
         //通知エリアに表示されるプッシュ通知をタップした際に起動するアクティビティ画面を設定する

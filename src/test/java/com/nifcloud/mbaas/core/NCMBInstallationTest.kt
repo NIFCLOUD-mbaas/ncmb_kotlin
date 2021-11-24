@@ -122,6 +122,7 @@ class NCMBInstallationTest {
         val result = obj.fetch()
         Assert.assertEquals(result.getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals(result.get("key"), "value")
+        Assert.assertNotNull(obj)
     }
 
     @Test
@@ -131,5 +132,7 @@ class NCMBInstallationTest {
         obj.setObjectId("7FrmPTBKSNtVjajm")
         val result = obj.delete()
         Assert.assertNull(result)
+        Assert.assertNotNull(obj)
+        Assert.assertNull(NCMBInstallation.installation)
     }
 }

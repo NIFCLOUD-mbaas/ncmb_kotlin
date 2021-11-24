@@ -325,7 +325,7 @@ class NCMBInstallation : NCMBObject {
             updateJson = try {
                 createUpdateJsonData()
             } catch (e: JSONException) {
-                throw IllegalArgumentException(e.message)
+                throw NCMBException(e)
             }
             //responseData = installationService.updateInstallation(getObjectId(), updateJson)
         }

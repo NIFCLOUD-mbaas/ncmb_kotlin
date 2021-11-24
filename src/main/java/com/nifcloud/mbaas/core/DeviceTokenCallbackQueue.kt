@@ -3,35 +3,35 @@ package com.nifcloud.mbaas.core
 import java.util.*
 
 internal class DeviceTokenCallbackQueue private constructor() {
-    private var queue: Queue<NCMBCallback>? = null
+    private var queue: Queue<NCMBCallback> = ArrayDeque()
     val isDuringSaveInstallation: Boolean
-        get() = queue != null
+        get() = queue.isNotEmpty()
 
     fun beginSaveInstallation() {
-        if (queue == null) {
+        if (queue.isEmpty()) {
             queue = LinkedList<NCMBCallback>()
         }
     }
 
     fun addQueue(callback: NCMBCallback) {
         beginSaveInstallation()
-        queue!!.add(callback)
+        queue.add(callback)
     }
 
     fun execQueue(token: String?, e: NCMBException?) {
-        if (queue == null) {
+        if (queue.isEmpty()) {
             return
         }
-        var callback: NCMBCallback? = queue!!.poll()
+        var callback: NCMBCallback? = queue.poll()
         while (callback != null) {
             callback.done(e, token)
-            callback = queue!!.poll()
+            callback = queue.poll()
         }
         endSaveInstallation()
     }
 
     fun endSaveInstallation() {
-        queue = null
+        queue = ArrayDeque()
     }
 
     companion object {

@@ -27,6 +27,20 @@ response:
     file: valid_get_logout_error_response.json
 ---
 request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: DELETE
+response:
+    status: 500
+    file: valid_delete_installation_error_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: GET
+response:
+    status: 500
+    file: valid_get_installation_error_response.json
+---
+request:
     url: /2013-09-01/installations
     method: POST
 response:

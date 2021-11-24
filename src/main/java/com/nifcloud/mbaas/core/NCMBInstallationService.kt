@@ -249,44 +249,6 @@ class NCMBInstallationService: NCMBService() {
     }
 
     /**
-     * Delete installation object in background
-     *
-     * @param objectId objectId
-     * @param callback DoneCallback
-     */
-    fun deleteInstallationInBackground(objectId: String?, deleteCallback: NCMBCallback) {
-        try {
-            //null check
-            if (objectId == null) {
-                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
-            }
-            val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId
-            val method = NCMBRequest.HTTP_METHOD_DELETE
-            val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-            val params = RequestParams(url = url, method = method, contentType = contentType).params
-            val query =  RequestParams(url = url, method = method, contentType = contentType).query
-            val deleteHandler = NCMBHandler{ deletecallback, response ->
-                when (response) {
-                    is NCMBResponse.Success -> {
-                        if (response.resCode !== HTTP_STATUS_INSTALLATION_GOTTEN) {
-                            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.")
-                        }
-                        clearCurrentInstallation()
-                    }
-                    is NCMBResponse.Failure -> {
-                        throw response.resException
-                    }
-                }
-            }
-            sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
-        } catch (error: NCMBException) {
-            //currentInstallation auto delete
-            checkDataNotFound(objectId, error.code)
-            throw error
-        }
-    }
-
-    /**
      * Get installation object
      *
      * @param objectId object id
