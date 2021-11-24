@@ -9,7 +9,12 @@ class NCMBGeoPoint {
     var mlatitude: Double
     var mlongitude: Double
 
-    /// 例外処理
+    /**
+     * exception handling of latitude and longitude
+     *
+     * @param latitude  value set as latitude
+     * @param longitude value set as longitude
+     */
     @Throws(NCMBException::class)
     fun validate(latitude: Double, longitude: Double): Pair<Double, Double> {
         if (latitude < -90.0 || latitude > 90) {
