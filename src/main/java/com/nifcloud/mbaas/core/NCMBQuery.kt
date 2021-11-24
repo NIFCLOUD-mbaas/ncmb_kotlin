@@ -21,6 +21,10 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
+import org.json.JSONArray
+
+
+
 
 
 /**
@@ -119,11 +123,98 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
+     * set the conditions to search the data that contains value of the specified key
+     * @param key field name to set the conditions
+     * @param objects condition objects
+     */
+    fun whereContainedIn(key: String, objects: Collection<Any>) {
+        try {
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$in", objects))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * set the conditions to search the data that contains elements of array in the specified key
+     * @param key field name to set the conditions (search field must be Array type field)
+     * @param elements condition elements in the specified key array
+     */
+    fun whereContainedInArray(key: String, objects: Collection<Any>) {
+        try {
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$inArray", objects))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+
+    /**
+     * set the conditions to search the data that contains elements of array in the specified key
+     * @param key field name to set the conditions (search field must be Array type field)
+     * @param elements condition elements in the specified key array
+     */
+    fun whereNotContainedInArray(key: String, objects: Collection<Any>) {
+        try {
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$ninArray", objects))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * set the conditions to search the data that not contains value of the specified key
+     * @param key field name to set the conditions
+     * @param objects condition objects
+     */
+    fun whereNotContainedIn(key: String, objects: Collection<Any>) {
+        try {
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$nin", objects))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * set the conditions to search the data that contains all elements of array in the specified key
+     * @param Arraykey field name to set the conditions (search field must be Array type field)
+     * @param elements condition elements in the specified key array
+     */
+    fun whereContainsAll(key: String, elements: Collection<Any>) {
+        try {
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$all", elements))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+
+    /**
      * Constructor
      * @param className class name string for search data
      */
     init {
         mWhereConditions = JSONObject()
+    }
+
+    //Add new search condition (new 'operand' and 'value') for 'key', and return added search Condition for key
+    internal fun addSearchConditionArray(key: String, operand: String, objects: Collection<Any>):JSONObject {
+        var newCondition = JSONObject()
+        if (mWhereConditions.has(key)) {
+            val currentCondition = mWhereConditions[key]
+            if (currentCondition is JSONObject) {
+                        newCondition = currentCondition
+            }
+            else {
+                throw NCMBException(NCMBException.GENERIC_ERROR, "Cannot set other search condition for key which already set whereEqualTo search condition")
+            }
+        }
+        val array = JSONArray()
+        for (value in objects) {
+            array.put(convertConditionValue(value))
+        }
+        newCondition.put(operand, array)
+        return newCondition
     }
 
 }
