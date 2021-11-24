@@ -141,6 +141,7 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
             通知タップ起動時のactivityNameをファイル内指定のactivityNameに更新する
             */
             val channel = pushData.getString("com.nifcloud.mbaas.Channel")
+            println("channel = $channel")
             if (channel != null) {
                 val channelDirectory = File(
                     getDir(
