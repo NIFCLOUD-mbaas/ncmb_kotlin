@@ -29,8 +29,11 @@ import java.util.Date
 
 //プライベートコンストラクターとしてcompanion object内にあるfor〇〇メソッドを用いて、インスタンスを取得する
 class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val service:NCMBServiceInterface<T>){
+  
     private var mWhereConditions: JSONObject = JSONObject()
+    private var mCountCondition: Int = 0
     private var order: List<String> = ArrayList()
+    
     var limit: Int = 0 // default value is 0 (valid limit value is 1 to 1000)
         set(value) {
             if (value < 1 || value >1000 ) {
@@ -40,6 +43,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
                 )
             }
         }
+        
     var skip: Int = 0 // default value is 0 (valid skip value is >0 )
         set(value) {
             if (value < 0 ) {
@@ -49,12 +53,12 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
                 )
             }
         }
+
     companion object {
         fun forObject(className: String): NCMBQuery<NCMBObject> {
             return NCMBQuery<NCMBObject>(className, NCMBObjectService())
         }
     }
-
 
     /**　TODO
      * search data from NIFCLOUD mobile backend
@@ -74,6 +78,26 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         service.findInBackground(mClassName, query, findCallback)
     }
 
+    /**　TODO
+     * get total number of search result from NIFCLOUD mobile backend
+     * @return total number of search result
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun count(): Int {
+        mCountCondition = 1
+        return service.count(mClassName, query)
+    }
+
+    /**
+     * get total number of search result from NIFCLOUD mobile backend asynchronously
+     * @param callback executed callback after data search
+     */
+    fun countInBackground(countCallback: NCMBCallback) {
+        mCountCondition = 1
+        service.countInBackground(mClassName, query, countCallback)
+    }
+
     /**
      * get current search condition
      * @return current search condition
@@ -81,8 +105,11 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     val query: JSONObject
         get() {
             val query = JSONObject()
-            if (mWhereConditions != null && mWhereConditions.length() > 0) {
-                query.put("where", mWhereConditions)
+            if (mWhereConditions.length() > 0) {
+                query.put(NCMBQueryConstants.REQUEST_PARAMETER_WHERE, mWhereConditions)
+            }
+            if (mCountCondition > 0) {
+                query.put(NCMBQueryConstants.REQUEST_PARAMETER_COUNT,1)
             }
             if (limit > 0 ) {
                 query.put(NCMBQueryConstants.REQUEST_PARAMETER_LIMIT, limit)

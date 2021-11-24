@@ -217,6 +217,28 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testNCMBObject_DoCountInBackground_Equal_Success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClassCount")
+        query.whereEqualTo("key", "value");
+        val callback = NCMBCallback { e, number ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["number"] = number
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        inBackgroundHelper.start()
+        query.countInBackground(callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals(
+            inBackgroundHelper["number"] ,
+            50
+        )
+    }
+
+    @Test
     fun testNCMBObject_DoSearchSync_Asc() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassAsc")
@@ -269,6 +291,17 @@ class NCMBQueryTest {
         Assert.assertEquals(
             (objects[2] as NCMBObject).getObjectId(),
             "8FgKqFlH8dZRDrBJ"
+        )
+    }
+    
+    @Test    
+    fun testNCMBObject_DoCount_Equal_Success() {
+        val query = NCMBQuery.forObject("TestClassCount")
+        query.whereEqualTo("key", "value");
+        val number = query.count()
+        Assert.assertEquals(
+            50,
+            number
         )
     }
 
