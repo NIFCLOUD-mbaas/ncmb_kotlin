@@ -10,7 +10,7 @@ class NCMBGeoPoint {
     var mlongitude: Double
 
     /**
-     * exception handling of latitude and longitude
+     * validate input latitude and longitude value. (latitude:-90~90, longitude:-180~180)
      *
      * @param latitude  value set as latitude
      * @param longitude value set as longitude
