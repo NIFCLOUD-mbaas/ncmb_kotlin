@@ -23,10 +23,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import org.json.JSONArray
 
-
-
-
-
 /**
  * NCMBQuery is used to search data from NIFCLOUD mobile backend
  */
