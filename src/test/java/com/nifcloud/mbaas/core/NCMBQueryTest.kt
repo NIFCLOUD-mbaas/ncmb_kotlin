@@ -285,12 +285,24 @@ class NCMBQueryTest {
             "YpfmeOtRkZJeRQWZ"
         )
         Assert.assertEquals(
+            (objects[0] as NCMBObject).getString("key"),
+            "value3"
+        )
+        Assert.assertEquals(
             (objects[1] as NCMBObject).getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
         Assert.assertEquals(
+            (objects[1] as NCMBObject).getString("key"),
+            "value2"
+        )
+        Assert.assertEquals(
             (objects[2] as NCMBObject).getObjectId(),
             "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (objects[2] as NCMBObject).getString("key"),
+            "value1"
         )
     }
     
