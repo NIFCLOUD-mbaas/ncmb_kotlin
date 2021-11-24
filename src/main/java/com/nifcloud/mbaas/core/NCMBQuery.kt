@@ -29,8 +29,30 @@ import java.util.Date
 
 //プライベートコンストラクターとしてcompanion object内にあるfor〇〇メソッドを用いて、インスタンスを取得する
 class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val service:NCMBServiceInterface<T>){
+  
     private var mWhereConditions: JSONObject = JSONObject()
     private var mCountCondition: Int = 0
+    private var order: List<String> = ArrayList()
+    
+    var limit: Int = 0 // default value is 0 (valid limit value is 1 to 1000)
+        set(value) {
+            if (value < 1 || value >1000 ) {
+                throw NCMBException(
+                    NCMBException.GENERIC_ERROR,
+                    "Need to set limit value from 1 to 1000"
+                )
+            }
+        }
+        
+    var skip: Int = 0 // default value is 0 (valid skip value is >0 )
+        set(value) {
+            if (value < 0 ) {
+                throw NCMBException(
+                    NCMBException.GENERIC_ERROR,
+                    "Need to set skip value > 0"
+                )
+            }
+        }
 
     companion object {
         fun forObject(className: String): NCMBQuery<NCMBObject> {
@@ -38,8 +60,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         }
     }
 
-
-    /**　TODO
+    /**
      * search data from NIFCLOUD mobile backend
      * @return NCMBObject(include extend class) list of search result
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
@@ -57,7 +78,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         service.findInBackground(mClassName, query, findCallback)
     }
 
-    /**　TODO
+    /**
      * get total number of search result from NIFCLOUD mobile backend
      * @return total number of search result
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
@@ -89,6 +110,16 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             }
             if (mCountCondition > 0) {
                 query.put(NCMBQueryConstants.REQUEST_PARAMETER_COUNT,1)
+            }
+            if (limit > 0 ) {
+                query.put(NCMBQueryConstants.REQUEST_PARAMETER_LIMIT, limit)
+            }
+            if (skip > 0 ) {
+                query.put(NCMBQueryConstants.REQUEST_PARAMETER_SKIP, skip)
+            }
+
+            if (order.size > 0) {
+                query.put("order", order.joinToString(separator = "," ))
             }
             return  query
         }
@@ -130,6 +161,16 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             mWhereConditions.put(key, addSearchCondition(key, "\$ne" , value))
         } catch (e: JSONException) {
             throw NCMBException(e)
+        }
+    }
+    
+    /**
+     * set the conditions to search the data by ascending order with specified field name (key)
+     * @param key field name for order by ascending
+     */
+    fun addOrderByAscending(key: String) {
+        if(key != "") {
+            order += key
         }
     }
 
@@ -200,6 +241,17 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         }
         newCondition.put(operand, convertConditionValue(value))
         return newCondition
+    }
+    
+    
+    /**
+     * set the conditions to search the data by descending order with specified field name (key)
+     * @param key field name for order by ascending
+     */
+    fun addOrderByDescending(key: String) {
+        if(key != "") {
+            order += "-"　+　key
+        }
     }
 
     /**
