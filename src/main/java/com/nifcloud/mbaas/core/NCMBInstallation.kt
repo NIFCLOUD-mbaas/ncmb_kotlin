@@ -28,6 +28,13 @@ import com.nifcloud.mbaas.core.NCMBLocalFile.create
 import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.*
+import android.content.ContentValues.TAG
+import com.google.android.gms.tasks.OnCanceledListener
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
+import java.io.IOException
 import java.util.Arrays
 
 /**
@@ -186,7 +193,7 @@ class NCMBInstallation : NCMBObject {
      *
      * @param value device token
      */
-    internal var deviceToken: String
+    var deviceToken: String
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TOKEN)) {
@@ -299,10 +306,33 @@ class NCMBInstallation : NCMBObject {
     }
     // endregion
     //region save
-    //todo
-//    @Throws(NCMBException::class)
-//    fun saveInstallation() {
-//    }
+    /**
+     * Save installation object
+     *
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun save(): NCMBObject {
+        //connect
+        val installationService = NCMBInstallationService()
+        val responseData: JSONObject
+        if (getObjectId() == null) {
+            //new create
+            //responseData = installationService.createInstallation(localDeviceToken, mFields)
+        } else {
+            //update
+            var updateJson: JSONObject? = null
+            updateJson = try {
+                createUpdateJsonData()
+            } catch (e: JSONException) {
+                throw NCMBException(e)
+            }
+            //responseData = installationService.updateInstallation(getObjectId(), updateJson)
+        }
+        //localData = responseData
+        mUpdateKeys.clear()
+        return this
+    }
 
     /**
      * Save installation object inBackground
@@ -320,7 +350,7 @@ class NCMBInstallation : NCMBObject {
                 installationService.saveInstallationInBackground(
                     this,
                     deviceToken,
-                    this.mFields,
+                    this.createRegisterJsonData(),
                     saveCallback
                 )
             }
@@ -345,6 +375,62 @@ class NCMBInstallation : NCMBObject {
                 saveCallback.done(
                     NCMBException(e)
                 )
+            }
+        }
+    }
+    /**
+     * Get device token
+     *
+     * @param callback TokenCallback
+     */
+    fun getDeviceTokenInBackground(callback: NCMBCallback) {
+        val instance = DeviceTokenCallbackQueue.instance
+        if(instance != null) {
+            if (instance.isDuringSaveInstallation) {
+                instance.addQueue(callback)
+                return
+            }
+        }
+        val context = NCMB.getCurrentContext()
+        if(context != null) {
+            if (FirebaseApp.getApps(context.applicationContext).isEmpty()) {
+                callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
+                return
+            }
+        }
+        val deviceToken = deviceToken
+        if (deviceToken != "") {
+            callback.done(null, deviceToken)
+            return
+        }
+        getDeviceTokenInternalProcess(callback)
+    }
+
+    /**
+     * Get device token (Internal Process)
+     *
+     * @param callback TokenCallback
+     */
+    fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
+        val context = NCMB.getCurrentContext()
+        if(context!= null) {
+            if (FirebaseApp.getApps(context.applicationContext).isNotEmpty()) {
+                FirebaseMessaging.getInstance().token
+                    .addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
+                            //return@OnCompleteListener
+                        } else {
+                            callback.done(null, task.result)
+                        }
+                        // Get new FCM registration token
+                    }).addOnCanceledListener(OnCanceledListener {
+                        fun onCanceled() {
+                            callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
+                        }
+                    })
+            } else {
+                callback.done(NCMBException(IOException(CANNOT_GET_DEVICE_TOKEN_MESSAGE)))
             }
         }
     }
@@ -420,5 +506,31 @@ class NCMBInstallation : NCMBObject {
             }
             return installation as NCMBInstallation
         }
+    }
+
+    @Throws(NCMBException::class)
+    override fun fetch(): NCMBInstallation {
+        val objectId = getObjectId()
+        val installationService = NCMBInstallationService()
+        if (objectId != null) {
+            // 保存後に実施するsaveCallbackを渡す
+            installationService.fetchInstallation(this, objectId)
+        }
+        return this
+    }
+
+    /**
+     * save current NCMBObject to data store
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun delete(): NCMBInstallation? {
+        val objectId = getObjectId()
+        val installationService = NCMBInstallationService()
+        if (objectId != null) {
+            // 保存後に実施するsaveCallbackを渡す
+            installationService.deleteInstallation(objectId)
+        }
+        return null
     }
 }

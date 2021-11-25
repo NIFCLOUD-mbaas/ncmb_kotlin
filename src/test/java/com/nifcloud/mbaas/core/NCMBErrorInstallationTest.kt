@@ -98,4 +98,34 @@ class NCMBErrorInstallationTest {
         inBackgroundHelper.await()
         Assert.assertEquals("Duplication Error.", (inBackgroundHelper["e"] as NCMBException).message)
     }
+
+    @Test
+    @Throws(NCMBException::class)
+    fun fetch_installation_with_get_failure() {
+        val obj = NCMBInstallation()
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        try {
+            obj.fetch()
+        }
+        catch(e: NCMBException){
+            Assert.assertEquals(NCMBException.INTERNAL_SERVER_ERROR, e.code)
+        }
+        Assert.assertNotNull(obj)
+    }
+
+    @Test
+    @Throws(NCMBException::class)
+    fun delete_installation_failure() {
+        NCMBInstallation.installation = NCMBInstallation()
+        val obj = NCMBInstallation()
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        try {
+            obj.delete()
+        }
+        catch(e: NCMBException){
+            Assert.assertEquals(NCMBException.INTERNAL_SERVER_ERROR, e.code)
+        }
+        Assert.assertNotNull(obj)
+        Assert.assertNotNull(NCMBInstallation.installation)
+    }
 }
