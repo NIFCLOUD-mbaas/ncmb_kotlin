@@ -215,6 +215,285 @@ NCMB.initializeの下に以下を記載します。
     })
 ```
 
+#### オブジェクトの検索
+
+データストアに登録しているデータを検索を行います。検索する際、NCMBQueryのインスタンスを作成し、
+検索する対象クラスを設定します。検索条件をNCMBQueryが提供しているメソッドにて設定できます。同時に設定可能ですが、
+whereEqualToを同時に設定について、以下の注意点がありますので、ご確認ください。
+- 既に他検索条件を設定したfieldにwhereEqualToを設定すると、whereEqualToが他検索条件を上書きします
+- 既にwhereEqualToを設定しているfieldに対して、他検索条件の設定を不可能とします
+
+検索で利用する検索条件の記載方法をサンプルコードを参考にご確認ください。
+
+サンプルコードは以下のデータに対する検索と前提します。
+
+TestClassクラスのデータ状況
+
+| objectId  | keyArray | KeyInt | KeyString |
+| ------------- | ------------- |
+| "46c8nUDkxMO3PhGN" |  [1,2] |  1 |  "a"  |
+| "YpfmeOtRkZJeRQWZ" |  [4,2] |  4 |  "b"  |
+| "mU7EsljXS0AGF2sP" |  [1,2,3] | 2 | "c"  |
+
+##### オブジェクト検索（非同期処理）
+
+非同期処理の場合、findInBackgroundのメソッドを利用します。コールバック処理を事前に指定することで、
+検索結果が帰った時にログに表示などすることができます。
+
+```kotlin
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("KeyString", "a")
+        query.findInBackground (NCMBCallback { e, objects ->
+            if (e != null) {
+                //エラー時の処理
+                println( "検索に失敗しました。エラー:" + e.message)
+            } else {
+                //成功時の処理
+                println("検索に成功しました。")
+                if(objects is List<*>) {
+                    for (obj:Any? in objects) {
+                        if (obj is NCMBObject) {
+                            println(obj.getObjectId())
+                        }
+                    }
+                }
+            }
+        })
+```
+実行結果
+```text
+検索に成功しました。
+46c8nUDkxMO3PhGN
+```
+
+#### オブジェクト検索（同期処理）
+
+同期処理の場合、findのメソッドを利用します。詳細は以下のサンプルをご参考ください。
+
+```kotlin
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("KeyString", "a")
+        try {
+            val objects = query.find()
+            println("検索に成功しました。")
+            for (obj: Any in objects) {
+                if(obj is NCMBObject) {
+                    println(obj.getObjectId())
+                }
+            }
+        }catch(e: NCMBException) {
+            print("検索に失敗しました。エラー:" + e.message)
+        }
+```
+実行結果
+```text
+検索に成功しました。
+46c8nUDkxMO3PhGN
+```
+
+##### オブジェクト検索結果をカウント（非同期処理）
+
+非同期処理の場合、検索結果をカウントするにはcountInBackgroundのメソッドを利用します。コールバック処理を事前に指定することで、
+実施結果が帰った時にログに表示などすることができます。
+
+```kotlin
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("KeyString", "a")
+        query.countInBackground (NCMBCallback { e, countNum ->
+            if (e != null) {
+                //エラー時の処理
+                println( "検索に失敗しました。エラー:" + e.message)
+            } else {
+                //成功時の処理
+                println("検索カウントに成功しました。件数：" + countNum)
+            }
+        })
+```
+実行結果
+```text
+検索カウントに成功しました。件数：1
+```
+
+#### オブジェクト検索結果をカウント（同期処理）
+
+同期処理の場合、countのメソッドを利用します。詳細は以下のサンプルをご参考ください。
+
+```kotlin
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("KeyString", "a")
+        try {
+            val numCount = query.count()
+            println("検索に成功しました。" + numCount)
+        }catch(e: NCMBException) {
+            print("検索カウントに失敗しました。エラー:" + e.message)
+        }
+```
+実行結果
+```text
+検索に成功しました。1
+```
+
+##### オブジェクト検索の検索条件を指定
+
+- 等しい: whereEqualToメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.whereEqualTo("KeyString", "a")
+```
+実行結果
+```text
+検索に成功しました。
+46c8nUDkxMO3PhGN
+```
+
+- 等しくない: whereNotEqualToメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.whereNotEqualTo("KeyString", "a")
+```
+実行結果
+```text
+検索に成功しました。
+mU7EsljXS0AGF2sP
+YpfmeOtRkZJeRQWZ
+```
+
+- より小さい: whereLessThanメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.whereLessThan("keyInt", 2)
+```
+実行結果
+```text
+検索に成功しました。
+46c8nUDkxMO3PhGN
+```
+
+- より大きい: whereGreaterThanメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.whereGreaterThan("keyInt", 2)
+```
+実行結果
+```text
+検索に成功しました。
+YpfmeOtRkZJeRQWZ
+```
+
+- 以下: whereLessThanOrEqualToメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.whereLessThanOrEqualTo("keyInt", 2)
+```
+実行結果
+```text
+検索に成功しました。
+mU7EsljXS0AGF2sP
+46c8nUDkxMO3PhGN
+```
+
+- 以上: whereGreaterThanOrEqualToメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.whereGreaterThanOrEqualTo("keyInt", 2)
+```
+実行結果
+```text
+検索に成功しました。
+mU7EsljXS0AGF2sP
+YpfmeOtRkZJeRQWZ
+```
+
+- いずれかが含まれる: whereContainedInメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+val objs = setOf<Int>(1,2,3)
+query.whereContainedIn("keyInt", objs)
+```
+実行結果
+```text
+検索に成功しました。
+mU7EsljXS0AGF2sP
+46c8nUDkxMO3PhGN
+```
+
+- いずれも含まれない: whereNotContainedInメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+val objs = setOf<Int>(1,2,3)
+query.whereNotContainedIn("keyInt", objs)
+```
+実行結果
+```text
+検索に成功しました。
+YpfmeOtRkZJeRQWZ
+```
+
+- （配列の検索）いずれかが含まれる: whereContainedInArrayメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+val objs = setOf<Int>(1,2,3)
+query.whereContainedInArray("keyArray", objs)
+```
+実行結果
+```text
+検索に成功しました。
+mU7EsljXS0AGF2sP
+YpfmeOtRkZJeRQWZ
+46c8nUDkxMO3PhGN
+```
+
+- （配列の検索）いずれも含まれない: whereNotContainedInArrayメソッドを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+val objs = setOf<Int>(3,4)
+query.whereNotContainedInArray("keyArray", objs)
+```
+実行結果
+```text
+検索に成功しました。
+46c8nUDkxMO3PhGN
+```
+
+- 取得件数を指定する: Limitを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.limit = 2
+```
+
+- 開始位置を指定する: skipを利用
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.skip = 1
+```
+
+- 並び順を指定する（昇順）
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.addOrderByAscending("keyString")
+```
+実行結果
+```text
+検索に成功しました。
+46c8nUDkxMO3PhGN
+YpfmeOtRkZJeRQWZ
+mU7EsljXS0AGF2sP
+```
+
+- 並び順を指定する（降順）
+```kotlin
+val query = NCMBQuery.forObject("TestClass")
+query.addOrderByDescending("keyString")
+```
+
+実行結果
+```text
+検索に成功しました。
+mU7EsljXS0AGF2sP
+YpfmeOtRkZJeRQWZ
+46c8nUDkxMO3PhGN
+```
+
 ### 会員管理
 
 #### ユーザーの新規登録
