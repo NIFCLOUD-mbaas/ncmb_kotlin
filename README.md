@@ -6,7 +6,7 @@
 
   - データストア(デベロッパープレビュー版提供)
   - 会員管理(デベロッパープレビュー版提供)
-  - プッシュ通知 (未提供)
+  - プッシュ通知 (デベロッパープレビュー版提供)
   - ファイルストア(未提供)
   - SNS連携(未提供)
 
@@ -313,6 +313,111 @@ NCMB.initializeの下に以下を記載します。
             //保存に成功した場合の処理
             val result = ncmbObj as NCMBObject
             Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
+        }
+    })
+```
+
+### push通知
+
+* ライブラリのインストール
+
+プロジェクトのbuild.gradleファイルを編集する
+```
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.0.2"
+        classpath 'com.google.gms:google-services:4.3.4'
+    }
+}
+```
+
+appフォルダ内のbuild.gradleファイルを編集する
+```
+repositoriesを追加
+repositories {
+    maven {
+        url 'https://maven.google.com'
+    }
+}
+```
+
+デフォルトで書かれているdependenciesに追加（ない場合は、追記必要あり）
+```
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    implementation 'com.google.android.gms:play-services-base:17.6.0'
+    implementation 'com.google.code.gson:gson:2.3.1'
+    implementation files('libs/NCMB.jar')
+}
+```
+
+* AndroidManifest.xmlの編集
+
+&lt;application&gt;タグの直前に以下のpermissionを追加します。
+
+android.permission.VIBRATEが不要な場合は削除しても構いません。
+
+```
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.VIBRATE" />
+```
+
+次に、applicationタグの要素としてserviceの登録を行います。
+
+```
+ <service
+     android:name="com.nifcloud.mbaas.core.NCMBFirebaseMessagingService"
+     android:exported="false">
+     <intent-filter>
+         <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+     </intent-filter>
+ </service>
+```
+
+次に、meta-dataの設定で、Activityの設定のみ必須です。
+
+```
+<!-- プッシュ通知タップ時に起動するActivityの設定 ※必須の設定 -->
+<meta-data android:name="openPushStartActivity" android:value=".MainActivity"/>
+<!-- プッシュ通知のchannel idの設定 -->
+<meta-data android:name="ChannelId" android:value="YOUR_CHANNEL_ID"/>
+<!-- プッシュ通知のchannel名の設定  -->
+<meta-data android:name="ChannelName" android:value="YOUR_CHANNEL_NAME"/>
+<!-- プッシュ通知のchannel 説明の設定  -->
+<meta-data android:name="ChannelDescription" android:value="YOUR_CHANNEL_DESCRIPTION"/>
+```
+
+#### 配信端末情報の登録
+
+ActivityのonCreate内のinitializeメソッドの下に以下を記載します。
+
+```kotlin
+    NCMB.initialize(this.getApplicationContext(),"YOUR_APPLICATION_KEY","YOUR_CLIENT_KEY");
+    //ここに記載
+    NCMBInstallation().getDeviceTokenInBackground(NCMBCallback { e, deviceToken ->
+        if (e != null) {
+            Log.d("error", "devicetoken GET ERROR : " + e.message)
+        } else {
+            Log.d("success", "deviceToken :" + deviceToken)
+            var installationObj = NCMBInstallation.getCurrentInstallation()
+            installationObj.deviceToken = deviceToken as String
+            installationObj.saveInBackground(NCMBCallback { e, ncmbInstallation ->
+                if (e != null) {
+                    Log.d("error","installation SAVE ERROR : " + e.message)
+                } else {
+                    val result = ncmbInstallation as NCMBInstallation
+                    Log.d("success","installation DONE ObjectID :" + result.getObjectId())
+                }
+            })
         }
     })
 ```
