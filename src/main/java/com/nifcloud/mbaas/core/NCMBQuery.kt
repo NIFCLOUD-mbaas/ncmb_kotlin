@@ -250,7 +250,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun addOrderByDescending(key: String) {
         if(key != "") {
-            order += "-"　+　key
+            order += "-"+key
         }
     }
 
