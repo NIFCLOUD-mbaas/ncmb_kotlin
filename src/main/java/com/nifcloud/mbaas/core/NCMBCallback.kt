@@ -16,6 +16,8 @@
 
 package com.nifcloud.mbaas.core
 
+import org.json.JSONObject
+
 /**
  * A class of ncmb_kotlin.
  *
@@ -48,5 +50,11 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
         //do sthing here for callback
         passCallback(e, objList)
     }
+    fun done(e: NCMBException?, token: String?){
+        passCallback(e, token)
+    }
 
+    fun done(e: NCMBException?, responseData: JSONObject) {
+        passCallback(e, responseData)
+    }
 }

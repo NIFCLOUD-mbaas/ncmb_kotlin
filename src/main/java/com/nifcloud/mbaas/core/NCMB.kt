@@ -17,6 +17,7 @@
 package com.nifcloud.mbaas.core
 
 import android.content.Context
+import android.os.Build
 
 /**
  * A class of ncmb_kotlin.
@@ -83,7 +84,7 @@ class NCMB {
         // SharedPreferences file name
         private const val PREFERENCE_FILE_NAME = "NCMB"
 
-        private var CURRENT_CONTEXT: Context? = null
+        var CURRENT_CONTEXT: Context? = null
         var APPLICATION_KEY = ""
         var CLIENT_KEY = ""
         var API_BASE_URL = ""
@@ -110,6 +111,12 @@ class NCMB {
             API_BASE_URL = "$DOMAINURL$APIVERSION/"
             TIMEOUT = DEFAULT_API_TIMEOUT
             CURRENT_CONTEXT = context
+
+            //チャネル登録
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val utils = NCMBNotificationUtils(context)
+                utils.settingDefaultChannels()
+            }
         }
 
         /**
