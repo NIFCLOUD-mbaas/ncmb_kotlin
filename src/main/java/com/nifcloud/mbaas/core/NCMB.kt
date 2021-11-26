@@ -115,7 +115,8 @@ class NCMB {
         }
 
         /**
-         * apikeyの初期化
+         * push機能ご利用者用メソッド
+         * channelの設定、devicetokenの登録
          */
         fun initializePush(context: Context){
             //チャネル登録
