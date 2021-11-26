@@ -238,7 +238,7 @@ TestClassクラスのデータ状況
 ##### オブジェクト検索（非同期処理）
 
 非同期処理の場合、findInBackgroundのメソッドを利用します。コールバック処理を事前に指定することで、
-検索結果が帰った時にログに表示などすることができます。
+検索結果が返った時、ログなどに表示することができます。
 
 ```kotlin
         val query = NCMBQuery.forObject("TestClass")
