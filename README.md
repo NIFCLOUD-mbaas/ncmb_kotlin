@@ -322,8 +322,7 @@ NCMB.initializeの下に以下を記載します。
 * google-services.jsonとFirebase秘密鍵の設定
 FCM対応したプッシュ通知を送信する場合、google-services.jsonをアプリに配置してただくのと、Firebaseプロジェクトの秘密鍵をmobile backendにアップロードしていただく必要があります。
 以下のドキュメントを参考に、google-services.jsonとFirebase秘密鍵の設定を行ってください。
-
-[google-services.jsonとFirebase秘密鍵の設定方法について](https://mbaas.nifcloud.com/doc/current/common/push_setup_fcm_json.html)
+  * [google-services.jsonとFirebase秘密鍵の設定方法について](https://mbaas.nifcloud.com/doc/current/common/push_setup_fcm_json.html)
 
 * ニフクラ mobile backendでの設定
 次に、ニフクラ mobile backendでプッシュ通知の設定を行います。
