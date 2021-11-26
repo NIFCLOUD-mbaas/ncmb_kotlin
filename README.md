@@ -319,6 +319,18 @@ NCMB.initializeの下に以下を記載します。
 
 ### push通知
 
+* google-services.jsonとFirebase秘密鍵の設定
+FCM対応したプッシュ通知を送信する場合、google-services.jsonをアプリに配置してただくのと、Firebaseプロジェクトの秘密鍵をmobile backendにアップロードしていただく必要があります。
+以下のドキュメントを参考に、google-services.jsonとFirebase秘密鍵の設定を行ってください。
+
+"google-services.jsonとFirebase秘密鍵の設定方法について":https://mbaas.nifcloud.com/doc/current/common/push_setup_fcm_json.html
+
+* ニフクラ mobile backendでの設定
+次に、ニフクラ mobile backendでプッシュ通知の設定を行います。
+
+アプリ設定から、左メニューのプッシュ通知の項目を選択してください。
+プッシュ通知の許可設定を行う部分があるので、「許可する」に変更して変更を保存してください。
+
 * ライブラリのインストール
 
 プロジェクトのbuild.gradleファイルを編集する
@@ -338,19 +350,16 @@ buildscript {
 
 appフォルダ内のbuild.gradleファイルを編集する
 ```
-repositoriesを追加
-repositories {
-    maven {
-        url 'https://maven.google.com'
-    }
-}
+apply plugin: 'com.google.gms.google-services'
 ```
 
 デフォルトで書かれているdependenciesに追加（ない場合は、追記必要あり）
 ```
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation platform('com.google.firebase:firebase-bom:28.4.0')
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.android.gms:play-services-base:17.6.0'
     implementation 'com.google.code.gson:gson:2.3.1'
     implementation files('libs/NCMB.jar')
@@ -383,7 +392,8 @@ android.permission.VIBRATEが不要な場合は削除しても構いません。
  </service>
 ```
 
-次に、meta-dataの設定で、Activityの設定のみ必須です。
+次に、meta-dataの設定もapplicationタグの要素として追加します。
+プッシュ通知タップ時に起動するActivityの設定のみ必須です。
 
 ```
 <!-- プッシュ通知タップ時に起動するActivityの設定 ※必須の設定 -->
@@ -403,23 +413,7 @@ ActivityのonCreate内のinitializeメソッドの下に以下を記載します
 ```kotlin
     NCMB.initialize(this.getApplicationContext(),"YOUR_APPLICATION_KEY","YOUR_CLIENT_KEY");
     //ここに記載
-    NCMBInstallation().getDeviceTokenInBackground(NCMBCallback { e, deviceToken ->
-        if (e != null) {
-            Log.d("error", "devicetoken GET ERROR : " + e.message)
-        } else {
-            Log.d("success", "deviceToken :" + deviceToken)
-            var installationObj = NCMBInstallation.getCurrentInstallation()
-            installationObj.deviceToken = deviceToken as String
-            installationObj.saveInBackground(NCMBCallback { e, ncmbInstallation ->
-                if (e != null) {
-                    Log.d("error","installation SAVE ERROR : " + e.message)
-                } else {
-                    val result = ncmbInstallation as NCMBInstallation
-                    Log.d("success","installation DONE ObjectID :" + result.getObjectId())
-                }
-            })
-        }
-    })
+    NCMB.initializePush(this.getApplicationContext())
 ```
 
 # 参考URL集
