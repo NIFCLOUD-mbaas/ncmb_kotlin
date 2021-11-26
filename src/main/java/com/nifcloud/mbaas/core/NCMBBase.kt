@@ -45,8 +45,8 @@ open class NCMBBase(){
         }
         internal set
 
-    //protected var mIgnoreKeys= listOf<String>()
-    protected var mIgnoreKeys: List<String>? = null
+    protected var mIgnoreKeys= listOf<String>()
+    //protected var mIgnoreKeys: List<String>? = null
 
     protected var keys = HashSet<String>()
 

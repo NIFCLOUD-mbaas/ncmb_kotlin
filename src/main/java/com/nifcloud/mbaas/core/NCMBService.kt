@@ -175,6 +175,23 @@ open class NCMBService {
         )
     }
 
+    /**
+     * Send request in asynchronously
+     *
+     * @param params      Request Parameters For Async method
+     */
+    fun sendRequestAsync(params: RequestParamsAsync ) {
+        return this.sendRequestAsync(
+            params.url,
+            params.method,
+            params.params,
+            params.contentType,
+            params.query,
+            params.callback,
+            params.handler
+        )
+    }
+
     //クエリ用のURLに付ける文字列を作成
     @Throws(NCMBException::class)
     fun queryUrlStringGenerate(query:JSONObject): String {
