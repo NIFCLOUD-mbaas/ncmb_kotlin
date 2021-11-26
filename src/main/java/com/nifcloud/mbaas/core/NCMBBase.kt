@@ -36,7 +36,6 @@ open class NCMBBase(){
      * ACL
      */
     val ACCESS_CONTROL_LIST = "acl"
-
     var mFields = JSONObject()
     var localData = JSONObject()
     internal var mUpdateKeys = HashSet<String>()
@@ -44,10 +43,7 @@ open class NCMBBase(){
             return field
         }
         internal set
-
     protected var mIgnoreKeys= listOf<String>()
-    //protected var mIgnoreKeys: List<String>? = null
-
     protected var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
