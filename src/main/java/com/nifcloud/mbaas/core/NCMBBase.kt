@@ -39,12 +39,15 @@ open class NCMBBase(){
 
     var mFields = JSONObject()
     var localData = JSONObject()
+    internal var mUpdateKeys = HashSet<String>()
         @Throws(NCMBException::class) get() {
             return field
         }
-        protected set
-    protected var mUpdateKeys = HashSet<String>()
-    protected var mIgnoreKeys= listOf<String>()
+        internal set
+
+    //protected var mIgnoreKeys= listOf<String>()
+    protected var mIgnoreKeys: List<String>? = null
+
     protected var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
@@ -138,7 +141,24 @@ open class NCMBBase(){
         for (key in mUpdateKeys) {
             if (mFields.isNull(key)) {
                 json.put(key, JSONObject.NULL)
-            } else {
+            } else if (isIgnoreKey(key)) {
+                continue
+            }
+            else {
+                json.put(key, mFields[key])
+            }
+        }
+        return json
+    }
+
+    @Throws(JSONException::class)
+    protected fun createRegisterJsonData(): JSONObject {
+        val json = JSONObject()
+        for (key in mFields.keys()) {
+            if (isIgnoreKey(key)) {
+                continue
+            }
+            else {
                 json.put(key, mFields[key])
             }
         }
@@ -160,7 +180,15 @@ open class NCMBBase(){
             )
         }
         try {
-            mFields.put(key, value)
+            if(value is NCMBGeoPoint){
+                val locationJson = JSONObject("{'__type':'GeoPoint'}")
+                locationJson.put("longitude", value.mlongitude)
+                locationJson.put("latitude", value.mlatitude)
+                mFields.put(key, locationJson)
+            }
+            else{
+                mFields.put(key, value)
+            }
             mUpdateKeys.add(key)
             keys.add(key)
         } catch (e: JSONException) {

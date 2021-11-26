@@ -569,6 +569,33 @@ YpfmeOtRkZJeRQWZ
     }
 ```
 
+### 位置情報
+
+#### 位置情報の登録
+
+```kotlin
+    // 緯度と経度の設定
+    val latitude : Double = 35.6666269
+    val longitude : Double = 139.765607
+    // TestClassのNCMBObjectを作成
+    val obj = NCMBObject("TestClass")
+    // 位置情報の設定
+    val geopoint = NCMBGeoPoint(latitude, longitude)
+    // オブジェクトに値を設定
+    obj.put("geoPoint", geopoint)
+    // データ登録の実施
+    obj.saveInBackground(NCMBCallback { e, ncmbObj ->
+        if (e != null) {
+            //保存に失敗した場合の処理
+            Log.d("error","保存に失敗しました : " + e.message)
+        } else {
+            //保存に成功した場合の処理
+            val result = ncmbObj as NCMBObject
+            Log.d("success","保存に成功しました ObjectID :" + result.getObjectId())
+        }
+    })
+```
+
 # 参考URL集
 
 - [ニフクラ mobile backend](https://mbaas.nifcloud.com/)

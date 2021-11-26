@@ -38,12 +38,27 @@ open class NCMBService {
     /**
      * Data class for params of request
      */
+
     data class RequestParams(
         var url: String,
         var method: String,
         var params: JSONObject = JSONObject(),
         var contentType: String,
         var query: JSONObject = JSONObject()
+    )
+
+    /**
+     * Data class for params of request
+     */
+
+    data class RequestParamsAsync(
+        var url: String,
+        var method: String,
+        var params: JSONObject = JSONObject(),
+        var contentType: String,
+        var query: JSONObject = JSONObject(),
+        var callback: NCMBCallback,
+        var handler: NCMBHandler
     )
 
     /**
@@ -174,6 +189,5 @@ open class NCMBService {
         }
         return queryItemlist.joinToString(separator = "&")
     }
-
 
 }

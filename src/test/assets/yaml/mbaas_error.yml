@@ -1,5 +1,14 @@
 ---
 request:
+    url: /2013-09-01/classes/TestClassGeo403
+    method: POST
+    body:
+        geo: {"__type":"GeoPoint","longitude":139.765607,"latitude":35.6666269}
+response:
+    status: 403
+    file: valid_post_geopoint_error_response.json
+---
+request:
     url: /2013-09-01/login
     query:
         userName: "Ncmb Tarou"
@@ -73,3 +82,39 @@ request:
 response:
     status: 429
     file: E429002_error_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: DELETE
+response:
+    status: 500
+    file: valid_delete_installation_error_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: GET
+response:
+    status: 500
+    file: valid_get_installation_error_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+response:
+    status: 409
+    file: valid_post_devicetoken_duplicate_error_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+        deviceToken: "duplicateDeviceToken"
+        deviceType: "android"
+        applicationName: "ncmb_kotlin"
+        sdkVersion: "0.1.1"
+        timeZone: "Asia\/Tokyo"
+        pushType: "fcm"
+response:
+    status: 409
+    file: valid_post_devicetoken_duplicate_error_response.json
+---
