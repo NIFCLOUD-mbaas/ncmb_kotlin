@@ -51,8 +51,7 @@ open class NCMBObject : NCMBBase {
         }
         this.mClassName = className
         this.mIgnoreKeys = mutableListOf(
-            "objectId", "acl",
-            "createDate", "updateDate"
+            "acl", "createDate", "updateDate"
         )
     }
 
@@ -97,7 +96,7 @@ open class NCMBObject : NCMBBase {
      * save current NCMBObject to data store asynchronously
      * @param callback callback after object save
      */
-    fun saveInBackground(saveCallback: NCMBCallback) {
+    open fun saveInBackground(saveCallback: NCMBCallback) {
         val objecdId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -187,7 +186,7 @@ open class NCMBObject : NCMBBase {
      * delete current NCMBObject from data store asynchronously
      * @param callback callback after delete object
      */
-    fun deleteInBackground(deleteCallback: NCMBCallback) {
+    open fun deleteInBackground(deleteCallback: NCMBCallback) {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()

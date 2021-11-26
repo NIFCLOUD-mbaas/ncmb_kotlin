@@ -46,7 +46,7 @@ class NCMBConnection(request: NCMBRequest) {
     //API request object
     var ncmbRequest: NCMBRequest
     //API response object
-    var ncmbResponse: NCMBResponse? = null
+    lateinit var ncmbResponse: NCMBResponse
 
     /**
      * Constructor with NCMBRequest
@@ -92,7 +92,7 @@ class NCMBConnection(request: NCMBRequest) {
                 ncmbResponse = NCMBResponseBuilder.build(response)
             }
         }
-        return ncmbResponse!!;
+        return ncmbResponse;
     }
 
     /**
@@ -102,7 +102,7 @@ class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestAsynchronously(callback: NCMBCallback?, responseHandler: NCMBHandler) {
+    fun sendRequestAsynchronously(callback: NCMBCallback, responseHandler: NCMBHandler) {
         val headers: Headers = createHeader()
         val client = OkHttpClient()
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -112,8 +112,8 @@ class NCMBConnection(request: NCMBRequest) {
         println(ncmbRequest.url)
         println(headers)
 
-        var body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
-        var request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
+        val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
+        val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

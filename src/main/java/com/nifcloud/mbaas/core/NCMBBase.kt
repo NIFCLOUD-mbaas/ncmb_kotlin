@@ -138,7 +138,24 @@ open class NCMBBase(){
         for (key in mUpdateKeys) {
             if (mFields.isNull(key)) {
                 json.put(key, JSONObject.NULL)
-            } else {
+            } else if (isIgnoreKey(key)) {
+                continue
+            }
+            else {
+                json.put(key, mFields[key])
+            }
+        }
+        return json
+    }
+
+    @Throws(JSONException::class)
+    protected fun createRegisterJsonData(): JSONObject {
+        val json = JSONObject()
+        for (key in mFields.keys()) {
+            if (isIgnoreKey(key)) {
+                continue
+            }
+            else {
                 json.put(key, mFields[key])
             }
         }
