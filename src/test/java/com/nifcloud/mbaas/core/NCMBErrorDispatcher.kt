@@ -150,9 +150,9 @@ class NCMBErrorDispatcher: Dispatcher() {
     }
 
     private fun defaultErrorResponse(): MockResponse {
-        return MockResponse().setResponseCode(404)
+        return MockResponse().setResponseCode(500)
             .setHeader("Content-Type", "application/json")
-            .setBody(readJsonResponse("valid_error_response.json"))
+            .setBody(readJsonResponse("E500001_error_response.json"))
     }
 
     /**

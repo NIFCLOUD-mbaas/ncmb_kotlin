@@ -66,7 +66,7 @@ class NCMBUserService : NCMBService() {
             params.put("password", password)
             return loginUser(params)
         } catch (e: JSONException){
-            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.message!!)
+            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.localizedMessage)
         }
     }
 
@@ -195,7 +195,7 @@ class NCMBUserService : NCMBService() {
         try {
             params.put("objectId", userId)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.message!!)
+            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.localizedMessage)
         }
         val responseData = updateUserCheckResponse(response)
         updateObject.reflectResponse(responseData)
@@ -320,7 +320,7 @@ class NCMBUserService : NCMBService() {
                 base.put(key, compare[key])
             }
         } catch (error: JSONException) {
-            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, error.message!!)
+            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, error.localizedMessage)
         }
     }
 
@@ -375,7 +375,7 @@ class NCMBUserService : NCMBService() {
                 try {
                     NCMB.SESSION_TOKEN = currentData.getString("sessionToken")
                 } catch (e: JSONException) {
-                    throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
+                    throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
                 }
             }
         }
