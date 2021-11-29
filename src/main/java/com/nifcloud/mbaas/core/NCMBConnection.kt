@@ -79,7 +79,8 @@ class NCMBConnection(request: NCMBRequest) {
                 val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
                 println("Request Info (Sync):")
-                println(ncmbRequest.params.toString())
+                println("params: " + ncmbRequest.params.toString())
+                println("querys: " + ncmbRequest.query.toString())
                 println(ncmbRequest.url)
                 println(headers)
                 println(ncmbRequest.query)
@@ -109,7 +110,8 @@ class NCMBConnection(request: NCMBRequest) {
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
         println("Request Info(Async):")
-        println(ncmbRequest.params.toString())
+        println("params: " + ncmbRequest.params.toString())
+        println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
         println(headers)
 
@@ -120,13 +122,13 @@ class NCMBConnection(request: NCMBRequest) {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 ncmbResponse = NCMBResponse.Failure(NCMBException(e))
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
+                responseHandler?.doneSolveResponse(callback, ncmbResponse)
             }
 
             override fun onResponse(call: Call, response: Response) {
                 //NCMBResponse 処理
                 ncmbResponse = NCMBResponseBuilder.build(response)
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
+                responseHandler?.doneSolveResponse(callback, ncmbResponse)
             }
         })
     }

@@ -682,6 +682,16 @@ response:
 request:
     url: /2013-09-01/users
     method: POST
+    query:
+        userName: "Ncmb Tarou"
+        password: "Ncmbtarou"
+response:
+    status: 201
+    file: valid_post_registerUser_response.json
+---
+request:
+    url: /2013-09-01/users
+    method: POST
     body:
         authData:
             facebook:
@@ -952,10 +962,10 @@ response:
 ---
 request:
     url: /2013-09-01/login
+    method: GET
     query:
         userName: "Ncmb Tarou"
-        password: dummyPassword
-    method: GET
+        password: "dummyPassword"
 response:
     status: 200
     file: valid_get_login_response.json
@@ -1412,3 +1422,4 @@ request:
 response:
     status: 200
     file: valid_get_login_to_save_user_response.json
+---

@@ -65,7 +65,7 @@ open class NCMBObject : NCMBBase {
         val className = this.mClassName
         val objService = NCMBObjectService()
         if (objectId == null) {
-            // 保存後に実施するsaveCallbackを渡す
+            //Object save
             objService.saveObject(
                 this,
                 className,
@@ -94,13 +94,13 @@ open class NCMBObject : NCMBBase {
 
     /**
      * save current NCMBObject to data store asynchronously
-     * @param callback callback after object save
+     * @param saveCallback callback after object save
      */
     open fun saveInBackground(saveCallback: NCMBCallback) {
-        val objecdId = getObjectId()
+        val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
-        if (objecdId == null) {
+        if (objectId == null) {
             // 保存後に実施するsaveCallbackを渡す
             objService.saveObjectInBackground(
                 this,
@@ -115,7 +115,7 @@ open class NCMBObject : NCMBBase {
                 val updateJson = createUpdateJsonData()
                 objService.updateObjectInBackground(
                     this, className,
-                    objecdId,
+                    objectId,
                     updateJson,
                     saveCallback
                 )
@@ -130,6 +130,10 @@ open class NCMBObject : NCMBBase {
         }
     }
 
+    /**
+     * fetch current NCMBObject data from data store
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
     @Throws(NCMBException::class)
     open fun fetch(): NCMBObject {
         val objectId = getObjectId()
@@ -145,15 +149,19 @@ open class NCMBObject : NCMBBase {
         return this
     }
 
-    fun fetchInBackground(fetchCallback: NCMBCallback) {
-        val objecdId = getObjectId()
+    /**
+     * fetch current NCMBObject data from data store asynchronously
+     * @param fetchCallback callback after fetch data
+     */
+    open fun fetchInBackground(fetchCallback: NCMBCallback) {
+        val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
-        if (objecdId != null) {
+        if (objectId != null) {
             objService.fetchObjectInBackground(
                 this,
                 className,
-                objecdId,
+                objectId,
                 fetchCallback
             )
         } else {
@@ -179,12 +187,12 @@ open class NCMBObject : NCMBBase {
             // 保存後に実施するsaveCallbackを渡す
             objService.deleteObject(this, className, objectId)
         }
-            return null
+        return null
     }
 
     /**
      * delete current NCMBObject from data store asynchronously
-     * @param callback callback after delete object
+     * @param deleteCallback callback after delete object
      */
     open fun deleteInBackground(deleteCallback: NCMBCallback) {
         val objectId = getObjectId()
