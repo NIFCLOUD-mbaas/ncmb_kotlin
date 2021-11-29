@@ -508,16 +508,16 @@ YpfmeOtRkZJeRQWZ
     // ユーザー名・パスワードを設定
     user.userName = "takanokun"
     user.password = "openGoma"
-    // ユーザーの新規登録
-    try {
-        user.signUp()
-        // 新規登録に成功した場合の処理
-        Log.d("success","新規登録に成功しました")
-    }
-    catch(e:NCMBException){
-        // 新規登録に失敗した場合の処理
-        Log.d("failure","新規登録に失敗しました ： " + e.message)
-    }
+    //新規会員登録
+    user.signUpInBackground(NCMBCallback { e, signUpUser ->
+        if (e != null) {
+            //エラー時の処理
+            println("新規登録に失敗しました。エラー:" + e.message)
+        } else {
+            //成功時の処理
+            println("新規登録に成功しました)
+        }
+    })
 ```
 
 #### ログイン
@@ -530,16 +530,16 @@ YpfmeOtRkZJeRQWZ
     //ユーザー名・パスワードを設定
     user.userName = "takanokun" /* ユーザー名 */
     user.password = "openGoma" /* パスワード */
-    try{
-        // ログイン
-        user.login(user.userName,user.password)
-        // ログインに成功した場合の処理
-        Log.d("success","ログインに成功しました")
-    }
-    catch(e:NCMBException){
-        // ログインに失敗した場合の処理
-        Log.d("failure","ログインに失敗しました ： " + e.message)
-    }
+    // ログイン
+    user.loginInBackground(NCMBCallback { e, loginUser ->
+        if (e != null) {
+            //エラー時の処理
+            println("ログインに失敗しました。エラー:" + e.message)
+        } else {
+            //成功時の処理
+            println("ログインに成功しました)
+        }
+    })
     // ログイン状況の確認
     val currentUser: NCMBUser = NCMBUser().getCurrentUser()
     if (currentUser.getObjectId() != null) {
@@ -555,16 +555,15 @@ YpfmeOtRkZJeRQWZ
     //　Userインスタンスの生成
     var user = NCMBUser()
     // ログアウト
-    try{
-        // ログアウト
-        user.logout()
-        // ログアウトに成功した場合の処理
-        Log.d("success","ログアウトに成功しました")
-    }
-    catch(e:NCMBException){
-        // 新規登録に失敗した場合の処理
-        Log.d("failure","ログアウトに失敗しました ： " + e.message)
-    }
+    user.logoutInBackground(NCMBCallback { e, logoutUser ->
+        if (e != null) {
+            //エラー時の処理
+            println("ログアウトに失敗しました。エラー:" + e.message)
+        } else {
+            //成功時の処理
+            println("ログアウトに成功しました)
+        }
+    })
     // ログイン状況の確認
     if (NCMBUser().getCurrentUser().getObjectId() != null) {
         Log.d("Info","ログインしています ユーザー: " + NCMBUser().getCurrentUser().userName)
