@@ -79,7 +79,8 @@ class NCMBConnection(request: NCMBRequest) {
                 val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
                 println("Request Info (Sync):")
-                println(ncmbRequest.params.toString())
+                println("params: " + ncmbRequest.params.toString())
+                println("querys: " + ncmbRequest.query.toString())
                 println(ncmbRequest.url)
                 println(headers)
                 println(ncmbRequest.query)
@@ -109,7 +110,8 @@ class NCMBConnection(request: NCMBRequest) {
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
         println("Request Info(Async):")
-        println(ncmbRequest.params.toString())
+        println("params: " + ncmbRequest.params.toString())
+        println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
         println(headers)
 

@@ -61,10 +61,10 @@ class NCMBUserService : NCMBService() {
     @Throws(NCMBException::class)
     fun loginByName(userName: String, password: String): NCMBUser {
         try{
-            val params = JSONObject()
-            params.put("userName", userName)
-            params.put("password", password)
-            return loginUser(params)
+            val query = JSONObject()
+            query.put("userName", userName)
+            query.put("password", password)
+            return loginUser(query)
         } catch (e: JSONException){
             throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, e.localizedMessage)
         }
@@ -109,8 +109,8 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun loginUser(params: JSONObject): NCMBUser {
-        val reqParams = loginByNameParams(params, null, null)
+    protected fun loginUser(query: JSONObject): NCMBUser {
+        val reqParams = loginByNameParams(query, null, null)
         val response = sendRequest(reqParams)
         val responseData = loginByNameCheckResponse(response)
         return postLoginProcess(responseData)
@@ -214,7 +214,7 @@ class NCMBUserService : NCMBService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun loginUserInBackground(params: JSONObject, loginCallback: NCMBCallback){
+    protected fun loginUserInBackground(query: JSONObject, loginCallback: NCMBCallback){
         val loginHandler = NCMBHandler { logincallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -228,7 +228,7 @@ class NCMBUserService : NCMBService() {
                 }
             }
         }
-        val reqParams : RequestParams = loginByNameParams(params, loginCallback, loginHandler)
+        val reqParams : RequestParams = loginByNameParams(query, loginCallback, loginHandler)
         sendRequestAsync(reqParams, loginCallback, loginHandler)
     }
 
@@ -291,10 +291,10 @@ class NCMBUserService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun loginByNameParams(query: JSONObject, loginCallback: NCMBCallback?, loginHandler: NCMBHandler?): RequestParams {
-        val url = NCMB.getApiBaseUrl() + "login"
+        val url = NCMB.getApiBaseUrl() + "login?" + queryUrlStringGenerate(query)
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParams(url = url, method = method, contentType = contentType, query = query, callback = loginCallback, handler = loginHandler)
+        return RequestParams(url = url, method = method,  contentType = contentType, query = query, callback = loginCallback, handler = loginHandler)
     }
 
     /**
