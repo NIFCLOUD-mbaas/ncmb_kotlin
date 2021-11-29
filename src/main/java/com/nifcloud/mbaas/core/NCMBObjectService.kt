@@ -26,6 +26,7 @@ import org.json.JSONObject
  * To do object service jobs, setup basis connection settings before doing connection.
  * SDK handler is also set here.
  *
+ */
 class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
     val SERVICE_PATH = "classes/"
 

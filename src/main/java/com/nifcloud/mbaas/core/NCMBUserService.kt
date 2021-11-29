@@ -25,7 +25,7 @@ import java.io.File
 /**
  * Service for user api
  */
-class NCMBUserService : NCMBObjectService() {
+class NCMBUserService : NCMBService() {
 
     /**
      * Status code of signup success
@@ -40,7 +40,7 @@ class NCMBUserService : NCMBObjectService() {
     /**
      * service path for API category
      */
-    override val SERVICE_PATH = "users"
+    val SERVICE_PATH = "users"
 
     /**
      * Initialization
@@ -155,7 +155,7 @@ class NCMBUserService : NCMBObjectService() {
             }
         }
         val reqParams: RequestParams = logoutParams(logoutCallback, logoutHandler)
-        sendRequestAsync(reqParams)
+        sendRequestAsync(reqParams, logoutCallback,logoutHandler)
     }
 
     /**
@@ -202,8 +202,8 @@ class NCMBUserService : NCMBObjectService() {
                 }
             }
         }
-        val reqParams = signUpUserParams(null, params, signUpCallback, signUpHandler)
-        sendRequestAsync(reqParams)
+        val reqParams : RequestParams = signUpUserParams(null, params, signUpCallback, signUpHandler)
+        sendRequestAsync(reqParams, signUpCallback, signUpHandler)
     }
 
     /**
@@ -228,8 +228,8 @@ class NCMBUserService : NCMBObjectService() {
                 }
             }
         }
-        val reqParams = loginByNameParams(params, loginCallback, loginHandler)
-        sendRequestAsync(reqParams)
+        val reqParams : RequestParams = loginByNameParams(params, loginCallback, loginHandler)
+        sendRequestAsync(reqParams, loginCallback, loginHandler)
     }
 
     /**
@@ -611,8 +611,8 @@ class NCMBUserService : NCMBObjectService() {
                 }
             }
         }
-        val reqParams: RequestParams = getUserParams(userId, fetchCallback, fetchHandler)
-        sendRequestAsync(reqParams)
+        val reqParams : RequestParams = getUserParams(userId, fetchCallback, fetchHandler)
+        sendRequestAsync(reqParams, fetchCallback, fetchHandler)
     }
 
     /**
@@ -658,7 +658,7 @@ class NCMBUserService : NCMBObjectService() {
             }
         }
         val reqParams: RequestParams = deleteUserParams(userId, deleteCallback, deleteHandler)
-        sendRequestAsync(reqParams)
+        sendRequestAsync(reqParams, deleteCallback, deleteHandler)
         if (userId == NCMBUser().getCurrentUser().getObjectId()) {
             // unupdate login informations
             clearCurrentUser()

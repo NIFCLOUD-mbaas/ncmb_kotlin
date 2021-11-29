@@ -97,7 +97,7 @@ open class NCMBObject : NCMBBase {
      * @param saveCallback callback after object save
      */
     open fun saveInBackground(saveCallback: NCMBCallback) {
-        val objecdId = getObjectId()
+        val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
         if (objectId == null) {
