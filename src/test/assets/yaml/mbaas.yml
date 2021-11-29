@@ -19,6 +19,15 @@ response:
     file: valid_post_with_acl_response.json
 ---
 request:
+    url: /2013-09-01/classes/TestClassGeo
+    method: POST
+    body:
+        geoPoint: {"__type":"GeoPoint","longitude":139.765607,"latitude":35.6666269}
+response:
+    status: 201
+    file: valid_post_geopoint_response.json
+---
+request:
     url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
     method: PUT
 response:
@@ -459,25 +468,175 @@ response:
     file: valid_post_trackAppOpened_response.json
 ---
 request:
-    url: /2013-09-01/classes/TestClass
+    url: /2013-09-01/classes/TestClassNoData
     method: GET
-    query:
-        where: '{"key":"value"}'
-        limit: 1
 response:
     status: 200
-    file: valid_search_response.json
+    file: valid_search_response_no_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedIn
+    method: GET
+    query:
+        where: {"keyArray":{"$in":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedIn_String
+    method: GET
+    query:
+        where: {"keyArray":{"$in":["1","2","3"]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedInArray
+    method: GET
+    query:
+        where: {"keyArray":{"$inArray":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotContainedInArray
+    method: GET
+    query:
+        where: {"keyArray":{"$ninArray":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotContainedIn
+    method: GET
+    query:
+        where: {"keyArray":{"$nin":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedAll
+    method: GET
+    query:
+        where: {"keyArray":{"$all":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
 ---
 request:
     url: /2013-09-01/classes/TestClass
     method: GET
     query:
         where: '{"key":"value"}'
+response:
+    status: 200
+    file: valid_search_response_one_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotEqual
+    method: GET
+    query:
+        where: {"key":{"$ne":"value"}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassGreaterThan
+    method: GET
+    query:
+        where: {"key":{"$gt":2}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassGreaterThanOrEqual
+    method: GET
+    query:
+        where: {"key":{"$gte":2}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassLessThan
+    method: GET
+    query:
+        where: {"key":{"$lt":100}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassLessThanOrEqual
+    method: GET
+    query:
+        where: {"key":{"$lte":100}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassCount
+    method: GET
+    query:
+        where: '{"key":"value"}'
         count: 1
-        limit: 1
 response:
     status: 200
     file: valid_count_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClassSkip
+    method: GET
+    query:
+        where: '{"key":"value"}'
+        skip: 3
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassLimit
+    method: GET
+    query:
+        limit: 3
+response:
+    status: 200
+    file: valid_search_response_three_obj_asc.json
+---
+request:
+    url: /2013-09-01/classes/TestClassAsc
+    method: GET
+    query:
+        limit: 3
+        order: 'key'
+response:
+    status: 200
+    file: valid_search_response_three_obj_asc.json
+---
+request:
+    url: /2013-09-01/classes/TestClassDesc
+    method: GET
+    query:
+        limit: 3
+        order: '-key'
+response:
+    status: 200
+    file: valid_search_response_three_obj_desc.json
 ---
 request:
     url: /2013-09-01/classes/TestClass
@@ -490,7 +649,7 @@ request:
         order: 'ascendingKey,-descendingKey'
 response:
     status: 200
-    file: valid_search_response.json
+    file: valid_search_response_one_obj.json
 ---
 request:
     url: /2013-09-01/classes/TestClass
@@ -499,7 +658,7 @@ request:
         where: '{"stringKey":"string","intKey":10,"longKey":10000000000000000,"floatKey":1.23,"doubleKey":1.23,"boolKey":true,"arrayKey":["array"],"mapKey":{"key":"value"},"dateKey":{"__type":"Date","iso":"2016-01-26T00:00:00.000Z"}}'
 response:
     status: 200
-    file: valid_search_response.json
+    file: valid_search_response_one_obj.json
 ---
 request:
     url: /2013-09-01/classes/TestClass
@@ -514,6 +673,16 @@ request:
     url: /2013-09-01/users
     method: POST
     body:
+        userName: "Ncmb Tarou"
+        password: "Ncmbtarou"
+response:
+    status: 201
+    file: valid_post_registerUser_response.json
+---
+request:
+    url: /2013-09-01/users
+    method: POST
+    query:
         userName: "Ncmb Tarou"
         password: "Ncmbtarou"
 response:
@@ -793,10 +962,10 @@ response:
 ---
 request:
     url: /2013-09-01/login
+    method: GET
     query:
         userName: "Ncmb Tarou"
-        password: dummyPassword
-    method: GET
+        password: "dummyPassword"
 response:
     status: 200
     file: valid_get_login_response.json
@@ -1253,3 +1422,4 @@ request:
 response:
     status: 200
     file: valid_get_login_to_save_user_response.json
+---

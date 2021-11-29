@@ -20,11 +20,18 @@ import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.Headers
+import okhttp3.Callback
+import okhttp3.Call
+import okhttp3.Response
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
 import java.io.IOException
 import java.net.URL
+import java.net.URLEncoder
 
 
 /**
@@ -46,7 +53,7 @@ class NCMBConnection(request: NCMBRequest) {
     //API request object
     var ncmbRequest: NCMBRequest
     //API response object
-    var ncmbResponse: NCMBResponse? = null
+    lateinit var ncmbResponse: NCMBResponse
 
     /**
      * Constructor with NCMBRequest
@@ -71,28 +78,23 @@ class NCMBConnection(request: NCMBRequest) {
                 val client = OkHttpClient()
                 val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
-                println("Request Info:")
-                println(ncmbRequest.params.toString())
+                println("Request Info (Sync):")
+                println("params: " + ncmbRequest.params.toString())
+                println("querys: " + ncmbRequest.query.toString())
                 println(ncmbRequest.url)
                 println(headers)
+                println(ncmbRequest.query)
 
                 val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
-                val url = Uri.parse(ncmbRequest.url)
-                    .buildUpon()
-                for (key in ncmbRequest.query.keys()){
-                    val value = ncmbRequest.query.get(key) as String
-                    url.appendQueryParameter(key, value)
-                }
-                    url.build()
                 var request: Request
                 synchronized(lock) {
-                    request = request(ncmbRequest.method, URL(url.toString()), headers, body)
+                    request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
                 }
                 val response = client.newCall(request).execute()
                 ncmbResponse = NCMBResponseBuilder.build(response)
             }
         }
-        return ncmbResponse!!;
+        return ncmbResponse;
     }
 
     /**
@@ -102,30 +104,31 @@ class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestAsynchronously(callback: NCMBCallback?, responseHandler: NCMBHandler) {
+    fun sendRequestAsynchronously(callback: NCMBCallback, responseHandler: NCMBHandler) {
         val headers: Headers = createHeader()
         val client = OkHttpClient()
         val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
-        println("Request Info:")
-        println(ncmbRequest.params.toString())
+        println("Request Info(Async):")
+        println("params: " + ncmbRequest.params.toString())
+        println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
         println(headers)
 
-        var body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
-        var request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
+        val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
+        val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 ncmbResponse = NCMBResponse.Failure(NCMBException(e))
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
+                responseHandler?.doneSolveResponse(callback, ncmbResponse)
             }
 
             override fun onResponse(call: Call, response: Response) {
                 //NCMBResponse 処理
                 ncmbResponse = NCMBResponseBuilder.build(response)
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
+                responseHandler?.doneSolveResponse(callback, ncmbResponse)
             }
         })
     }

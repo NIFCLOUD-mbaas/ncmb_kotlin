@@ -16,7 +16,10 @@
 
 package com.nifcloud.mbaas.core
 
+import org.json.JSONException
 import org.json.JSONObject
+import java.net.URLEncoder
+
 
 /**
  * A class of ncmb_kotlin.
@@ -32,15 +35,43 @@ open class NCMBService {
      */
     protected var mServicePath: String? = null
 
+//    /**
+//     * Data class for params of request
+//     */
+//    data class RequestParams(
+//        var url: String,
+//        var method: String,
+//        var params: JSONObject = JSONObject(),
+//        var contentType: String,
+//        var query: JSONObject = JSONObject()
+//    )
+
     /**
      * Data class for params of request
      */
+
     data class RequestParams(
         var url: String,
         var method: String,
         var params: JSONObject = JSONObject(),
         var contentType: String,
-        var query: JSONObject = JSONObject()
+        var query: JSONObject = JSONObject(),
+        var callback: NCMBCallback? = null,
+        var handler: NCMBHandler? = null
+    )
+
+    /**
+     * Data class for params of request
+     */
+
+    data class RequestParamsAsync(
+        var url: String,
+        var method: String,
+        var params: JSONObject = JSONObject(),
+        var contentType: String,
+        var query: JSONObject = JSONObject(),
+        var callback: NCMBCallback,
+        var handler: NCMBHandler
     )
 
     /**
@@ -48,9 +79,9 @@ open class NCMBService {
      *
      * @param url         URL
      * @param method      http method
-     * @param params     contnt body
-     * @param queryString query string
-     * @param callback    callback on finished
+     * @param params      content body
+     * @param contentType content type
+     * @param query       query
      */
 
     fun sendRequest(
@@ -81,12 +112,9 @@ open class NCMBService {
     }
 
     /**
-     * Send request in asynchronously
+     * Send request in sync
      *
-     * @param url         URL
-     * @param method      http method
-     * @param content     contnt body
-     * @param queryString query string
+     * @param params      request params
      */
     fun sendRequest(params: RequestParams): NCMBResponse {
         return this.sendRequest(
@@ -103,9 +131,11 @@ open class NCMBService {
      *
      * @param url         URL
      * @param method      http method
-     * @param content     contnt body
+     * @param params      content body
+     * @param contentType content type
      * @param query       query
      * @param callback    callback on finished
+     * @param handler     after-connection tasks
      */
     fun sendRequestAsync(
         url: String,
@@ -113,11 +143,11 @@ open class NCMBService {
         params: JSONObject,
         contentType: String,
         query: JSONObject,
-        callback: NCMBCallback?,
+        callback: NCMBCallback,
         handler: NCMBHandler
     ){
         if (NCMB.SESSION_TOKEN == null) {
-            NCMB.SESSION_TOKEN = NCMBUser().getSessionToken()
+            NCMB.SESSION_TOKEN = NCMBUser().sessionToken
         }
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()
@@ -136,5 +166,56 @@ open class NCMBService {
         )
         val connection = NCMBConnection(request)
         connection.sendRequestAsynchronously(callback, handler)
+    }
+
+    /**
+     * Send request in asynchronously
+     *
+     * @param params       Parameters
+     * @param callback     Callback
+     * @param handler     SDK Handler
+     */
+    fun sendRequestAsync(params: RequestParams,callback: NCMBCallback,handler: NCMBHandler ) {
+        return this.sendRequestAsync(
+            params.url,
+            params.method,
+            params.params,
+            params.contentType,
+            params.query,
+            callback,
+            handler
+        )
+    }
+
+    /**
+     * Send request in asynchronously
+     *
+     * @param params      Request Parameters For Async method
+     */
+    fun sendRequestAsync(params: RequestParamsAsync ) {
+        return this.sendRequestAsync(
+            params.url,
+            params.method,
+            params.params,
+            params.contentType,
+            params.query,
+            params.callback,
+            params.handler
+        )
+    }
+    
+    //クエリ用のURLに付ける文字列を作成
+    @Throws(NCMBException::class)
+    fun queryUrlStringGenerate(query:JSONObject): String {
+        val queryItemlist: MutableList<String> = mutableListOf()
+        for (key in query.keys()) {
+            try {
+                val value = query.get(key).toString()
+                queryItemlist.add("%s=%s".format(key, URLEncoder.encode(value, "utf-8")))
+            } catch (e: JSONException) {
+                throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+            }
+        }
+        return queryItemlist.joinToString(separator = "&")
     }
 }

@@ -51,8 +51,7 @@ open class NCMBObject : NCMBBase {
         }
         this.mClassName = className
         this.mIgnoreKeys = mutableListOf(
-            "objectId", "acl",
-            "createDate", "updateDate"
+            "acl", "createDate", "updateDate"
         )
     }
 
@@ -66,7 +65,7 @@ open class NCMBObject : NCMBBase {
         val className = this.mClassName
         val objService = NCMBObjectService()
         if (objectId == null) {
-            // 保存後に実施するsaveCallbackを渡す
+            //Object save
             objService.saveObject(
                 this,
                 className,
@@ -86,7 +85,7 @@ open class NCMBObject : NCMBBase {
             } catch (e: JSONException) {
                 throw NCMBException(
                     NCMBException.INVALID_JSON,
-                    e.message!!
+                    e.localizedMessage
                 )
             }
             return this
@@ -95,13 +94,13 @@ open class NCMBObject : NCMBBase {
 
     /**
      * save current NCMBObject to data store asynchronously
-     * @param callback callback after object save
+     * @param saveCallback callback after object save
      */
-    fun saveInBackground(saveCallback: NCMBCallback) {
-        val objecdId = getObjectId()
+    open fun saveInBackground(saveCallback: NCMBCallback) {
+        val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
-        if (objecdId == null) {
+        if (objectId == null) {
             // 保存後に実施するsaveCallbackを渡す
             objService.saveObjectInBackground(
                 this,
@@ -116,7 +115,7 @@ open class NCMBObject : NCMBBase {
                 val updateJson = createUpdateJsonData()
                 objService.updateObjectInBackground(
                     this, className,
-                    objecdId,
+                    objectId,
                     updateJson,
                     saveCallback
                 )
@@ -124,13 +123,17 @@ open class NCMBObject : NCMBBase {
                 saveCallback.done(
                     NCMBException(
                         NCMBException.INVALID_JSON,
-                        e.message!!
+                        e.localizedMessage
                     )
                 )
             }
         }
     }
 
+    /**
+     * fetch current NCMBObject data from data store
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
     @Throws(NCMBException::class)
     open fun fetch(): NCMBObject {
         val objectId = getObjectId()
@@ -146,15 +149,19 @@ open class NCMBObject : NCMBBase {
         return this
     }
 
-    fun fetchInBackground(fetchCallback: NCMBCallback) {
-        val objecdId = getObjectId()
+    /**
+     * fetch current NCMBObject data from data store asynchronously
+     * @param fetchCallback callback after fetch data
+     */
+    open fun fetchInBackground(fetchCallback: NCMBCallback) {
+        val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
-        if (objecdId != null) {
+        if (objectId != null) {
             objService.fetchObjectInBackground(
                 this,
                 className,
-                objecdId,
+                objectId,
                 fetchCallback
             )
         } else {
@@ -180,14 +187,14 @@ open class NCMBObject : NCMBBase {
             // 保存後に実施するsaveCallbackを渡す
             objService.deleteObject(this, className, objectId)
         }
-            return null
+        return null
     }
 
     /**
      * delete current NCMBObject from data store asynchronously
-     * @param callback callback after delete object
+     * @param deleteCallback callback after delete object
      */
-    fun deleteInBackground(deleteCallback: NCMBCallback) {
+    open fun deleteInBackground(deleteCallback: NCMBCallback) {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -204,4 +211,5 @@ open class NCMBObject : NCMBBase {
             deleteCallback.done(ex)
         }
     }
+
 }
