@@ -515,7 +515,7 @@ YpfmeOtRkZJeRQWZ
             println("新規登録に失敗しました。エラー:" + e.message)
         } else {
             //成功時の処理
-            println("新規登録に成功しました)
+            println("新規登録に成功しました")
         }
     })
 ```
@@ -537,7 +537,7 @@ YpfmeOtRkZJeRQWZ
             println("ログインに失敗しました。エラー:" + e.message)
         } else {
             //成功時の処理
-            println("ログインに成功しました)
+            println("ログインに成功しました")
             // ログイン状況の確認
             val currentUser: NCMBUser = NCMBUser().getCurrentUser()
             if (currentUser.getObjectId() != null) {
@@ -561,7 +561,7 @@ YpfmeOtRkZJeRQWZ
             println("ログアウトに失敗しました。エラー:" + e.message)
         } else {
             //成功時の処理
-            println("ログアウトに成功しました)
+            println("ログアウトに成功しました")
             // ログイン状況の確認
             if (NCMBUser().getCurrentUser().getObjectId() != null) {
                 Log.d("Info","ログインしています ユーザー: " + NCMBUser().getCurrentUser().userName)
