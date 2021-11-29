@@ -538,15 +538,15 @@ YpfmeOtRkZJeRQWZ
         } else {
             //成功時の処理
             println("ログインに成功しました)
+            // ログイン状況の確認
+            val currentUser: NCMBUser = NCMBUser().getCurrentUser()
+            if (currentUser.getObjectId() != null) {
+                Log.d("Info","ログインしています ユーザー: " + currentUser.userName)
+            } else {
+                Log.d("Info","ログインしていません")
+            }
         }
     })
-    // ログイン状況の確認
-    val currentUser: NCMBUser = NCMBUser().getCurrentUser()
-    if (currentUser.getObjectId() != null) {
-        Log.d("Info","ログインしています ユーザー: " + currentUser.userName)
-    } else {
-        Log.d("Info","ログインしていません")
-    }
 ```
 
 #### ログアウト
@@ -562,14 +562,14 @@ YpfmeOtRkZJeRQWZ
         } else {
             //成功時の処理
             println("ログアウトに成功しました)
+            // ログイン状況の確認
+            if (NCMBUser().getCurrentUser().getObjectId() != null) {
+                Log.d("Info","ログインしています ユーザー: " + NCMBUser().getCurrentUser().userName)
+            } else {
+                Log.d("Info","ログインしていません")
+            }
         }
     })
-    // ログイン状況の確認
-    if (NCMBUser().getCurrentUser().getObjectId() != null) {
-        Log.d("Info","ログインしています ユーザー: " + NCMBUser().getCurrentUser().userName)
-    } else {
-        Log.d("Info","ログインしていません")
-    }
 ```
 
 ### 位置情報
