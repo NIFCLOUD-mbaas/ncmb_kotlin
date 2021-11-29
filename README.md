@@ -68,6 +68,8 @@ import com.nifcloud.mbaas.core.NCMBCallback //非同期処理を行う場合
 import com.nifcloud.mbaas.core.NCMBException //例外処理を行う場合
 import com.nifcloud.mbaas.core.NCMBObject //データストアを利用する場合
 import com.nifcloud.mbaas.core.NCMBUser //会員管理を利用する場合
+import com.nifcloud.mbaas.core.NCMBQuery //検索を利用する場合
+import com.nifcloud.mbaas.core.NCMBGeoPoint //位置情報を利用する場合
 ```
 
 * オブジェクトの保存
