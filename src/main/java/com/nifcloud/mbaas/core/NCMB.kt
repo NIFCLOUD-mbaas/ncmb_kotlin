@@ -18,6 +18,7 @@ package com.nifcloud.mbaas.core
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 
 /**
  * A class of ncmb_kotlin.
@@ -111,12 +112,35 @@ class NCMB {
             API_BASE_URL = "$DOMAINURL$APIVERSION/"
             TIMEOUT = DEFAULT_API_TIMEOUT
             CURRENT_CONTEXT = context
+        }
 
+        /**
+         * push機能を利用するための初期設定メソッド
+         * channelの設定、devicetokenの登録
+         */
+        fun initializePush(context: Context){
             //チャネル登録
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val utils = NCMBNotificationUtils(context)
                 utils.settingDefaultChannels()
             }
+            NCMBInstallation().getDeviceTokenInBackground(NCMBCallback { e, deviceToken ->
+            if (e != null) {
+                Log.d("error", "devicetoken GET ERROR : " + e.message)
+            } else {
+                Log.d("success", "deviceToken :$deviceToken")
+                val installationObj = NCMBInstallation.getCurrentInstallation()
+                installationObj.deviceToken = deviceToken as String
+                installationObj.saveInBackground(NCMBCallback { e, ncmbInstallation ->
+                    if (e != null) {
+                        Log.d("error","installation SAVE ERROR : " + e.message)
+                    } else {
+                        val result = ncmbInstallation as NCMBInstallation
+                        Log.d("success","installation DONE ObjectID :" + result.getObjectId())
+                    }
+                })
+            }
+        })
         }
 
         /**

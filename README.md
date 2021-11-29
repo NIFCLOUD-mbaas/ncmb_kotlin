@@ -599,6 +599,108 @@ YpfmeOtRkZJeRQWZ
     })
 ```
 
+### push通知
+
+* google-services.jsonとFirebase秘密鍵の設定
+FCM対応したプッシュ通知を送信する場合、google-services.jsonをアプリに配置してただくのと、Firebaseプロジェクトの秘密鍵をmobile backendにアップロードしていただく必要があります。
+以下のドキュメントを参考に、google-services.jsonとFirebase秘密鍵の設定を行ってください。
+  * [google-services.jsonとFirebase秘密鍵の設定方法について](https://mbaas.nifcloud.com/doc/current/common/push_setup_fcm_json.html)
+
+* ニフクラ mobile backendでの設定
+次に、ニフクラ mobile backendでプッシュ通知の設定を行います。
+
+アプリ設定から、左メニューのプッシュ通知の項目を選択してください。
+プッシュ通知の許可設定を行う部分があるので、「許可する」に変更して変更を保存してください。
+
+* ライブラリのインストール
+
+プロジェクトのbuild.gradleファイルを編集する
+```
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.0.2"
+        classpath 'com.google.gms:google-services:4.3.4'
+    }
+}
+```
+
+appフォルダ内のbuild.gradleファイルのpluginsに追加する
+```
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.google.gms.google-services' //追加
+}
+```
+
+デフォルトで書かれているdependenciesに追加（ない場合は、追記必要あり）
+```
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.code.gson:gson:2.3.1'
+    api files('libs/NCMB.jar')
+    implementation platform('com.google.firebase:firebase-bom:28.4.0') //追加
+    implementation 'com.google.firebase:firebase-messaging-ktx' //追加
+    implementation 'com.google.firebase:firebase-analytics-ktx' //追加
+    implementation 'com.google.android.gms:play-services-base:17.6.0' //追加
+}
+```
+
+* AndroidManifest.xmlの編集
+
+&lt;application&gt;タグの直前に以下のpermissionを追加します。
+
+android.permission.VIBRATEが不要な場合は削除しても構いません。
+
+```
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.VIBRATE" />
+```
+
+次に、applicationタグの要素としてserviceの登録を行います。
+
+```
+ <service
+     android:name="com.nifcloud.mbaas.core.NCMBFirebaseMessagingService"
+     android:exported="false">
+     <intent-filter>
+         <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+     </intent-filter>
+ </service>
+```
+
+次に、meta-dataの設定もapplicationタグの要素として追加します。
+プッシュ通知タップ時に起動するActivityの設定のみ必須ですが、channelの設定は任意です。
+
+```
+<!-- プッシュ通知タップ時に起動するActivityの設定 ※必須の設定 -->
+<meta-data android:name="openPushStartActivity" android:value=".MainActivity"/>
+<!-- プッシュ通知のchannel idの設定 default（com.nifcloud.mbaas.push.channel）-->
+<meta-data android:name="ChannelId" android:value="YOUR_CHANNEL_ID"/>
+<!-- プッシュ通知のchannel名の設定　default（NCMB Push Channel） -->
+<meta-data android:name="ChannelName" android:value="YOUR_CHANNEL_NAME"/>
+<!-- プッシュ通知のchannel 説明の設定 default（com.nifcloud.mbaas.push.channel） -->
+<meta-data android:name="ChannelDescription" android:value="YOUR_CHANNEL_DESCRIPTION"/>
+```
+
+#### 配信端末情報の登録
+
+ActivityのonCreate内のinitializeメソッドの下に以下を記載します。
+
+```kotlin
+    NCMB.initialize(this.getApplicationContext(),"YOUR_APPLICATION_KEY","YOUR_CLIENT_KEY");
+    //ここに記載
+    NCMB.initializePush(this.getApplicationContext())
+```
+
 # 参考URL集
 
 - [ニフクラ mobile backend](https://mbaas.nifcloud.com/)

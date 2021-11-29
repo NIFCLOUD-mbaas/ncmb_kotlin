@@ -92,7 +92,7 @@ open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
          * 0:常に最新の通知のみ表示
          * 1:最新以外の通知も複数表示
          */
-        var appInfo: ApplicationInfo? = null
+        var appInfo: ApplicationInfo
         appInfo = try {
             packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
         } catch (e: PackageManager.NameNotFoundException) {
