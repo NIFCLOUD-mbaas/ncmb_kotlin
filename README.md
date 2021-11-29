@@ -8,7 +8,7 @@
   - 会員管理(デベロッパープレビュー版提供)
   - プッシュ通知 (デベロッパープレビュー版提供)
   - 位置情報 (デベロッパープレビュー版提供)
-  - 検索 (デベロッパープレビュー版提供)
+  - データストアの検索 (デベロッパープレビュー版提供)
   - ファイルストア(未提供)
   - SNS連携(未提供)
 
@@ -68,8 +68,8 @@ import com.nifcloud.mbaas.core.NCMBCallback //非同期処理を行う場合
 import com.nifcloud.mbaas.core.NCMBException //例外処理を行う場合
 import com.nifcloud.mbaas.core.NCMBObject //データストアを利用する場合
 import com.nifcloud.mbaas.core.NCMBUser //会員管理を利用する場合
-import com.nifcloud.mbaas.core.NCMBQuery //検索を利用する場合
 import com.nifcloud.mbaas.core.NCMBGeoPoint //位置情報を利用する場合
+import com.nifcloud.mbaas.core.NCMBQuery //検索機能を利用する場合
 ```
 
 * オブジェクトの保存
