@@ -7,6 +7,8 @@
   - データストア(デベロッパープレビュー版提供)
   - 会員管理(デベロッパープレビュー版提供)
   - プッシュ通知 (デベロッパープレビュー版提供)
+  - 位置情報 (デベロッパープレビュー版提供)
+  - データストアの検索 (デベロッパープレビュー版提供)
   - ファイルストア(未提供)
   - SNS連携(未提供)
 
@@ -15,8 +17,8 @@
 このSDKを利用する前に、ニフクラ mobile backendのアカウントを作成する必要があります。 ニフクラ mobile backendのサービスサイトからアカウント登録を行ってください。
 
 # 動作環境
-本SDKは、Android 8.x ～ 11.x, Android Studio 4.2~ にて動作確認を行っております。
-(※2021年6月時点)
+本SDKは、Android 8.x ～ 12.x, Android Studio 4.2~ にて動作確認を行っております。
+(※2021年11月時点)
 
 # テクニカルサポート窓口対応
 
@@ -66,6 +68,8 @@ import com.nifcloud.mbaas.core.NCMBCallback //非同期処理を行う場合
 import com.nifcloud.mbaas.core.NCMBException //例外処理を行う場合
 import com.nifcloud.mbaas.core.NCMBObject //データストアを利用する場合
 import com.nifcloud.mbaas.core.NCMBUser //会員管理を利用する場合
+import com.nifcloud.mbaas.core.NCMBGeoPoint //位置情報を利用する場合
+import com.nifcloud.mbaas.core.NCMBQuery //検索機能を利用する場合
 ```
 
 * オブジェクトの保存
@@ -504,16 +508,16 @@ YpfmeOtRkZJeRQWZ
     // ユーザー名・パスワードを設定
     user.userName = "takanokun"
     user.password = "openGoma"
-    // ユーザーの新規登録
-    try {
-        user.signUp()
-        // 新規登録に成功した場合の処理
-        Log.d("success","新規登録に成功しました")
-    }
-    catch(e:NCMBException){
-        // 新規登録に失敗した場合の処理
-        Log.d("failure","新規登録に失敗しました ： " + e.message)
-    }
+    //新規会員登録
+    user.signUpInBackground(NCMBCallback { e, signUpUser ->
+        if (e != null) {
+            //エラー時の処理
+            println("新規登録に失敗しました。エラー:" + e.message)
+        } else {
+            //成功時の処理
+            println("新規登録に成功しました)
+        }
+    })
 ```
 
 #### ログイン
@@ -526,16 +530,16 @@ YpfmeOtRkZJeRQWZ
     //ユーザー名・パスワードを設定
     user.userName = "takanokun" /* ユーザー名 */
     user.password = "openGoma" /* パスワード */
-    try{
-        // ログイン
-        user.login(user.userName,user.password)
-        // ログインに成功した場合の処理
-        Log.d("success","ログインに成功しました")
-    }
-    catch(e:NCMBException){
-        // ログインに失敗した場合の処理
-        Log.d("failure","ログインに失敗しました ： " + e.message)
-    }
+    // ログイン
+    user.loginInBackground(NCMBCallback { e, loginUser ->
+        if (e != null) {
+            //エラー時の処理
+            println("ログインに失敗しました。エラー:" + e.message)
+        } else {
+            //成功時の処理
+            println("ログインに成功しました)
+        }
+    })
     // ログイン状況の確認
     val currentUser: NCMBUser = NCMBUser().getCurrentUser()
     if (currentUser.getObjectId() != null) {
@@ -551,16 +555,15 @@ YpfmeOtRkZJeRQWZ
     //　Userインスタンスの生成
     var user = NCMBUser()
     // ログアウト
-    try{
-        // ログアウト
-        user.logout()
-        // ログアウトに成功した場合の処理
-        Log.d("success","ログアウトに成功しました")
-    }
-    catch(e:NCMBException){
-        // 新規登録に失敗した場合の処理
-        Log.d("failure","ログアウトに失敗しました ： " + e.message)
-    }
+    user.logoutInBackground(NCMBCallback { e, logoutUser ->
+        if (e != null) {
+            //エラー時の処理
+            println("ログアウトに失敗しました。エラー:" + e.message)
+        } else {
+            //成功時の処理
+            println("ログアウトに成功しました)
+        }
+    })
     // ログイン状況の確認
     if (NCMBUser().getCurrentUser().getObjectId() != null) {
         Log.d("Info","ログインしています ユーザー: " + NCMBUser().getCurrentUser().userName)
