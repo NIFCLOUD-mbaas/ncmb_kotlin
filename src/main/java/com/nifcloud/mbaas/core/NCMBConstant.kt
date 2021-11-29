@@ -60,3 +60,30 @@ class NCMBConstant {
         val SIGNATURE_VERSION_VALUE = "2"
     }
 }
+
+/// NCMBQueryで使用するコンスタント値を管理するクラスです。
+class NCMBQueryConstants {
+
+    companion object {
+        const val REQUEST_PARAMETER_WHERE : String = "where"
+        const val REQUEST_PARAMETER_ORDER : String = "order"
+        const val REQUEST_PARAMETER_SKIP : String = "skip"
+        const val REQUEST_PARAMETER_LIMIT : String = "limit"
+        const val REQUEST_PARAMETER_COUNT : String = "count"
+        const val RESPONSE_PARAMETER_RESULTS : String = "results"
+        const val RESPONSE_PARAMETER_COUNT : String = "count"
+        const val QUERY_OPERATOR_NE : String = "ne"
+        const val QUERY_OPERATOR_LT : String = "lt"
+        const val QUERY_OPERATOR_GT : String = "gt"
+        const val QUERY_OPERATOR_LTE : String = "lte"
+        const val QUERY_OPERATOR_GTE : String = "gte"
+        const val QUERY_OPERATOR_IN : String = "in"
+        const val QUERY_OPERATOR_NIN : String = "nin"
+        const val QUERY_OPERATOR_EXISTS : String = "exists"
+        const val QUERY_OPERATOR_REGEX : String = "regex"
+        const val QUERY_OPERATOR_INARRAY : String = "inArray"
+        const val QUERY_OPERATOR_NINARRAY : String = "ninArray"
+        const val QUERY_OPERATOR_ALL : String = "all"
+        const val QUERY_OPERATOR_OR : String = "or"
+    }
+}

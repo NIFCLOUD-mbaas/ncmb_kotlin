@@ -147,7 +147,7 @@ open class NCMBUser: NCMBObject {
         try {
             return mFields.getString(userKey)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
+            throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
     }
 
@@ -156,7 +156,7 @@ open class NCMBUser: NCMBObject {
             mFields.put(userKey, userValue)
             mUpdateKeys.add(userKey)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
+            throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
     }
 
@@ -179,7 +179,7 @@ open class NCMBUser: NCMBObject {
             }
             userService.saveUser(this, params, false)
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
+            throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
         return this
     }
@@ -198,7 +198,7 @@ open class NCMBUser: NCMBObject {
                 mFields.put("updateDate", result.getString("updateDate"))
             }
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, (e.message)!!)
+            throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
         return this
     }
@@ -257,7 +257,7 @@ open class NCMBUser: NCMBObject {
                 }
             }
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, (e.message)!!)
+            throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
         return currentuser as NCMBUser
     }
@@ -421,7 +421,7 @@ open class NCMBUser: NCMBObject {
             user = userService.signUpUser(params, false)
             mFields = user.mFields
         } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
+            throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
         return user
     }
@@ -565,5 +565,11 @@ open class NCMBUser: NCMBObject {
     open fun logoutInBackground(logoutCallback: NCMBCallback) {
         val userService = NCMBUserService()
         userService.logoutUserInBackground(this, logoutCallback)
+    }
+
+    companion object {
+        fun getServiceInstance(): NCMBUserService {
+            return NCMBUserService()
+        }
     }
 }

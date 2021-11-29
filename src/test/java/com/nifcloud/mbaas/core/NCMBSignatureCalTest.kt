@@ -17,7 +17,7 @@
 package com.nifcloud.mbaas.core
 
 import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert
 import java.net.URL
 
 class NCMBSignatureCalTest {
@@ -27,14 +27,15 @@ class NCMBSignatureCalTest {
     fun testSignatureCal() {
         val tmpNCMBSignatureCal = NCMBSignatureCal()
         val url = URL("https://mbaas.api.nifcloud.com/2013-09-01/classes/test")
+        val queryParamMap = HashMap<String, String>()
         val tmpSignature = tmpNCMBSignatureCal.calSignature("POST",
             url,
             "2020-03-30T05:35:37.974Z",
             "a69ec93ef132f0fdsfdsfds7d24b55d1926bd2c191c0eb054",
             "6afad6056749cb55dfdsggwwcxv54w06bdef688fdsfdsfdsfds3a695d0",
-            null
+            queryParamMap
         )
-        assertEquals("PypCIPOo1vASUWe1IUT5DWky/niMGqS7HWwFwKvj7NA=", tmpSignature)
+        Assert.assertEquals("PypCIPOo1vASUWe1IUT5DWky/niMGqS7HWwFwKvj7NA=", tmpSignature)
     }
 
     //Signature test with query Document Sample
@@ -50,7 +51,7 @@ class NCMBSignatureCalTest {
             "1343d198b510a0315db1c03f3aa0e32418b7a743f8e4b47cbff670601345cf75",
             queryParaMap
         )
-        assertEquals("AltGkQgXurEV7u0qMd+87ud7BKuueldoCjaMgVc9Bes=", tmpSignature)
+        Assert.assertEquals("AltGkQgXurEV7u0qMd+87ud7BKuueldoCjaMgVc9Bes=", tmpSignature)
     }
 
     //Signature test with query with 2 parameters
@@ -67,7 +68,7 @@ class NCMBSignatureCalTest {
             "dbe419dd750daf131aaade194a27fdsfdsfdsfdsfvcvc72001af764d3835cf3812",
             queryParaMap
         )
-        assertEquals("FM/p6H9GXwimzoAQzKFA7kq2w+2zaux2pdw3C/g0Nx8=", tmpSignature)
+        Assert.assertEquals("FM/p6H9GXwimzoAQzKFA7kq2w+2zaux2pdw3C/g0Nx8=", tmpSignature)
     }
 
     //Signature test with query with 2 parameters
@@ -86,6 +87,6 @@ class NCMBSignatureCalTest {
             queryParaMap
         )
 
-        assertEquals("HdbNMQsBEm/P/ojx2GpjSPyCTigCvh6Bo/8NZdClaho=", tmpSignature)
+        Assert.assertEquals("HdbNMQsBEm/P/ojx2GpjSPyCTigCvh6Bo/8NZdClaho=", tmpSignature)
     }
 }

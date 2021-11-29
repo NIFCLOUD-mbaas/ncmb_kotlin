@@ -15,7 +15,10 @@
  */
 
 package com.nifcloud.mbaas.core
+
+import org.json.JSONException
 import org.json.JSONObject
+
 
 /**
  * A class of ncmb_kotlin.
@@ -23,9 +26,8 @@ import org.json.JSONObject
  * To do object service jobs, setup basis connection settings before doing connection.
  * SDK handler is also set here.
  *
- */
-open class NCMBObjectService() : NCMBService() {
-    open val SERVICE_PATH = "classes/"
+class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
+    val SERVICE_PATH = "classes/"
 
     /**
      * Initialization
@@ -82,7 +84,6 @@ open class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className
         val method = NCMBRequest.HTTP_METHOD_POST
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val saveHandler = NCMBHandler { savecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -95,6 +96,7 @@ open class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = saveCallback, handler = saveHandler).query
         sendRequestAsync(url, method, params, contentType, query, saveCallback, saveHandler)
     }
 
@@ -142,8 +144,6 @@ open class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className + "/" + objectId;
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val params = RequestParams(url = url, method = method, contentType = contentType).params
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val fetchHandler = NCMBHandler{ fetchcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -156,6 +156,8 @@ open class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val params = RequestParamsAsync(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).params
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).query
         sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
     }
 
@@ -205,7 +207,6 @@ open class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className + "/" + objectId;
         val method = NCMBRequest.HTTP_METHOD_PUT
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val updateHandler = NCMBHandler { updatecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -218,6 +219,7 @@ open class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = updateCallback, handler = updateHandler).query
         sendRequestAsync(url, method, params, contentType, query, updateCallback, updateHandler)
     }
 
@@ -265,8 +267,6 @@ open class NCMBObjectService() : NCMBService() {
         val url = NCMB.getApiBaseUrl() + this.mServicePath + className + "/" + objectId;
         val method = NCMBRequest.HTTP_METHOD_DELETE
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val params = RequestParams(url = url, method = method, contentType = contentType).params
-        val query =  RequestParams(url = url, method = method, contentType = contentType).query
         val deleteHandler = NCMBHandler{ deletecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -279,6 +279,173 @@ open class NCMBObjectService() : NCMBService() {
                 }
             }
         }
+        val params = RequestParamsAsync(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).params
+        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).query
         sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
     }
+
+
+    /**　
+     * Searching JSONObject data from NIFCLOUD mobile backend
+     * @param className Datastore class name which to search the object
+     * @param query JSONObject of search conditions
+     * @return List of NCMBObject of search results
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun find(className: String, query: JSONObject): List<NCMBObject> {
+        //return emptyList()
+        var listObj = listOf<NCMBObject>()
+        val reqParam = findObjectParams(className, query)
+        val response = sendRequest(reqParam)
+        when (response) {
+            is NCMBResponse.Success -> {
+                listObj = createSearchResponseList(className, response.data)
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+        return listObj
+    }
+
+    /**
+     * Searching JSONObject data to NIFCLOUD mobile backend in background thread
+     * @param className Datastore class name which to search the object
+     * @param query JSONObject of search conditions
+     * @param callback callback for after object search
+     */
+    override fun findInBackground(
+        className: String,
+        query: JSONObject,
+        findCallback: NCMBCallback
+    ) {
+
+        val reqParam = findObjectParams(className, query)
+        val findHandler = NCMBHandler { findCallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    var listObj = createSearchResponseList(className, response.data)
+                    findCallback.done(null, listObj)
+                }
+                is NCMBResponse.Failure -> {
+                    var listObj = listOf<NCMBObject>()
+                    findCallback.done(response.resException, listObj)
+                }
+            }
+        }
+        sendRequestAsync(reqParam, findCallback, findHandler)
+    }
+
+    /**
+     * Setup params to do find request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    protected fun findObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath + className
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        val params = JSONObject()
+        return RequestParams(url = url, method = method, params = params, contentType = contentType, query=query)
+    }
+
+    private fun validateClassName(className: String?): Boolean {
+        return (className == null || className.isEmpty())
+    }
+
+    private fun validateObjectId(objectId: String?): Boolean {
+        return (objectId == null || objectId.isEmpty())
+    }
+
+    @Throws(NCMBException::class)
+    fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject> {
+        return try {
+            val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
+            val array: MutableList<NCMBObject> = ArrayList()
+            for (i in 0 until results.length()) {
+                val tmpObj = NCMBObject(className, results.getJSONObject(i))
+                array.add(tmpObj)
+            }
+            array
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+        }
+    }
+
+    /**　
+     * Searching JSONObject data from NIFCLOUD mobile backend
+     * @param className Datastore class name which to search the object
+     * @param query JSONObject of search conditions
+     * @return List of NCMBObject of search results
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun count(className: String, query: JSONObject): Int {
+        var countNumber = 0
+        val reqParam = countObjectParams(className, query)
+        val response = sendRequest(reqParam)
+        when (response) {
+            is NCMBResponse.Success -> {
+                countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+        return countNumber
+    }
+
+    /**
+     * Searching JSONObject data to NIFCLOUD mobile backend in background thread
+     * @param className Datastore class name which to search the object
+     * @param query JSONObject of search conditions
+     * @param callback callback for after object search
+     */
+    override fun countInBackground(
+        className: String,
+        query: JSONObject,
+        countCallback: NCMBCallback
+    ) {
+        val reqParam = countObjectParams(className, query)
+        val countHandler = NCMBHandler { countCallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    var countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                    countCallback.done(null, countNumber)
+                }
+                is NCMBResponse.Failure -> {
+                    countCallback.done(response.resException, 0)
+                }
+            }
+        }
+        sendRequestAsync(reqParam, countCallback, countHandler)
+    }
+
+    /**
+     * Setup params to do count request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    protected fun countObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath + className
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        return RequestParams(url = url, method = method, contentType = contentType, query = query)
+    }
+
 }

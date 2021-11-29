@@ -51,8 +51,7 @@ open class NCMBObject : NCMBBase {
         }
         this.mClassName = className
         this.mIgnoreKeys = mutableListOf(
-            "objectId", "acl",
-            "createDate", "updateDate"
+            "acl", "createDate", "updateDate"
         )
     }
 
@@ -86,7 +85,7 @@ open class NCMBObject : NCMBBase {
             } catch (e: JSONException) {
                 throw NCMBException(
                     NCMBException.INVALID_JSON,
-                    e.message!!
+                    e.localizedMessage
                 )
             }
             return this
@@ -97,8 +96,8 @@ open class NCMBObject : NCMBBase {
      * save current NCMBObject to data store asynchronously
      * @param saveCallback callback after object save
      */
-    fun saveInBackground(saveCallback: NCMBCallback) {
-        val objectId = getObjectId()
+    open fun saveInBackground(saveCallback: NCMBCallback) {
+        val objecdId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
         if (objectId == null) {
@@ -124,7 +123,7 @@ open class NCMBObject : NCMBBase {
                 saveCallback.done(
                     NCMBException(
                         NCMBException.INVALID_JSON,
-                        e.message!!
+                        e.localizedMessage
                     )
                 )
             }
@@ -212,4 +211,5 @@ open class NCMBObject : NCMBBase {
             deleteCallback.done(ex)
         }
     }
+
 }

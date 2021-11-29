@@ -54,7 +54,7 @@ class NCMBException : Exception {
     constructor(cause: Exception) : super(cause) {
         code = GENERIC_ERROR
         if (cause.message != null) {
-            this.message = cause.message!!
+            this.message = cause.localizedMessage
         }
     }
 
