@@ -58,6 +58,10 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         fun forObject(className: String): NCMBQuery<NCMBObject> {
             return NCMBQuery<NCMBObject>(className, NCMBObjectService())
         }
+
+        fun forUser(): NCMBQuery<NCMBObject> {
+            return NCMBQuery<NCMBObject>("user", NCMBUserService())
+        }
     }
 
     /**
