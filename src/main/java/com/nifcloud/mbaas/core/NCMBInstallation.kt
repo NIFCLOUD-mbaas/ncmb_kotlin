@@ -513,10 +513,24 @@ class NCMBInstallation : NCMBObject {
         val objectId = getObjectId()
         val installationService = NCMBInstallationService()
         if (objectId != null) {
-            // 保存後に実施するsaveCallbackを渡す
             installationService.fetchInstallation(this, objectId)
         }
+        else{
+            throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+        }
         return this
+    }
+
+    @Throws(NCMBException::class)
+    override fun fetchInBackground(fetchCallback: NCMBCallback) {
+        val objectId = getObjectId()
+        val installationService = NCMBInstallationService()
+        if (objectId != null) {
+            installationService.fetchInstallationInBackground(this, objectId, fetchCallback)
+        }
+        else{
+            throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+        }
     }
 
     /**
@@ -528,9 +542,23 @@ class NCMBInstallation : NCMBObject {
         val objectId = getObjectId()
         val installationService = NCMBInstallationService()
         if (objectId != null) {
-            // 保存後に実施するsaveCallbackを渡す
             installationService.deleteInstallation(objectId)
         }
+        else{
+            throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+        }
         return null
+    }
+
+    @Throws(NCMBException::class)
+    override fun deleteInBackground(deleteCallback: NCMBCallback){
+        val objectId = getObjectId()
+        val installationService = NCMBInstallationService()
+        if (objectId != null) {
+            installationService.deleteInstallationInBackground(objectId, deleteCallback)
+        }
+        else {
+            deleteCallback.done(NCMBException(IllegalArgumentException("objectId is must not be null.")))
+        }
     }
 }
