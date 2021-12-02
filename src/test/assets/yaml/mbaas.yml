@@ -374,6 +374,15 @@ response:
     file: valid_get_searchInstallation_response.json
 ---
 request:
+    url: /2013-09-01/users
+    method: GET
+    query:
+        count: 1
+response:
+    status: 200
+    file: valid_count_response.json
+---
+request:
     url: /2013-09-01/installations
     method: GET
     query:
