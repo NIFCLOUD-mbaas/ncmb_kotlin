@@ -578,6 +578,24 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun test_NCMBUser_findAllUser_success() {
+        val query = NCMBQuery.forUser()
+        val users = query.find()
+        Assert.assertEquals(
+            2,
+            users.size
+        )
+        Assert.assertEquals(
+            (users[0] as NCMBUser).getObjectId(),
+            "dummyObjectId01"
+        )
+        Assert.assertEquals(
+            (users[1] as NCMBUser).getObjectId(),
+            "dummyObjectId02"
+        )
+    }
+
+    @Test
     fun test_NCMBUser_count_whereEqualTo_success() {
         val query = NCMBQuery.forUser()
         val number = query.count()
