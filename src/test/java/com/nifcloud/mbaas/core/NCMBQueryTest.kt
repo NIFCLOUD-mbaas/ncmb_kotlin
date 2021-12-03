@@ -561,7 +561,7 @@ class NCMBQueryTest {
     @Test
     fun test_NCMBUser_find_whereEqualTo_success() {
         val query = NCMBQuery.forUser()
-        query.whereEqualTo("userName", "Ncmb Tarou")
+        query.whereEqualTo("userName", "TestUser")
         val users = query.find()
         Assert.assertEquals(
             1,
