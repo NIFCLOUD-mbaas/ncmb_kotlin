@@ -17,9 +17,11 @@
 package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.JsonObject
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
+import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -117,12 +119,33 @@ class NCMBInstallationTest {
     @Test
     @Throws(NCMBException::class)
     fun fetch_installation_with_get_success() {
-        val obj = NCMBInstallation()
-        obj.setObjectId("7FrmPTBKSNtVjajm")
-        val result = obj.fetch()
+        val installation = NCMBInstallation()
+        installation.setObjectId("7FrmPTBKSNtVjajm")
+        installation.put("key", "value")
+        val result = installation.fetch()
         Assert.assertEquals(result.getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals(result.get("key"), "value")
-        Assert.assertNotNull(obj)
+        Assert.assertNotNull(installation)
+    }
+
+    @Test
+    @Throws(NCMBException::class)
+    fun fetchInBackground_installation_with_get_success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val installation = NCMBInstallation()
+        installation.setObjectId("7FrmPTBKSNtVjajm")
+        inBackgroundHelper.start()
+        installation.fetchInBackground(NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBInstallation).getObjectId(), "7FrmPTBKSNtVjajm")
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBInstallation).get("key"), "value")
+        Assert.assertNotNull(installation)
     }
 
     @Test
@@ -133,6 +156,28 @@ class NCMBInstallationTest {
         val result = obj.delete()
         Assert.assertNull(result)
         Assert.assertNotNull(obj)
+        Assert.assertNull(NCMBInstallation.installation)
+    }
+
+    @Test
+    @Throws(NCMBException::class)
+    fun deleteInBackground_installation_success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        var currentInstallationJson = JSONObject()
+        NCMBInstallation.installation = NCMBInstallation(currentInstallationJson)
+        Assert.assertNotNull(NCMBInstallation.installation)
+        val installation = NCMBInstallation()
+        installation.setObjectId("7FrmPTBKSNtVjajm")
+        inBackgroundHelper.start()
+        installation.deleteInBackground(NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertNotNull(installation)
         Assert.assertNull(NCMBInstallation.installation)
     }
 }

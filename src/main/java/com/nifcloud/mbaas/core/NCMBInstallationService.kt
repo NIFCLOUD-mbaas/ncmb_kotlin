@@ -265,10 +265,10 @@ class NCMBInstallationService: NCMBService() {
                             throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.")
                         }
                         clearCurrentInstallation()
-                        deleteCallback.done(null)
+                        deleteCallback.done(null, null)
                     }
                     is NCMBResponse.Failure -> {
-                        throw response.resException
+                        deleteCallback.done(response.resException)
                     }
                 }
             }
@@ -333,7 +333,7 @@ class NCMBInstallationService: NCMBService() {
                     fetchCallback.done(null, NCMBInstallation(response.data))
                 }
                 is NCMBResponse.Failure -> {
-                    throw response.resException
+                    fetchCallback.done(response.resException)
                 }
             }
         }
