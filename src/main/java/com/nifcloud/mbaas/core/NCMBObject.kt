@@ -179,7 +179,7 @@ open class NCMBObject : NCMBBase {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    open fun delete(): NCMBObject? {
+    open fun delete(){
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -187,7 +187,6 @@ open class NCMBObject : NCMBBase {
             // 保存後に実施するsaveCallbackを渡す
             objService.deleteObject(this, className, objectId)
         }
-        return null
     }
 
     /**

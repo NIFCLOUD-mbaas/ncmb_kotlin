@@ -538,7 +538,7 @@ class NCMBInstallation : NCMBObject {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun delete(): NCMBInstallation? {
+    override fun delete(){
         val objectId = getObjectId()
         val installationService = NCMBInstallationService()
         if (objectId != null) {
@@ -547,7 +547,6 @@ class NCMBInstallation : NCMBObject {
         else{
             throw NCMBException(IllegalArgumentException("objectId is must not be null."))
         }
-        return null
     }
 
     @Throws(NCMBException::class)
