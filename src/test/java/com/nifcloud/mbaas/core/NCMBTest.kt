@@ -42,7 +42,7 @@ class NCMBTest {
     @Before
     @Throws(Exception::class)
     fun setup() {
-        var ncmbDispatcher = NCMBDispatcher()
+        var ncmbDispatcher = NCMBDispatcher("")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
     }
