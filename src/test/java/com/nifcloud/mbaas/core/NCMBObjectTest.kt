@@ -50,7 +50,7 @@ class NCMBObjectTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        val ncmbDispatcher = NCMBDispatcher("classes")
+        val ncmbDispatcher = NCMBDispatcher("datastore")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
