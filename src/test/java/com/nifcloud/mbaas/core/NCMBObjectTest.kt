@@ -99,7 +99,7 @@ class NCMBObjectTest {
     fun save_object_with_post_data_save_success() {
         var obj = NCMBObject("TestClass")
         obj.put("key", "value")
-        obj = obj.save()
+        obj.save()
         Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
     }
 
@@ -180,10 +180,10 @@ class NCMBObjectTest {
         val obj = NCMBObject("TestClass")
         obj.setObjectId("updateTestObjectId")
         obj.put("updateKey", "updateValue")
-        val result = obj.save()
+        obj.save()
         Assert.assertEquals(obj.get("updateKey"),"updateValue")
         val date: Date = getIso8601().parse("2014-06-04T11:28:30.348Z")!!
-        Assert.assertEquals(result.getUpdateDate(),date)
+        Assert.assertEquals(obj.getUpdateDate(),date)
     }
 
     @Test
@@ -191,9 +191,9 @@ class NCMBObjectTest {
     fun update_object_non_update_value() {
         val obj = NCMBObject("TestClass")
         obj.setObjectId("updateTestObjectId")
-        val result = obj.save()
+        obj.save()
         val date: Date = getIso8601().parse("2014-06-04T11:28:30.348Z")!!
-        Assert.assertEquals(result.getUpdateDate(),date)
+        Assert.assertEquals(obj.getUpdateDate(),date)
     }
 
     @Test
@@ -203,11 +203,11 @@ class NCMBObjectTest {
         obj.setObjectId("updateTestObjectId")
         obj.put("updateKey", "updateValue")
         obj.put("updateKey2", "updateValue2")
-        val result = obj.save()
+        obj.save()
         Assert.assertEquals(obj.get("updateKey"),"updateValue")
         Assert.assertEquals(obj.get("updateKey2"),"updateValue2")
         val date: Date = getIso8601().parse("2014-06-04T11:28:30.348Z")!!
-        Assert.assertEquals(result.getUpdateDate(),date)
+        Assert.assertEquals(obj.getUpdateDate(),date)
     }
 
     @Test

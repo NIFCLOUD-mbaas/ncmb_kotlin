@@ -167,7 +167,7 @@ open class NCMBUser: NCMBObject {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    private fun saveWithoutLogin(): NCMBObject {
+    private fun saveWithoutLogin(){
         val userService = NCMBUserService()
         val params = JSONObject()
         try {
@@ -181,7 +181,6 @@ open class NCMBUser: NCMBObject {
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
-        return this
     }
 
     /**
@@ -189,7 +188,7 @@ open class NCMBUser: NCMBObject {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun save(): NCMBObject {
+    override fun save(){
         val objectId = getObjectId() ?: return saveWithoutLogin()
         val userService = NCMBUserService()
         try {
@@ -200,7 +199,6 @@ open class NCMBUser: NCMBObject {
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
-        return this
     }
 
     /**

@@ -312,7 +312,7 @@ class NCMBInstallation : NCMBObject {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun save(): NCMBObject {
+    override fun save(){
         //connect
         val installationService = NCMBInstallationService()
         val responseData: JSONObject
@@ -331,7 +331,6 @@ class NCMBInstallation : NCMBObject {
         }
         //localData = responseData
         mUpdateKeys.clear()
-        return this
     }
 
     /**
