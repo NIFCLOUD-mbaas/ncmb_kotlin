@@ -493,14 +493,13 @@ open class NCMBUser: NCMBObject {
     }
 
     @Throws(NCMBException::class)
-    override fun fetch(): NCMBObject {
+    override fun fetch() {
         val objectId = getObjectId()
         val userService = NCMBUserService()
         if (objectId != null) {
             val user: NCMBUser = userService.fetchUser(this, objectId)
             mFields = user.mFields
         }
-        return this
     }
 
     @Throws(NCMBException::class)

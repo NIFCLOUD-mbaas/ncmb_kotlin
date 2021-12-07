@@ -133,7 +133,7 @@ open class NCMBObject : NCMBBase {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    open fun fetch(): NCMBObject {
+    open fun fetch() {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -144,7 +144,6 @@ open class NCMBObject : NCMBBase {
                 className, objectId
             )
         }
-        return this
     }
 
     /**
