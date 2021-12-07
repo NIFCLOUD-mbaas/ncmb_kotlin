@@ -45,26 +45,6 @@ class NCMBInstallationService: NCMBService() {
         const val SERVICE_PATH = "installations"
 
         /**
-         * Status code of installation created
-         */
-        const val HTTP_STATUS_INSTALLATION_CREATED = 201
-
-        /**
-         * Status code of installation updated
-         */
-        const val HTTP_STATUS_INSTALLATION_UPDATED = 200
-
-        /**
-         * Status code of installation deleted
-         */
-        const val HTTP_STATUS_INSTALLATION_DELETED = 200
-
-        /**
-         * Status code of installation gotten
-         */
-        const val HTTP_STATUS_INSTALLATION_GOTTEN = 200
-
-        /**
          * Run at the time of "Delete" and "POST" or "PUT" and "E404001 Error"
          */
         fun clearCurrentInstallation() {
@@ -103,7 +83,7 @@ class NCMBInstallationService: NCMBService() {
          */
         fun checkDataNotFound(objectId: String?, code: String) {
             if (NCMBException.DATA_NOT_FOUND == code) {
-                if (objectId == NCMBInstallation.getCurrentInstallation()!!.getObjectId()) {
+                if (objectId == NCMBInstallation.getCurrentInstallation().getObjectId()) {
                     clearCurrentInstallation()
                 }
             }
@@ -218,7 +198,7 @@ class NCMBInstallationService: NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun deleteInstallation(objectId: String?) {
+    fun deleteInstallation(objectId: String) {
         try {
             val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId
             val method = NCMBRequest.HTTP_METHOD_DELETE
@@ -228,9 +208,6 @@ class NCMBInstallationService: NCMBService() {
             val response = sendRequest(url, method, params, contentType, query)
             when (response) {
                 is NCMBResponse.Success -> {
-                    if (response.resCode !== HTTP_STATUS_INSTALLATION_GOTTEN) {
-                        throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.")
-                    }
                     clearCurrentInstallation()
                 }
                 is NCMBResponse.Failure -> {
@@ -251,7 +228,7 @@ class NCMBInstallationService: NCMBService() {
      * @param objectId objectId
      * @param callback DoneCallback
      */
-    fun deleteInstallationInBackground(objectId: String?, deleteCallback: NCMBCallback) {
+    fun deleteInstallationInBackground(objectId: String, deleteCallback: NCMBCallback) {
         try {
             val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId
             val method = NCMBRequest.HTTP_METHOD_DELETE
@@ -261,9 +238,6 @@ class NCMBInstallationService: NCMBService() {
             val deleteHandler = NCMBHandler{ deletecallback, response ->
                 when (response) {
                     is NCMBResponse.Success -> {
-                        if (response.resCode !== HTTP_STATUS_INSTALLATION_GOTTEN) {
-                            throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.")
-                        }
                         clearCurrentInstallation()
                         deleteCallback.done(null, null)
                     }
@@ -297,9 +271,6 @@ class NCMBInstallationService: NCMBService() {
         val response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                if (response.resCode !== HTTP_STATUS_INSTALLATION_GOTTEN) {
-                    throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Getting failed.")
-                }
                 fetchInstantiation.reflectResponse(response.data)
                 return NCMBInstallation(response.data)
             }
@@ -326,9 +297,6 @@ class NCMBInstallationService: NCMBService() {
         val fetchHandler = NCMBHandler { deletecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    if (response.resCode !== HTTP_STATUS_INSTALLATION_GOTTEN) {
-                        throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Getting failed.")
-                    }
                     fetchInstantiation.reflectResponse(response.data)
                     fetchCallback.done(null, NCMBInstallation(response.data))
                 }
