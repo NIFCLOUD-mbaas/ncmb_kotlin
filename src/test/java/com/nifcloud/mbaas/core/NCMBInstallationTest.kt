@@ -49,7 +49,7 @@ class NCMBInstallationTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        val ncmbDispatcher = NCMBDispatcher()
+        val ncmbDispatcher = NCMBDispatcher("installations")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(

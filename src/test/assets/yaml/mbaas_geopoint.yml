@@ -1,0 +1,10 @@
+---
+request:
+    url: /2013-09-01/classes/TestClassGeo
+    method: POST
+    body:
+        geoPoint: {"__type":"GeoPoint","longitude":139.765607,"latitude":35.6666269}
+response:
+    status: 201
+    file: valid_post_geopoint_response.json
+---

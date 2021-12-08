@@ -30,7 +30,7 @@ class NCMBQueryTest {
     fun setup() {
 
         //mockserver 制御するNCMBDispatcherを指定し、モックサーバを起動
-        val ncmbDispatcher = NCMBDispatcher()
+        val ncmbDispatcher = NCMBDispatcher("query")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(

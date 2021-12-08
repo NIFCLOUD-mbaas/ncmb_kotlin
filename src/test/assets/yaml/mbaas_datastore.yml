@@ -1,0 +1,348 @@
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
+        key: value
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
+        key: value
+        acl: {"*":{"read":true,"write":true}}
+response:
+    status: 201
+    file: valid_post_with_acl_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClassGeo
+    method: POST
+    body:
+        geoPoint: {"__type":"GeoPoint","longitude":139.765607,"latitude":35.6666269}
+response:
+    status: 201
+    file: valid_post_geopoint_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
+    method: PUT
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/updateTestObjectId
+    method: PUT
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/updateTestObjectId
+    method: PUT
+    body:
+        updateKey: "updateValue"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/updateTestObjectId
+    method: PUT
+    body:
+        updateKey: "updateValue"
+        updateKey2: "updateValue2"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/updateWithAclTestObjectId
+    method: PUT
+    body:
+        updateKey: "updateValue"
+        acl: {"*":{"read":true,"write":true}}
+response:
+    status: 200
+    file: valid_put_with_acl_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/testObjectId
+    method: PUT
+    body:
+        key: null
+response:
+    status: 200
+    file: valid_put_with_remove_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/testObjectId
+    method: PUT
+    body:
+        incrementKey: {"__op":"Increment","amount":1}
+response:
+    status: 200
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
+    method: GET
+response:
+    status: 200
+    file: valid_get_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/NonExistObject
+    method: GET
+response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/getTestObjectId
+    method: GET
+response:
+    status: 200
+    file: valid_get_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/7FrmPTBKSNtVjajm
+    method: DELETE
+response:
+    status: 200
+    file: valid_delete_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/nonExistId
+    method: DELETE
+response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass/deleteTestObjectId
+    method: DELETE
+response:
+    status: 200
+    file: valid_delete_response.json
+---
+request:
+    url: /2013-09-01/classes/SaveObjectTest
+    method: POST
+response:
+    status: 201
+    file: valid_save_object.json
+---
+request:
+    url: /2013-09-01/classes/user
+    method: POST
+response:
+    status: 403
+    file: save_object_given_class.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNoData
+    method: GET
+response:
+    status: 200
+    file: valid_search_response_no_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedIn
+    method: GET
+    query:
+        where: {"keyArray":{"$in":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedIn_String
+    method: GET
+    query:
+        where: {"keyArray":{"$in":["1","2","3"]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedInArray
+    method: GET
+    query:
+        where: {"keyArray":{"$inArray":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotContainedInArray
+    method: GET
+    query:
+        where: {"keyArray":{"$ninArray":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotContainedIn
+    method: GET
+    query:
+        where: {"keyArray":{"$nin":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassContainedAll
+    method: GET
+    query:
+        where: {"keyArray":{"$all":[1,2,3]}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"key":"value"}'
+response:
+    status: 200
+    file: valid_search_response_one_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassNotEqual
+    method: GET
+    query:
+        where: {"key":{"$ne":"value"}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassGreaterThan
+    method: GET
+    query:
+        where: {"key":{"$gt":2}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassGreaterThanOrEqual
+    method: GET
+    query:
+        where: {"key":{"$gte":2}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassLessThan
+    method: GET
+    query:
+        where: {"key":{"$lt":100}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassLessThanOrEqual
+    method: GET
+    query:
+        where: {"key":{"$lte":100}}
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassCount
+    method: GET
+    query:
+        where: '{"key":"value"}'
+        count: 1
+response:
+    status: 200
+    file: valid_count_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClassSkip
+    method: GET
+    query:
+        where: '{"key":"value"}'
+        skip: 3
+response:
+    status: 200
+    file: valid_search_response_all_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClassLimit
+    method: GET
+    query:
+        limit: 3
+response:
+    status: 200
+    file: valid_search_response_three_obj_asc.json
+---
+request:
+    url: /2013-09-01/classes/TestClassAsc
+    method: GET
+    query:
+        limit: 3
+        order: 'key'
+response:
+    status: 200
+    file: valid_search_response_three_obj_asc.json
+---
+request:
+    url: /2013-09-01/classes/TestClassDesc
+    method: GET
+    query:
+        limit: 3
+        order: '-key'
+response:
+    status: 200
+    file: valid_search_response_three_obj_desc.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"key":"value"}'
+        limit: 50
+        skip: 3
+        include: 'pointerKey'
+        order: 'ascendingKey,-descendingKey'
+response:
+    status: 200
+    file: valid_search_response_one_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"stringKey":"string","intKey":10,"longKey":10000000000000000,"floatKey":1.23,"doubleKey":1.23,"boolKey":true,"arrayKey":["array"],"mapKey":{"key":"value"},"dateKey":{"__type":"Date","iso":"2016-01-26T00:00:00.000Z"}}'
+response:
+    status: 200
+    file: valid_search_response_one_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        include: 'post.author'
+response:
+    status: 200
+    file: valid_get_include_response.json
+---
