@@ -237,9 +237,9 @@ class NCMBObjectTest {
     fun fetch_object_with_get_data_success() {
         val obj = NCMBObject("TestClass")
         obj.setObjectId("7FrmPTBKSNtVjajm")
-        val result = obj.fetch()
-        Assert.assertEquals(result.getObjectId(), "7FrmPTBKSNtVjajm")
-        Assert.assertEquals(result.get("key"), "value")
+        obj.fetch()
+        Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
+        Assert.assertEquals(obj.get("key"), "value")
     }
 
     @Test

@@ -119,9 +119,9 @@ class NCMBInstallationTest {
     fun fetch_installation_with_get_success() {
         val obj = NCMBInstallation()
         obj.setObjectId("7FrmPTBKSNtVjajm")
-        val result = obj.fetch()
-        Assert.assertEquals(result.getObjectId(), "7FrmPTBKSNtVjajm")
-        Assert.assertEquals(result.get("key"), "value")
+        obj.fetch()
+        Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
+        Assert.assertEquals(obj.get("key"), "value")
         Assert.assertNotNull(obj)
     }
 
