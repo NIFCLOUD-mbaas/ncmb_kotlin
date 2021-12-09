@@ -41,6 +41,8 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
                     NCMBException.GENERIC_ERROR,
                     "Need to set limit value from 1 to 1000"
                 )
+            }else{
+                field = value
             }
         }
         
@@ -51,6 +53,8 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
                     NCMBException.GENERIC_ERROR,
                     "Need to set skip value > 0"
                 )
+            }else{
+                field = value
             }
         }
 
