@@ -613,7 +613,7 @@ class NCMBQueryTest {
     }
 
     @Test
-    fun test_NCMBUser_count_whereEqualTo_success() {
+    fun test_NCMBUser_success() {
         val query = NCMBQuery.forUser()
         val number = query.count()
         Assert.assertEquals(
@@ -622,5 +622,59 @@ class NCMBQueryTest {
         )
     }
 
+    @Test
+    fun test_NCMBInstallation_find_whereEqualTo_success() {
+        val query = NCMBQuery.forInstallation()
+        query.whereEqualTo("sdkVersion", "3.0.4")
+        val installations = query.find()
+        Assert.assertEquals(
+            2,
+            installations.size
+        )
+        Assert.assertEquals(
+            (installations[0] as NCMBInstallation).getObjectId(),
+            "dummyObjectId01"
+        )
+        Assert.assertEquals(
+            (installations[0] as NCMBInstallation).sdkVersion,
+            "3.0.4"
+        )
+        Assert.assertEquals(
+            (installations[1] as NCMBInstallation).getObjectId(),
+            "dummyObjectId02"
+        )
+        Assert.assertEquals(
+            (installations[1] as NCMBInstallation).sdkVersion,
+            "3.0.4"
+        )
+    }
+
+    @Test
+    fun test_NCMBInstallation_findAll_success() {
+        val query = NCMBQuery.forInstallation()
+        val installations = query.find()
+        Assert.assertEquals(
+            2,
+            installations.size
+        )
+        Assert.assertEquals(
+            (installations[0] as NCMBInstallation).getObjectId(),
+            "dummyObjectId01"
+        )
+        Assert.assertEquals(
+            (installations[1] as NCMBInstallation).getObjectId(),
+            "dummyObjectId02"
+        )
+    }
+
+    @Test
+    fun test_NCMBInstallation_count_success() {
+        val query = NCMBQuery.forInstallation()
+        val number = query.count()
+        Assert.assertEquals(
+            50,
+            number
+        )
+    }
 
 }
