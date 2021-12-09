@@ -159,6 +159,15 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testSkip_valid_value() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        query.skip = 20
+        Assert.assertEquals(20, query.skip)
+    }
+
+    @Test
     @Throws(Exception::class)
     fun testLimit_Invalid_value_under0() {
         //TestClassクラスを検索するクエリを作成
@@ -179,11 +188,21 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testLimit_valid_value() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        query.limit = 200
+        Assert.assertEquals(200, query.limit)
+    }
+
+    @Test
     fun testNCMBObject_DoSearchSync_Skip() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassSkip")
+        query.skip = 3
         query.whereEqualTo("key", "value");
-        query.skip = 10
+
         val objects = query.find()
         Assert.assertEquals(2,objects.count())
         Assert.assertEquals(
@@ -243,7 +262,6 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchSync_Asc() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassAsc")
-        query.limit = 3
         query.addOrderByAscending("key")
         val objects = query.find()
         Assert.assertEquals(3,objects.count())
@@ -277,7 +295,6 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchSync_Desc() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassDesc")
-        query.limit = 3
         query.addOrderByDescending("key")
         val objects = query.find()
         Assert.assertEquals(3,objects.count())
@@ -561,7 +578,7 @@ class NCMBQueryTest {
     @Test
     fun test_NCMBUser_find_whereEqualTo_success() {
         val query = NCMBQuery.forUser()
-        query.whereEqualTo("userName", "TestUser")
+        query.whereEqualTo("userName", "Ncmb Tarou")
         val users = query.find()
         Assert.assertEquals(
             1,
@@ -581,10 +598,10 @@ class NCMBQueryTest {
     fun test_NCMBUser_findAllUser_success() {
         val query = NCMBQuery.forUser()
         val users = query.find()
-//        Assert.assertEquals(
-//            2,
-//            users.size
-//        )
+        Assert.assertEquals(
+            2,
+            users.size
+        )
         Assert.assertEquals(
             (users[0] as NCMBUser).getObjectId(),
             "dummyObjectId01"

@@ -36,8 +36,8 @@ import java.nio.file.Paths
 
 class NCMBDispatcher(var className:String): Dispatcher() {
 
-    private val NUMBER_PATTERN = """"[0-9]+""".toRegex()
-    private val BOOL_PATTERN = """[true|false]""".toRegex()
+    private val NUMBER_PATTERN = "[0-9]".toRegex()
+    private val BOOL_PATTERN = """(true|false)""".toRegex()
 
     @Throws(InterruptedException::class)
     override fun dispatch(request: RecordedRequest): MockResponse {
@@ -89,7 +89,12 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                 if (requestMap.containsKey("query")) {
                     val mockQuery = requestMap["query"]
                     val mockQueryStr: String = Gson().toJson(mockQuery)
-                    if (checkRequestQuery(mockQueryStr, query)!!) {
+                    if (checkRequestQuery(mockQueryStr, query) == true) {
+                        return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                            .setHeader("Content-Type", "application/json")
+                            .setBody(readJsonResponse(responseMap["file"].toString()))
+                    }
+                    else {
                         continue
                     }
                 } else {
@@ -166,7 +171,6 @@ class NCMBDispatcher(var className:String): Dispatcher() {
         mockRequestQueryStr: String,
         realRequestQueryStr: String
     ): Boolean? {
-        println("checkRequestQuery")
         try {
             val mockQuery = JSONObject(mockRequestQueryStr)
             val decodedQueryStr =
@@ -194,8 +198,8 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             val realQuery = JSONObject(realQueryMap)
             println("mockQuery:$mockQuery")
             println("realQuery:$realQuery")
-            if (!JSONCompare.compareJSON(mockQuery, realQuery, JSONCompareMode.NON_EXTENSIBLE).passed()) {
-                return false
+            if (JSONCompare.compareJSON(mockQuery, realQuery, JSONCompareMode.NON_EXTENSIBLE).passed()) {
+                return true
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -204,8 +208,10 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             e.printStackTrace()
             return false
         }
-        return true
+        return false
     }
+
+
     private fun checkRequestBody(
         mockRequestBodyStr: String,
         realRequestBodyStr: String
