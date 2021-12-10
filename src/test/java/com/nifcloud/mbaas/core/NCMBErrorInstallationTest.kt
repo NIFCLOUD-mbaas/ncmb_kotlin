@@ -136,7 +136,7 @@ class NCMBErrorInstallationTest {
     @Test
     @Throws(NCMBException::class)
     fun delete_installation_failure() {
-        Assert.assertNotNull(NCMBInstallation.getCurrentInstallation())
+        Assert.assertNotNull(NCMBInstallation.currentInstallation)
         val installation = NCMBInstallation()
         installation.setObjectId("7FrmPTBKSNtVjajm")
         try {
@@ -146,14 +146,13 @@ class NCMBErrorInstallationTest {
             Assert.assertEquals(NCMBException.INTERNAL_SERVER_ERROR, e.code)
         }
         Assert.assertNotNull(installation)
-        Assert.assertNotNull(NCMBInstallation.getCurrentInstallation())
+        Assert.assertNotNull(NCMBInstallation.currentInstallation)
     }
 
     @Test
     @Throws(NCMBException::class)
     fun deleteInBackground_installation_failure() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-        Assert.assertNotNull(NCMBInstallation.getCurrentInstallation())
         val installation = NCMBInstallation()
         installation.setObjectId("7FrmPTBKSNtVjajm")
         inBackgroundHelper.start()
@@ -166,7 +165,6 @@ class NCMBErrorInstallationTest {
         inBackgroundHelper.await()
         val error = (inBackgroundHelper["e"] as NCMBException)
         Assert.assertEquals(NCMBException.INTERNAL_SERVER_ERROR, error.code)
-        Assert.assertNotNull(installation)
-        Assert.assertNotNull(NCMBInstallation.getCurrentInstallation())
+        Assert.assertNotNull(NCMBInstallation.currentInstallation)
     }
 }

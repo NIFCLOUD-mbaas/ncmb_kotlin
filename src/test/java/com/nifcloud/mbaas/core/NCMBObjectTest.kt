@@ -291,9 +291,8 @@ class NCMBObjectTest {
         val sut = NCMBObject("TestClass")
         Assert.assertNull(sut.getObjectId())
         try {
-            sut.setObjectId("deleteTestObjectId")
-            val obj = sut.delete()
-            Assert.assertNull(obj)
+            sut.setObjectId("7FrmPTBKSNtVjajm")
+            sut.delete()
         } catch (e: NCMBException) {
             Assert.fail("exception raised:" + e.message)
         }

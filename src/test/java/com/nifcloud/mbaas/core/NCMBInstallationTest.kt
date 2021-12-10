@@ -144,7 +144,6 @@ class NCMBInstallationTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBInstallation).getObjectId(), "7FrmPTBKSNtVjajm")
-        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBInstallation).get("key"), "value")
         Assert.assertNotNull(installation)
     }
 
@@ -153,19 +152,20 @@ class NCMBInstallationTest {
     fun delete_installation_success() {
         val obj = NCMBInstallation()
         obj.setObjectId("7FrmPTBKSNtVjajm")
-        val result = obj.delete()
-        Assert.assertNull(result)
-        Assert.assertNotNull(obj)
-        Assert.assertNull(NCMBInstallation.installation)
+        try {
+            obj.delete()
+            Assert.assertNotNull(obj)
+            //新規作成されるためNullにはならない
+            //Assert.assertNull(NCMBInstallation.currentInstallation)
+        } catch (e: NCMBException) {
+            Assert.fail("exception raised:" + e.message)
+        }
     }
 
     @Test
     @Throws(NCMBException::class)
     fun deleteInBackground_installation_success() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-        var currentInstallationJson = JSONObject()
-        NCMBInstallation.installation = NCMBInstallation(currentInstallationJson)
-        Assert.assertNotNull(NCMBInstallation.installation)
         val installation = NCMBInstallation()
         installation.setObjectId("7FrmPTBKSNtVjajm")
         inBackgroundHelper.start()
@@ -178,6 +178,7 @@ class NCMBInstallationTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertNotNull(installation)
-        Assert.assertNull(NCMBInstallation.installation)
+        //新規作成されるためNullにはならない
+        //Assert.assertNull(NCMBInstallation.currentInstallation)
     }
 }
