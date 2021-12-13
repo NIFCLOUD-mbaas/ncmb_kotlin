@@ -812,5 +812,4 @@ class NCMBUserService : NCMBObjectService() {
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         return RequestParams(url = url, method = method, contentType = contentType, query = query)
     }
-
 }

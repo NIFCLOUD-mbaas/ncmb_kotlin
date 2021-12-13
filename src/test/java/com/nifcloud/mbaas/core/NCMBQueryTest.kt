@@ -59,7 +59,7 @@ class NCMBQueryTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
-            ((inBackgroundHelper["objects"] as List<Any>)[0] as NCMBObject).getObjectId(),
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
     }
@@ -81,7 +81,7 @@ class NCMBQueryTest {
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
             0,
-            (inBackgroundHelper["objects"] as List<Any>).size
+            (inBackgroundHelper["objects"] as List<NCMBObject>).size
         )
     }
 
@@ -101,11 +101,11 @@ class NCMBQueryTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
-            ((inBackgroundHelper["objects"] as List<Any>)[0] as NCMBObject).getObjectId(),
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            ((inBackgroundHelper["objects"] as List<Any>)[1] as NCMBObject).getObjectId(),
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -585,11 +585,11 @@ class NCMBQueryTest {
             users.size
         )
         Assert.assertEquals(
-            (users[0] as NCMBUser).getObjectId(),
+            users[0].getObjectId(),
             "dummyObjectId01"
         )
         Assert.assertEquals(
-            (users[0] as NCMBUser).userName,
+            users[0].userName,
             "Ncmb Tarou"
         )
     }
@@ -603,11 +603,11 @@ class NCMBQueryTest {
             users.size
         )
         Assert.assertEquals(
-            (users[0] as NCMBUser).getObjectId(),
+            users[0].getObjectId(),
             "dummyObjectId01"
         )
         Assert.assertEquals(
-            (users[1] as NCMBUser).getObjectId(),
+            users[1].getObjectId(),
             "dummyObjectId02"
         )
     }
@@ -632,19 +632,19 @@ class NCMBQueryTest {
             installations.size
         )
         Assert.assertEquals(
-            (installations[0] as NCMBInstallation).getObjectId(),
+            installations[0].getObjectId(),
             "dummyObjectId01"
         )
         Assert.assertEquals(
-            (installations[0] as NCMBInstallation).sdkVersion,
+            installations[0].sdkVersion,
             "3.0.4"
         )
         Assert.assertEquals(
-            (installations[1] as NCMBInstallation).getObjectId(),
+            installations[1].getObjectId(),
             "dummyObjectId02"
         )
         Assert.assertEquals(
-            (installations[1] as NCMBInstallation).sdkVersion,
+            installations[1].sdkVersion,
             "3.0.4"
         )
     }
@@ -658,11 +658,11 @@ class NCMBQueryTest {
             installations.size
         )
         Assert.assertEquals(
-            (installations[0] as NCMBInstallation).getObjectId(),
+            installations[0].getObjectId(),
             "dummyObjectId01"
         )
         Assert.assertEquals(
-            (installations[1] as NCMBInstallation).getObjectId(),
+            installations[1].getObjectId(),
             "dummyObjectId02"
         )
     }

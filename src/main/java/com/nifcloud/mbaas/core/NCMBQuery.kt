@@ -60,15 +60,15 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
 
     companion object {
         fun forObject(className: String): NCMBQuery<NCMBObject> {
-            return NCMBQuery<NCMBObject>(className, NCMBObjectService())
+            return NCMBQuery(className, NCMBObjectService())
         }
 
-        fun forUser(): NCMBQuery<NCMBObject> {
-            return NCMBQuery<NCMBObject>("user", NCMBUserService())
+        fun forUser(): NCMBQuery<NCMBUser> {
+            return NCMBQuery("user", NCMBUserService()) as NCMBQuery<NCMBUser>
         }
 
-        fun forInstallation(): NCMBQuery<NCMBObject> {
-            return NCMBQuery<NCMBObject>("installation", NCMBInstallationService())
+        fun forInstallation(): NCMBQuery<NCMBInstallation> {
+            return NCMBQuery("installation", NCMBInstallationService()) as NCMBQuery<NCMBInstallation>
         }
     }
 
