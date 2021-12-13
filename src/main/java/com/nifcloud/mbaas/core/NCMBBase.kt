@@ -44,7 +44,7 @@ open class NCMBBase(){
         }
         internal set
     protected var mIgnoreKeys= listOf<String>()
-    protected var keys = HashSet<String>()
+    var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
     fun setObjectId(objectId: String) {
@@ -253,6 +253,7 @@ open class NCMBBase(){
             if (isIgnoreKey(key)) {
                 continue
             }
+            this.keys.add(key)
             mFields.put(key, from[key])
         }
     }

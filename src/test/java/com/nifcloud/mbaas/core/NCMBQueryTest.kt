@@ -62,6 +62,14 @@ class NCMBQueryTest {
             (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
+        Assert.assertEquals(
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getString("key"),
+            "value"
+        )
+        Assert.assertEquals(
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].keys.size,
+            5
+        )
     }
 
     @Test
@@ -119,6 +127,14 @@ class NCMBQueryTest {
         Assert.assertEquals(
             objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            objects[0].getString("key"),
+            "value"
+        )
+        Assert.assertEquals(
+            objects[0].keys.size,
+            5
         )
     }
 
