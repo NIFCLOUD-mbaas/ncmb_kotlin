@@ -502,11 +502,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }       
@@ -521,11 +521,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -541,11 +541,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -570,7 +570,7 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
     }
