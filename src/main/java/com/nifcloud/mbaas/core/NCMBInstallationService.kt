@@ -52,7 +52,7 @@ class NCMBInstallationService: NCMBService() {
             val file = create(NCMBInstallation.INSTALLATION_FILENAME)
             deleteFile(file)
             //discarded from the static
-            NCMBInstallation.currentInstallation = null
+            NCMBInstallation.currentInstallation = NCMBInstallation()
         }
 
         /**
@@ -83,7 +83,7 @@ class NCMBInstallationService: NCMBService() {
          */
         fun checkDataNotFound(objectId: String?, code: String) {
             if (NCMBException.DATA_NOT_FOUND == code) {
-                if (objectId == NCMBInstallation.currentInstallation?.getObjectId()) {
+                if (objectId == NCMBInstallation.currentInstallation.getObjectId()) {
                     clearCurrentInstallation()
                 }
             }
@@ -411,13 +411,11 @@ class NCMBInstallationService: NCMBService() {
 
         //merge params to the currentData
         val currentInstallation = NCMBInstallation.currentInstallation
-        val currentData = currentInstallation?.localData
-        if(currentData != null) {
-            mergeJSONObject(currentData, params)
-            //write file
-            val file = create(NCMBInstallation.INSTALLATION_FILENAME)
-            writeFile(file, currentData)
-        }
+        val currentData = currentInstallation.localData
+        mergeJSONObject(currentData, params)
+        //write file
+        val file = create(NCMBInstallation.INSTALLATION_FILENAME)
+        writeFile(file, currentData)
 
         //held in a static
         NCMBInstallation.currentInstallation = NCMBInstallation(currentData)

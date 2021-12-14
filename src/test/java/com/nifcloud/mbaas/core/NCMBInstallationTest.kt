@@ -69,6 +69,7 @@ class NCMBInstallationTest {
     @Throws(Exception::class)
     fun saveInBackground_post() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        Assert.assertNull(NCMBInstallation.currentInstallation.getObjectId())
         //post
         val installation = NCMBInstallation()
         installation.deviceToken = "xxxxxxxxxxxxxxxxxxx"
@@ -87,12 +88,14 @@ class NCMBInstallationTest {
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
+        Assert.assertNotNull(NCMBInstallation.currentInstallation.getObjectId())
     }
 
     @Test
     @Throws(Exception::class)
     fun saveInBackground_put() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        Assert.assertNull(NCMBInstallation.currentInstallation.getObjectId())
         //post
         val installation = NCMBInstallation()
         installation.deviceToken = "xxxxxxxxxxxxxxxxxxx"
@@ -113,6 +116,7 @@ class NCMBInstallationTest {
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
+        Assert.assertNotNull(NCMBInstallation.currentInstallation.getObjectId())
     }
 
 
@@ -155,8 +159,7 @@ class NCMBInstallationTest {
         try {
             obj.delete()
             Assert.assertNotNull(obj)
-            //新規作成されるためNullにはならない
-            //Assert.assertNull(NCMBInstallation.currentInstallation)
+            Assert.assertNull(NCMBInstallation.currentInstallation.getObjectId())
         } catch (e: NCMBException) {
             Assert.fail("exception raised:" + e.message)
         }
@@ -178,7 +181,6 @@ class NCMBInstallationTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertNotNull(installation)
-        //新規作成されるためNullにはならない
-        //Assert.assertNull(NCMBInstallation.currentInstallation)
+        Assert.assertNull(NCMBInstallation.currentInstallation.getObjectId())
     }
 }

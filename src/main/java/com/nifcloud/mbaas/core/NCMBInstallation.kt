@@ -486,26 +486,23 @@ class NCMBInstallation : NCMBObject {
          * @return NCMBInstallation object that is created from data that is saved to local file.<br></br>
          * If local file is not available, it returns empty NCMBInstallation object
          */
-        var currentInstallation: NCMBInstallation? = null
+        var currentInstallation: NCMBInstallation = NCMBInstallation()
             get() {
-                //null check
-                checkNCMBContext()
                 try {
+                    //null check
+                    checkNCMBContext()
                     //create currentInstallation
-                    if (field == null) {
-                        field = NCMBInstallation()
-                        //ローカルファイルに配信端末情報があれば取得、なければ新規作成
-                        val currentInstallationFile = create(INSTALLATION_FILENAME)
-                        if (currentInstallationFile.exists()) {
-                            //ローカルファイルから端末情報を取得
-                            val localData = readFile(currentInstallationFile)
-                            field = NCMBInstallation(localData)
-                        }
+                    //ローカルファイルに配信端末情報があれば取得、なければ新規作成
+                    val currentInstallationFile = create(INSTALLATION_FILENAME)
+                    if (currentInstallationFile.exists()) {
+                        //ローカルファイルから端末情報を取得
+                        val localData = readFile(currentInstallationFile)
+                        field = NCMBInstallation(localData)
                     }
                 } catch (error: NCMBException) {
                     throw NCMBException(error)
                 }
-                return field as NCMBInstallation
+                return field
             }
             internal set(value) {
                 field = value
