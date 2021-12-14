@@ -113,4 +113,23 @@ class NCMBGeoPointTest {
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
     }
+
+    @Test
+    fun test_geopoint_get(){
+        val inBackgroundHelper = NCMBInBackgroundTestHelper()
+        val obj = NCMBObject("TestClassGeo")
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        inBackgroundHelper.start()
+        obj.fetchInBackground(NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release()
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val geo: NCMBGeoPoint = (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geoPoint")
+        Assert.assertEquals(geo.mlatitude, 35.6666269, 0.0)
+        Assert.assertEquals(geo.mlongitude, 139.765607, 0.0)
+    }
 }

@@ -118,6 +118,20 @@ open class NCMBBase(){
         }
     }
 
+    @Throws(NCMBException::class)
+    open fun getGeo(key : String): NCMBGeoPoint {
+        try {
+            val lat = mFields.getDouble("latitude")
+            val lon = mFields.getDouble("longitude")
+            val geo = NCMBGeoPoint(lat,lon)
+            return geo
+        } catch (e: JSONException) {
+            throw NCMBException(
+                NCMBException.INVALID_TYPE, e.localizedMessage
+            )
+        }
+    }
+
     /**
      * Update object from Response Data
      *

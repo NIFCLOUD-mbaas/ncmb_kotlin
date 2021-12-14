@@ -8,3 +8,10 @@ response:
     status: 201
     file: valid_post_geopoint_response.json
 ---
+request:
+    url: /2013-09-01/classes/TestClassGeo/7FrmPTBKSNtVjajm
+    method: GET
+response:
+    status: 200
+    file: valid_get_geopoint_response.json
+---
