@@ -16,6 +16,7 @@
 package com.nifcloud.mbaas.core
 
 import android.content.pm.PackageManager
+import android.util.Log
 import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
 import com.nifcloud.mbaas.core.NCMBLocalFile.create
 import com.nifcloud.mbaas.core.NCMBLocalFile.deleteFile
@@ -45,26 +46,6 @@ class NCMBInstallationService: NCMBService() {
         const val SERVICE_PATH = "installations"
 
         /**
-         * Status code of installation created
-         */
-        const val HTTP_STATUS_INSTALLATION_CREATED = 201
-
-        /**
-         * Status code of installation updated
-         */
-        const val HTTP_STATUS_INSTALLATION_UPDATED = 200
-
-        /**
-         * Status code of installation deleted
-         */
-        const val HTTP_STATUS_INSTALLATION_DELETED = 200
-
-        /**
-         * Status code of installation gotten
-         */
-        const val HTTP_STATUS_INSTALLATION_GOTTEN = 200
-
-        /**
          * Run at the time of "Delete" and "POST" or "PUT" and "E404001 Error"
          */
         fun clearCurrentInstallation() {
@@ -72,7 +53,7 @@ class NCMBInstallationService: NCMBService() {
             val file = create(NCMBInstallation.INSTALLATION_FILENAME)
             deleteFile(file)
             //discarded from the static
-            NCMBInstallation.installation = null
+            NCMBInstallation.currentInstallation = NCMBInstallation()
         }
 
         /**
@@ -103,7 +84,7 @@ class NCMBInstallationService: NCMBService() {
          */
         fun checkDataNotFound(objectId: String?, code: String) {
             if (NCMBException.DATA_NOT_FOUND == code) {
-                if (objectId == NCMBInstallation.getCurrentInstallation()!!.getObjectId()) {
+                if (objectId == NCMBInstallation.currentInstallation.getObjectId()) {
                     clearCurrentInstallation()
                 }
             }
@@ -123,7 +104,7 @@ class NCMBInstallationService: NCMBService() {
      * @param callback       JSONCallback
      */
     fun saveInstallationInBackground(
-        installationObject: NCMBObject,
+        installationObject: NCMBInstallation,
         registrationId: String,
         params: JSONObject,
         callback: NCMBCallback
@@ -174,7 +155,7 @@ class NCMBInstallationService: NCMBService() {
      * @param callback JSONCallback
      */
     fun updateInstallationInBackground(
-        installationObject: NCMBObject,
+        installationObject: NCMBInstallation,
         objectId: String,
         params: JSONObject,
         callback: NCMBCallback
@@ -202,7 +183,7 @@ class NCMBInstallationService: NCMBService() {
                 }
                 is NCMBResponse.Failure -> {
                     //ToDo installation自動削除
-                    //checkDataNotFound(objectId, response.resException)
+                    //checkDataNotFound(objectId, response.resException.code)
                     callback.done(response.resException)
                 }
             }
@@ -218,12 +199,8 @@ class NCMBInstallationService: NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun deleteInstallation(objectId: String?) {
+    fun deleteInstallation(objectId: String) {
         try {
-            //null check
-            if (objectId == null) {
-                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
-            }
             val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId
             val method = NCMBRequest.HTTP_METHOD_DELETE
             val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
@@ -232,15 +209,44 @@ class NCMBInstallationService: NCMBService() {
             val response = sendRequest(url, method, params, contentType, query)
             when (response) {
                 is NCMBResponse.Success -> {
-                    if (response.resCode !== HTTP_STATUS_INSTALLATION_GOTTEN) {
-                        throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Deleted failed.")
-                    }
                     clearCurrentInstallation()
                 }
                 is NCMBResponse.Failure -> {
                     throw response.resException
                 }
             }
+        } catch (error: NCMBException) {
+            //currentInstallation auto delete
+            checkDataNotFound(objectId, error.code)
+            throw error
+        }
+    }
+
+    /**
+     * Delete installation object in background
+     *
+     * @param objectId objectId
+     * @param callback DoneCallback
+     */
+    fun deleteInstallationInBackground(objectId: String, deleteCallback: NCMBCallback) {
+        try {
+            val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId
+            val method = NCMBRequest.HTTP_METHOD_DELETE
+            val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+            val params = RequestParams(url = url, method = method, contentType = contentType).params
+            val query =  RequestParams(url = url, method = method, contentType = contentType).query
+            val deleteHandler = NCMBHandler{ deletecallback, response ->
+                when (response) {
+                    is NCMBResponse.Success -> {
+                        clearCurrentInstallation()
+                        deleteCallback.done(null, null)
+                    }
+                    is NCMBResponse.Failure -> {
+                        deleteCallback.done(response.resException)
+                    }
+                }
+            }
+            sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
         } catch (error: NCMBException) {
             //currentInstallation auto delete
             checkDataNotFound(objectId, error.code)
@@ -257,11 +263,6 @@ class NCMBInstallationService: NCMBService() {
      */
     @Throws(NCMBException::class)
     fun fetchInstallation(fetchInstantiation: NCMBInstallation, objectId: String?): NCMBInstallation {
-        //null check
-        if (objectId == null) {
-            throw NCMBException(IllegalArgumentException("objectId is must not be null."))
-        }
-
         val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId;
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
@@ -270,9 +271,6 @@ class NCMBInstallationService: NCMBService() {
         val response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                if (response.resCode !== HTTP_STATUS_INSTALLATION_GOTTEN) {
-                    throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Getting failed.")
-                }
                 fetchInstantiation.reflectResponse(response.data)
                 return NCMBInstallation(response.data)
             }
@@ -281,6 +279,42 @@ class NCMBInstallationService: NCMBService() {
             }
         }
     }
+
+    /**
+     * Get installation object
+     *
+     * @param objectId object id
+     * @return result of get installation
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun fetchInstallationInBackground(fetchInstantiation: NCMBInstallation, objectId: String?, fetchCallback: NCMBCallback){
+        val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId;
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        val params = RequestParams(url = url, method = method, contentType = contentType).params
+        val query =  RequestParams(url = url, method = method, contentType = contentType).query
+        val fetchHandler = NCMBHandler { deletecallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    fetchInstantiation.reflectResponse(response.data)
+                    fetchCallback.done(null, NCMBInstallation(response.data))
+                }
+                is NCMBResponse.Failure -> {
+                    fetchCallback.done(response.resException)
+                }
+            }
+        }
+        sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
+    }
+
+
+//        sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
+//    } catch (error: NCMBException) {
+//        //currentInstallation auto delete
+//        checkDataNotFound(objectId, error.code)
+//        throw error
+//    }
 
     // endregion
     // region internal method
@@ -302,6 +336,7 @@ class NCMBInstallationService: NCMBService() {
                 pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
             val appVersion = pm.getPackageInfo(packageName, 0).versionName
             //value set
+            //Todo fix
             params.put(NCMBInstallation.DEVICE_TYPE, NCMBInstallation.ANDROID)
             params.put(NCMBInstallation.APPLICATION_NAME, applicationName)
             params.put(NCMBInstallation.APP_VERSION, appVersion)
@@ -376,15 +411,14 @@ class NCMBInstallationService: NCMBService() {
         mergeJSONObject(params, responseData)
 
         //merge params to the currentData
-        val currentInstallation = NCMBInstallation.getCurrentInstallation()
+        val currentInstallation = NCMBInstallation.currentInstallation
         val currentData = currentInstallation.localData
         mergeJSONObject(currentData, params)
-
         //write file
         val file = create(NCMBInstallation.INSTALLATION_FILENAME)
         writeFile(file, currentData)
 
         //held in a static
-        NCMBInstallation.installation = NCMBInstallation(currentData)
+        NCMBInstallation.currentInstallation = NCMBInstallation(currentData)
     }
 }

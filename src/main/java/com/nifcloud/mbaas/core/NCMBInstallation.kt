@@ -443,10 +443,10 @@ class NCMBInstallation : NCMBObject {
         const val DEVICE_TYPE = "deviceType"
         const val DEVICE_TOKEN = "deviceToken"
         const val SDK_VERSION = "sdkVersion"
-        const val TIME_ZONE= "timeZone"
-        const val PUSH_TYPE= "pushType"
-        const val ANDROID= "android"
-        const val FCM= "fcm"
+        const val TIME_ZONE = "timeZone"
+        const val PUSH_TYPE = "pushType"
+        const val ANDROID = "android"
+        const val FCM = "fcm"
 
         /**
          * currentInstallation fileName
@@ -472,7 +472,7 @@ class NCMBInstallation : NCMBObject {
         /**
          * push device
          */
-        var installation: NCMBInstallation? = null
+        //var installation: NCMBInstallation? = null
         val ignoreKeys = Arrays.asList(
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
@@ -485,50 +485,74 @@ class NCMBInstallation : NCMBObject {
          * @return NCMBInstallation object that is created from data that is saved to local file.<br></br>
          * If local file is not available, it returns empty NCMBInstallation object
          */
-        fun getCurrentInstallation(): NCMBInstallation {
-            //null check
-            checkNCMBContext()
-            try {
-                //create currentInstallation
-                if (installation == null) {
-                    installation = NCMBInstallation()
+        var currentInstallation: NCMBInstallation = NCMBInstallation()
+            get() {
+                try {
+                    //null check
+                    checkNCMBContext()
+                    //create currentInstallation
                     //ローカルファイルに配信端末情報があれば取得、なければ新規作成
                     val currentInstallationFile = create(INSTALLATION_FILENAME)
                     if (currentInstallationFile.exists()) {
                         //ローカルファイルから端末情報を取得
                         val localData = readFile(currentInstallationFile)
-                        installation = NCMBInstallation(localData)
+                        field = NCMBInstallation(localData)
                     }
+                } catch (error: NCMBException) {
+                    throw NCMBException(error)
                 }
-            } catch (error: Exception) {
-                Log.e("Error", error.toString())
+                return field
             }
-            return installation as NCMBInstallation
-        }
+            internal set(value) {
+                field = value
+            }
     }
 
-    @Throws(NCMBException::class)
-    override fun fetch(){
-        val objectId = getObjectId()
-        val installationService = NCMBInstallationService()
-        if (objectId != null) {
-            // 保存後に実施するsaveCallbackを渡す
-            installationService.fetchInstallation(this, objectId)
+        @Throws(NCMBException::class)
+        override fun fetch()  {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.fetchInstallation(this, objectId)
+            } else {
+                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+            }
         }
-    }
 
-    /**
-     * save current NCMBObject to data store
-     * @throws NCMBException exception from NIFCLOUD mobile backend
-     */
-    @Throws(NCMBException::class)
-    override fun delete(): NCMBInstallation? {
-        val objectId = getObjectId()
-        val installationService = NCMBInstallationService()
-        if (objectId != null) {
-            // 保存後に実施するsaveCallbackを渡す
-            installationService.deleteInstallation(objectId)
+        @Throws(NCMBException::class)
+        override fun fetchInBackground(fetchCallback: NCMBCallback) {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.fetchInstallationInBackground(this, objectId, fetchCallback)
+            } else {
+                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+            }
         }
-        return null
-    }
+
+        /**
+         * save current NCMBObject to data store
+         * @throws NCMBException exception from NIFCLOUD mobile backend
+         */
+        @Throws(NCMBException::class)
+        override fun delete() {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.deleteInstallation(objectId)
+            } else {
+                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+            }
+        }
+
+        @Throws(NCMBException::class)
+        override fun deleteInBackground(deleteCallback: NCMBCallback) {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.deleteInstallationInBackground(objectId, deleteCallback)
+            } else {
+                deleteCallback.done(NCMBException(IllegalArgumentException("objectId is must not be null.")))
+            }
+        }
 }

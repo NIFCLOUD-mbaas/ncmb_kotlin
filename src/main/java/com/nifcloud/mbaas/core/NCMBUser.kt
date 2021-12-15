@@ -512,7 +512,7 @@ open class NCMBUser: NCMBObject {
     }
 
     @Throws(NCMBException::class)
-    override fun delete(): NCMBObject? {
+    override fun delete() {
         val objectId = getObjectId()
         val userService = NCMBUserService()
         try {
@@ -521,7 +521,6 @@ open class NCMBUser: NCMBObject {
                 mFields = JSONObject()
                 mUpdateKeys.clear()
             }
-            return null
         } catch (e: NCMBException) {
             throw e
         }
