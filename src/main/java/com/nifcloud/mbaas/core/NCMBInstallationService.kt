@@ -183,7 +183,7 @@ class NCMBInstallationService: NCMBService() {
                 }
                 is NCMBResponse.Failure -> {
                     //ToDo installation自動削除
-                    checkDataNotFound(objectId, response.resException.code)
+                    //checkDataNotFound(objectId, response.resException.code)
                     callback.done(response.resException)
                 }
             }
@@ -336,6 +336,7 @@ class NCMBInstallationService: NCMBService() {
                 pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
             val appVersion = pm.getPackageInfo(packageName, 0).versionName
             //value set
+            //Todo fix
             params.put(NCMBInstallation.DEVICE_TYPE, NCMBInstallation.ANDROID)
             params.put(NCMBInstallation.APPLICATION_NAME, applicationName)
             params.put(NCMBInstallation.APP_VERSION, appVersion)
@@ -411,7 +412,6 @@ class NCMBInstallationService: NCMBService() {
 
         //merge params to the currentData
         val currentInstallation = NCMBInstallation.currentInstallation
-        Log.d("error", "before currentInstallation : " + currentInstallation.getObjectId())
         val currentData = currentInstallation.localData
         mergeJSONObject(currentData, params)
         //write file
@@ -420,6 +420,5 @@ class NCMBInstallationService: NCMBService() {
 
         //held in a static
         NCMBInstallation.currentInstallation = NCMBInstallation(currentData)
-        Log.d("error", "after currentInstallation : " + currentInstallation.getObjectId())
     }
 }
