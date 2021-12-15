@@ -312,7 +312,7 @@ class NCMBInstallation : NCMBObject {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun save(): NCMBObject {
+    override fun save(){
         //connect
         val installationService = NCMBInstallationService()
         val responseData: JSONObject
@@ -331,7 +331,6 @@ class NCMBInstallation : NCMBObject {
         }
         //localData = responseData
         mUpdateKeys.clear()
-        return this
     }
 
     /**
@@ -509,14 +508,13 @@ class NCMBInstallation : NCMBObject {
     }
 
     @Throws(NCMBException::class)
-    override fun fetch(): NCMBInstallation {
+    override fun fetch(){
         val objectId = getObjectId()
         val installationService = NCMBInstallationService()
         if (objectId != null) {
             // 保存後に実施するsaveCallbackを渡す
             installationService.fetchInstallation(this, objectId)
         }
-        return this
     }
 
     /**
