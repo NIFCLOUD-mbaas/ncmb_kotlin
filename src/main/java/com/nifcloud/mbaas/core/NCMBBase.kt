@@ -118,11 +118,18 @@ open class NCMBBase(){
         }
     }
 
+    /**
+     * get NCMBGeoPoint value from given key
+     *
+     * @param key field name to get the value
+     * @return value of specified key or null
+     */
     @Throws(NCMBException::class)
     open fun getGeo(key : String): NCMBGeoPoint {
         try {
-            val lat = mFields.getDouble("latitude")
-            val lon = mFields.getDouble("longitude")
+            val geoPoint = mFields.getJSONObject(key)
+            val lat = geoPoint.getDouble("latitude")
+            val lon = geoPoint.getDouble("longitude")
             val geo = NCMBGeoPoint(lat,lon)
             return geo
         } catch (e: JSONException) {
