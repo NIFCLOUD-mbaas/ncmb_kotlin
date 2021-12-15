@@ -16,6 +16,7 @@
 package com.nifcloud.mbaas.core
 
 import android.content.pm.PackageManager
+import android.util.Log
 import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
 import com.nifcloud.mbaas.core.NCMBLocalFile.create
 import com.nifcloud.mbaas.core.NCMBLocalFile.deleteFile
@@ -103,7 +104,7 @@ class NCMBInstallationService: NCMBService() {
      * @param callback       JSONCallback
      */
     fun saveInstallationInBackground(
-        installationObject: NCMBObject,
+        installationObject: NCMBInstallation,
         registrationId: String,
         params: JSONObject,
         callback: NCMBCallback
@@ -154,7 +155,7 @@ class NCMBInstallationService: NCMBService() {
      * @param callback JSONCallback
      */
     fun updateInstallationInBackground(
-        installationObject: NCMBObject,
+        installationObject: NCMBInstallation,
         objectId: String,
         params: JSONObject,
         callback: NCMBCallback
@@ -182,7 +183,7 @@ class NCMBInstallationService: NCMBService() {
                 }
                 is NCMBResponse.Failure -> {
                     //ToDo installation自動削除
-                    //checkDataNotFound(objectId, response.resException)
+                    checkDataNotFound(objectId, response.resException.code)
                     callback.done(response.resException)
                 }
             }
@@ -220,7 +221,6 @@ class NCMBInstallationService: NCMBService() {
             throw error
         }
     }
-
 
     /**
      * Delete installation object in background
@@ -411,6 +411,7 @@ class NCMBInstallationService: NCMBService() {
 
         //merge params to the currentData
         val currentInstallation = NCMBInstallation.currentInstallation
+        Log.d("error", "before currentInstallation : " + currentInstallation.getObjectId())
         val currentData = currentInstallation.localData
         mergeJSONObject(currentData, params)
         //write file
@@ -419,5 +420,6 @@ class NCMBInstallationService: NCMBService() {
 
         //held in a static
         NCMBInstallation.currentInstallation = NCMBInstallation(currentData)
+        Log.d("error", "after currentInstallation : " + currentInstallation.getObjectId())
     }
 }

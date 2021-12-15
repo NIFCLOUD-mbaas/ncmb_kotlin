@@ -492,13 +492,15 @@ class NCMBInstallation : NCMBObject {
                     //null check
                     checkNCMBContext()
                     //create currentInstallation
-                    //ローカルファイルに配信端末情報があれば取得、なければ新規作成
-                    val currentInstallationFile = create(INSTALLATION_FILENAME)
-                    if (currentInstallationFile.exists()) {
-                        //ローカルファイルから端末情報を取得
-                        val localData = readFile(currentInstallationFile)
-                        field = NCMBInstallation(localData)
-                    }
+                    //if (currentInstallation.getObjectId() == null) {
+                        //ローカルファイルに配信端末情報があれば取得、なければ新規作成
+                        val currentInstallationFile = create(INSTALLATION_FILENAME)
+                        if (currentInstallationFile.exists()) {
+                            //ローカルファイルから端末情報を取得
+                            val localData = readFile(currentInstallationFile)
+                            field = NCMBInstallation(localData)
+                        }
+                    //}
                 } catch (error: NCMBException) {
                     throw NCMBException(error)
                 }
