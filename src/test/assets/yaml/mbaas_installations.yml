@@ -1,0 +1,255 @@
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+        deviceToken: "xxxxxxxxxxxxxxxxxxx"
+        deviceType: "android"
+        applicationName: "ncmb-core"
+        appVersion: "1.0"
+        sdkVersion: "3.0.4"
+        timeZone: "Asia/Tokyo"
+        pushType: "fcm"
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+        deviceToken: "xxxxxxxxxxxxxxxxxxx"
+        deviceType: "android"
+        applicationName: "ncmb-core"
+        appVersion: "1.0"
+        sdkVersion: "3.0.4"
+        timeZone: "Etc/UTC"
+        key: "value"
+        pushType: "fcm"
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+        deviceToken: "xxxxxxxxxxxxxxxxxxx"
+        deviceType: "android"
+        applicationName: "ncmb-core"
+        appVersion: "1.0"
+        sdkVersion: "3.0.4"
+        timeZone: "UTC"
+        key: "value"
+        pushType: "fcm"
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+        error: "test"
+        deviceToken: "xxxxxxxxxxxxxxxxxxx"
+        deviceType: "android"
+        applicationName: "ncmb-core"
+        appVersion: "1.0"
+        sdkVersion: "3.0.4"
+        timeZone: "Asia/Tokyo"
+        pushType: "fcm"
+response:
+    status: 201
+    file: valid_post_notFoundTest_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+        error: "test"
+        deviceToken: "xxxxxxxxxxxxxxxxxxx"
+        deviceType: "android"
+        applicationName: "ncmb-core"
+        appVersion: "1.0"
+        sdkVersion: "3.0.4"
+        timeZone: "Etc/UTC"
+        pushType: "fcm"
+response:
+    status: 201
+    file: valid_post_notFoundTest_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+    body:
+        error: "test"
+        deviceToken: "xxxxxxxxxxxxxxxxxxx"
+        deviceType: "android"
+        applicationName: "ncmb-core"
+        appVersion: "1.0"
+        sdkVersion: "3.0.4"
+        timeZone: "UTC"
+        pushType: "fcm"
+response:
+    status: 201
+    file: valid_post_notFoundTest_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: POST
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/installations/non-update-value-id
+    method: PUT
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+        deviceType: "android"
+        appVersion: "1.0"
+        timeZone: "Asia/Tokyo"
+        sdkVersion: "3.0.4"
+        applicationName: "ncmb-core"
+        pushType: "fcm"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+        deviceType: "android"
+        appVersion: "1.0"
+        timeZone: "Asia/Tokyo"
+        sdkVersion: "3.0.4"
+        applicationName: "ncmb-core"
+        key: "value_update"
+        pushType: "fcm"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+        deviceType: "android"
+        appVersion: "1.0"
+        timeZone: "Etc/UTC"
+        sdkVersion: "3.0.4"
+        applicationName: "ncmb-core"
+        pushType: "fcm"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+        deviceType: "android"
+        appVersion: "1.0"
+        timeZone: "UTC"
+        sdkVersion: "3.0.4"
+        applicationName: "ncmb-core"
+        pushType: "fcm"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+        deviceType: "android"
+        appVersion: "1.0"
+        timeZone: "Etc/UTC"
+        sdkVersion: "3.0.4"
+        applicationName: "ncmb-core"
+        key: "value_update"
+        pushType: "fcm"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: PUT
+    body:
+        deviceType: "android"
+        appVersion: "1.0"
+        timeZone: "UTC"
+        sdkVersion: "3.0.4"
+        applicationName: "ncmb-core"
+        key: "value_update"
+        pushType: "fcm"
+response:
+    status: 200
+    file: valid_put_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: GET
+response:
+    status: 200
+    file: valid_get_installation_response.json
+---
+request:
+    url: /2013-09-01/installations/7FrmPTBKSNtVjajm
+    method: DELETE
+response:
+    status: 200
+    file: valid_delete_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+        where: '{"deviceType":"android"}'
+response:
+    status: 200
+    file: valid_get_searchInstallation_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+        where: '{"deviceType":"android"}'
+        limit: 2
+response:
+    status: 200
+    file: valid_get_searchInstallation_response.json
+---
+request:
+    url: /2013-09-01/installations
+    method: GET
+    query:
+        where: '{"deviceType":"android"}'
+        count: 1
+        limit: 1
+response:
+    status: 200
+    file: valid_count_response.json
+---
+request:
+    url: /2013-09-01/installations/errorObjectId
+    method: PUT
+response:
+    status: 404
+    file: valid_error_notFound_response.json
+---
+request:
+    url: /2013-09-01/installations/errorObjectId
+    method: DELETE
+response:
+    status: 404
+    file: valid_error_notFound_response.json
+---

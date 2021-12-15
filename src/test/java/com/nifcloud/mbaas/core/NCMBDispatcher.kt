@@ -34,7 +34,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class NCMBDispatcher: Dispatcher() {
+class NCMBDispatcher(var className:String): Dispatcher() {
 
     private val NUMBER_PATTERN = """"[0-9]+""".toRegex()
     private val BOOL_PATTERN = """[true|false]""".toRegex()
@@ -43,7 +43,11 @@ class NCMBDispatcher: Dispatcher() {
     override fun dispatch(request: RecordedRequest): MockResponse {
         var input: InputStream? = null
         try {
-            input = FileInputStream(File("src/test/assets/yaml/mbaas.yml"))
+            if(className == "") {
+                input = FileInputStream(File("src/test/assets/yaml/mbaas.yml"))
+            } else {
+                input = FileInputStream(File("src/test/assets/yaml/mbaas_" + className +".yml"))
+            }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         }

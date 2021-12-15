@@ -60,7 +60,7 @@ open class NCMBObject : NCMBBase {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    open fun save(): NCMBObject {
+    open fun save() {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -71,7 +71,6 @@ open class NCMBObject : NCMBBase {
                 className,
                 this.mFields
             )
-            return this
         } else {
             //Object update
             try {
@@ -88,7 +87,6 @@ open class NCMBObject : NCMBBase {
                     e.localizedMessage
                 )
             }
-            return this
         }
     }
 
@@ -135,7 +133,7 @@ open class NCMBObject : NCMBBase {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    open fun fetch(): NCMBObject {
+    open fun fetch() {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -146,7 +144,6 @@ open class NCMBObject : NCMBBase {
                 className, objectId
             )
         }
-        return this
     }
 
     /**
