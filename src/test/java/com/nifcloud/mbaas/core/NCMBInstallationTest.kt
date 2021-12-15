@@ -126,9 +126,9 @@ class NCMBInstallationTest {
         val installation = NCMBInstallation()
         installation.setObjectId("7FrmPTBKSNtVjajm")
         installation.put("key", "value")
-        val result = installation.fetch()
-        Assert.assertEquals(result.getObjectId(), "7FrmPTBKSNtVjajm")
-        Assert.assertEquals(result.get("key"), "value")
+        installation.fetch()
+        Assert.assertEquals(installation.getObjectId(), "7FrmPTBKSNtVjajm")
+        Assert.assertEquals(installation.get("key"), "value")
         Assert.assertNotNull(installation)
     }
 

@@ -509,7 +509,7 @@ class NCMBInstallation : NCMBObject {
     }
 
         @Throws(NCMBException::class)
-        override fun fetch(): NCMBInstallation {
+        override fun fetch()  {
             val objectId = getObjectId()
             val installationService = NCMBInstallationService()
             if (objectId != null) {
@@ -517,7 +517,6 @@ class NCMBInstallation : NCMBObject {
             } else {
                 throw NCMBException(IllegalArgumentException("objectId is must not be null."))
             }
-            return this
         }
 
         @Throws(NCMBException::class)
