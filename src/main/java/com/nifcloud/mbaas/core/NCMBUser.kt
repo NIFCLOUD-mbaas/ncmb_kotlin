@@ -26,11 +26,6 @@ import java.io.File
 open class NCMBUser: NCMBObject {
 
     /**
-     * current user
-     */
-    var currentuser: NCMBUser? = null
-
-    /**
      * currenUser fileName
      */
     val USER_FILENAME = "currentUser"
@@ -571,5 +566,9 @@ open class NCMBUser: NCMBObject {
         fun getServiceInstance(): NCMBUserService {
             return NCMBUserService()
         }
+	/**
+         * current user
+         */
+        var currentuser: NCMBUser? = null
     }
 }

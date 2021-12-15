@@ -495,7 +495,7 @@ class NCMBUserService : NCMBService() {
             val file: File = NCMBLocalFile.create(user.USER_FILENAME)
             NCMBLocalFile.writeFile(file, currentData)
             //held in a static
-            user.currentuser = NCMBUser(currentData)
+            NCMBUser.currentuser = NCMBUser(currentData)
 
             if (currentData.has("sessionToken")) {
                 try {
@@ -747,7 +747,7 @@ class NCMBUserService : NCMBService() {
         val file = create(NCMBUser().USER_FILENAME)
         deleteFile(file)
         //discarded from the static
-        NCMBUser().currentuser = null
+        NCMBUser.currentuser = null
         NCMB.SESSION_TOKEN = null
         NCMB.USER_ID = null
     }
