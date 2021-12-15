@@ -82,11 +82,12 @@ class NCMBBaseTest {
     fun copy_from_test() {
         var baseObj = NCMBBase()
         val json = JSONObject("{\"objectId\":\"xxxxx\",\"userName\":\"YamadaTarou\"}")
+        val testKeys = hashSetOf("objectId", "userName")
         Assert.assertEquals("xxxxx", json.getString("objectId"))
         Assert.assertEquals("YamadaTarou", json.getString("userName"))
         baseObj.copyFrom(json)
-        var data = baseObj.mFields
-        JSONAssert.assertEquals(json, data,false)
+        JSONAssert.assertEquals(json, baseObj.mFields,false)
+        Assert.assertEquals(testKeys, baseObj.keys)
     }
 
 
