@@ -162,14 +162,14 @@ class NCMBInstallationService: NCMBObjectService() {
         callback: NCMBCallback
     ) {
         //set installation data
-        try {
-            //set basic data
-            //setInstallationBasicData(params)
-        } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
-        } catch (e: PackageManager.NameNotFoundException) {
-            throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
-        }
+//        try {
+//            //set basic data
+//            //setInstallationBasicData(params)
+//        } catch (e: JSONException) {
+//            throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
+//        } catch (e: PackageManager.NameNotFoundException) {
+//            throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
+//        }
 
         val installationHandler = NCMBHandler { installationcallback, response ->
             when (response) {
@@ -435,7 +435,7 @@ class NCMBInstallationService: NCMBObjectService() {
         writeFile(file, currentData)
         //held in a static
         NCMBInstallation.currentInstallation = NCMBInstallation(currentData)
-        NCMBInstallation.currentInstallation.localData = currentData
+        //NCMBInstallation.currentInstallation.localData = currentData
         println("(END) INSTALL LOCALDATA:" + NCMBInstallation.currentInstallation.localData)
     }
 
