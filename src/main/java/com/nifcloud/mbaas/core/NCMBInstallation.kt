@@ -36,6 +36,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import java.io.IOException
 import java.util.Arrays
+import java.util.Objects.isNull
 
 /**
  * NCMBInstallation is used to retrieve and upload the installation data
@@ -301,7 +302,7 @@ class NCMBInstallation : NCMBObject {
      * @param params params source JSON
      * @throws NCMBException
      */
-    internal constructor(params: JSONObject?) : super("installation", params!!) {
+    internal constructor(params: JSONObject) : super("installation", params) {
         mIgnoreKeys = ignoreKeys
     }
     // endregion
@@ -472,7 +473,6 @@ class NCMBInstallation : NCMBObject {
         /**
          * push device
          */
-        //var installation: NCMBInstallation? = null
         val ignoreKeys = Arrays.asList(
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
@@ -487,19 +487,14 @@ class NCMBInstallation : NCMBObject {
          */
         var currentInstallation: NCMBInstallation = NCMBInstallation()
             get() {
-                try {
-                    //null check
-                    checkNCMBContext()
-                    //create currentInstallation
-                    //ローカルファイルに配信端末情報があれば取得、なければ新規作成
-                    val currentInstallationFile = create(INSTALLATION_FILENAME)
-                    if (currentInstallationFile.exists()) {
-                        //ローカルファイルから端末情報を取得
-                        val localData = readFile(currentInstallationFile)
-                        field = NCMBInstallation(localData)
+                if(field.getObjectId() == null){
+                    try {
+                        print("IN GET CURRENT INSTALLATION(Get from File)")
+                        val installationService = NCMBInstallationService()
+                        field = installationService.getCurrentInstallationFromFile()
+                    } catch (error: NCMBException) {
+                        throw NCMBException(error)
                     }
-                } catch (error: NCMBException) {
-                    throw NCMBException(error)
                 }
                 return field
             }

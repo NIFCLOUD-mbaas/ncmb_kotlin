@@ -58,7 +58,7 @@ class NCMBInstallationService: NCMBObjectService() {
         }
 
         /**
-         * merge the JSONObject
+         * merge the JSONObject and apply merge result to base JSONObject
          *
          * @param base    base JSONObject
          * @param compare merge JSONObject
@@ -164,7 +164,7 @@ class NCMBInstallationService: NCMBObjectService() {
         //set installation data
         try {
             //set basic data
-            setInstallationBasicData(params)
+            //setInstallationBasicData(params)
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
         } catch (e: PackageManager.NameNotFoundException) {
@@ -338,12 +338,24 @@ class NCMBInstallationService: NCMBObjectService() {
             val appVersion = pm.getPackageInfo(packageName, 0).versionName
             //value set
             //Todo fix
-            params.put(NCMBInstallation.DEVICE_TYPE, NCMBInstallation.ANDROID)
-            params.put(NCMBInstallation.APPLICATION_NAME, applicationName)
-            params.put(NCMBInstallation.APP_VERSION, appVersion)
-            params.put(NCMBInstallation.SDK_VERSION, NCMB.SDK_VERSION)
-            params.put(NCMBInstallation.TIME_ZONE, timeZone)
-            params.put(NCMBInstallation.PUSH_TYPE, NCMBInstallation.FCM)
+            if(!params.has(NCMBInstallation.DEVICE_TYPE)){
+                params.put(NCMBInstallation.DEVICE_TYPE, NCMBInstallation.ANDROID)
+            }
+            if(!params.has(NCMBInstallation.APPLICATION_NAME)) {
+                params.put(NCMBInstallation.APPLICATION_NAME, applicationName)
+            }
+            if(!params.has(NCMBInstallation.APP_VERSION)) {
+                params.put(NCMBInstallation.APP_VERSION, appVersion)
+            }
+            if(!params.has(NCMBInstallation.SDK_VERSION)) {
+                params.put(NCMBInstallation.SDK_VERSION, NCMB.SDK_VERSION)
+            }
+            if(!params.has(NCMBInstallation.TIME_ZONE)) {
+                params.put(NCMBInstallation.TIME_ZONE, timeZone)
+            }
+            if(!params.has(NCMBInstallation.PUSH_TYPE)) {
+                params.put(NCMBInstallation.PUSH_TYPE, NCMBInstallation.FCM)
+            }
         }
     }
 
@@ -402,25 +414,52 @@ class NCMBInstallationService: NCMBObjectService() {
 
     /**
      * Run at the time of "POST" and "PUT"
-     * write the currentInstallation data in the file
-     *
-     * @param responseData installation parameters
+     * write/update the currentInstallation data and save to the file
+     * @param params JSONObject installation update/save parameters
+     * @param responseData JSONObject installation update/save results from Server
      */
     @Throws(NCMBException::class)
     fun writeCurrentInstallation(params: JSONObject, responseData: JSONObject) {
+        println("START IN WRITE CUR INSTAL:" + params + "||" + responseData)
+        println("(START) INSTALL LOCALDATA:" + NCMBInstallation.currentInstallation.localData)
         //merge responseData to the params
         mergeJSONObject(params, responseData)
-
+        println("IN WRITE CUR INSTAL(AFTER merge 1):" + params)
         //merge params to the currentData
-        val currentInstallation = NCMBInstallation.currentInstallation
-        val currentData = currentInstallation.localData
+        //val currentInstallation = NCMBInstallation.currentInstallation
+        val currentData = NCMBInstallation.currentInstallation.localData //PROBLEM
         mergeJSONObject(currentData, params)
+        println("IN WRITE CUR INSTAL(AFTER merge 2):" + currentData)
         //write file
         val file = create(NCMBInstallation.INSTALLATION_FILENAME)
         writeFile(file, currentData)
-
         //held in a static
         NCMBInstallation.currentInstallation = NCMBInstallation(currentData)
+        NCMBInstallation.currentInstallation.localData = currentData
+        println("(END) INSTALL LOCALDATA:" + NCMBInstallation.currentInstallation.localData)
+    }
+
+    /**
+     * Run getCurrentInstallation
+     * read the currentInstallation data from the file
+     *
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    fun getCurrentInstallationFromFile():NCMBInstallation {
+        //null check
+        checkNCMBContext()
+        //create currentInstallation
+        //ローカルファイルに配信端末情報があれば取得、なければ新規作成
+        val currentInstallationFile = create(NCMBInstallation.INSTALLATION_FILENAME)
+        if (currentInstallationFile.exists()) {
+            //ローカルファイルから端末情報を取得
+            val localData = NCMBLocalFile.readFile(currentInstallationFile)
+            print("LocalData(Get from File)"+localData)
+            return NCMBInstallation(localData)
+        }else {
+            return NCMBInstallation()
+        }
     }
 
     /**

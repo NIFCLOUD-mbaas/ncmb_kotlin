@@ -49,6 +49,7 @@ open class NCMBObject : NCMBBase {
         } catch (e: JSONException) {
             throw IllegalArgumentException(e.message)
         }
+        this.localData = mFields //update localData
         this.mClassName = className
         this.mIgnoreKeys = mutableListOf(
             "acl", "createDate", "updateDate"
