@@ -92,11 +92,6 @@ class NCMBInstallationService: NCMBObjectService() {
         }
     }
 
-    //Todo
-//    @Throws(NCMBException::class)
-//    fun createInstallation(registrationId: String?, params: JSONObject): JSONObject {
-//    }
-
   /**
      * save installation object in background
      *
@@ -161,16 +156,6 @@ class NCMBInstallationService: NCMBObjectService() {
         params: JSONObject,
         callback: NCMBCallback
     ) {
-        //set installation data
-//        try {
-//            //set basic data
-//            //setInstallationBasicData(params)
-//        } catch (e: JSONException) {
-//            throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
-//        } catch (e: PackageManager.NameNotFoundException) {
-//            throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
-//        }
-
         val installationHandler = NCMBHandler { installationcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -309,14 +294,6 @@ class NCMBInstallationService: NCMBObjectService() {
         sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
     }
 
-
-//        sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
-//    } catch (error: NCMBException) {
-//        //currentInstallation auto delete
-//        checkDataNotFound(objectId, error.code)
-//        throw error
-//    }
-
     // endregion
     // region internal method
     /**
@@ -407,11 +384,6 @@ class NCMBInstallationService: NCMBObjectService() {
         return params
     }
 
-    //Todo
-//    @Throws(NCMBException::class)
-//    fun createSearchResults(responseData: JSONObject): ArrayList<NCMBInstallation?> {
-//    }
-
     /**
      * Run at the time of "POST" and "PUT"
      * write/update the currentInstallation data and save to the file
@@ -420,23 +392,16 @@ class NCMBInstallationService: NCMBObjectService() {
      */
     @Throws(NCMBException::class)
     fun writeCurrentInstallation(params: JSONObject, responseData: JSONObject) {
-        println("START IN WRITE CUR INSTAL:" + params + "||" + responseData)
-        println("(START) INSTALL LOCALDATA:" + NCMBInstallation.currentInstallation.localData)
         //merge responseData to the params
         mergeJSONObject(params, responseData)
-        println("IN WRITE CUR INSTAL(AFTER merge 1):" + params)
         //merge params to the currentData
-        //val currentInstallation = NCMBInstallation.currentInstallation
-        val currentData = NCMBInstallation.currentInstallation.localData //PROBLEM
+        val currentData = NCMBInstallation.currentInstallation.localData
         mergeJSONObject(currentData, params)
-        println("IN WRITE CUR INSTAL(AFTER merge 2):" + currentData)
         //write file
         val file = create(NCMBInstallation.INSTALLATION_FILENAME)
         writeFile(file, currentData)
         //held in a static
         NCMBInstallation.currentInstallation = NCMBInstallation(currentData)
-        //NCMBInstallation.currentInstallation.localData = currentData
-        println("(END) INSTALL LOCALDATA:" + NCMBInstallation.currentInstallation.localData)
     }
 
     /**
@@ -455,7 +420,6 @@ class NCMBInstallationService: NCMBObjectService() {
         if (currentInstallationFile.exists()) {
             //ローカルファイルから端末情報を取得
             val localData = NCMBLocalFile.readFile(currentInstallationFile)
-            print("LocalData(Get from File)"+localData)
             return NCMBInstallation(localData)
         }else {
             return NCMBInstallation()
