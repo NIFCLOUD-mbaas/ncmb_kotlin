@@ -87,6 +87,7 @@ class NCMBBaseTest {
         Assert.assertEquals("YamadaTarou", json.getString("userName"))
         baseObj.copyFrom(json)
         JSONAssert.assertEquals(json, baseObj.mFields,false)
+        JSONAssert.assertEquals(json, baseObj.localData,false)
         Assert.assertEquals(testKeys, baseObj.keys)
     }
 
