@@ -477,7 +477,6 @@ class NCMBInstallation : NCMBObject {
             get() {
                 if(field.getObjectId() == null){
                     try {
-                        print("IN GET CURRENT INSTALLATION(Get from File)")
                         val installationService = NCMBInstallationService()
                         field = installationService.getCurrentInstallationFromFile()
                     } catch (error: NCMBException) {

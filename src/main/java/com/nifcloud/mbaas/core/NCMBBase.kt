@@ -255,6 +255,7 @@ open class NCMBBase(){
             }
             this.keys.add(key)
             mFields.put(key, from[key])
+            localData.put(key, from[key])
         }
     }
 
