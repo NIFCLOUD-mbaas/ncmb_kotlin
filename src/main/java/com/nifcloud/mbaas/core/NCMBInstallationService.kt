@@ -16,7 +16,6 @@
 package com.nifcloud.mbaas.core
 
 import android.content.pm.PackageManager
-import android.util.Log
 import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
 import com.nifcloud.mbaas.core.NCMBLocalFile.create
 import com.nifcloud.mbaas.core.NCMBLocalFile.deleteFile

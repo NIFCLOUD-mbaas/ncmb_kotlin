@@ -15,28 +15,16 @@
  */
 package com.nifcloud.mbaas.core
 
-import android.util.Log
-//import com.google.android.gms.tasks.OnCanceledListener
-//import com.google.android.gms.tasks.OnCompleteListener
-//import com.google.android.gms.tasks.Task
-//import com.google.firebase.FirebaseApp
-//import com.google.firebase.iid.FirebaseInstanceIdReceiver
-//import com.google.firebase.iid.FirebaseInstanceId
-//import com.google.firebase.iid.InstanceIdResult
-import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
-import com.nifcloud.mbaas.core.NCMBLocalFile.create
-import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import android.content.ContentValues.TAG
 import com.google.android.gms.tasks.OnCanceledListener
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import java.io.IOException
 import java.util.Arrays
-import java.util.Objects.isNull
+
 
 /**
  * NCMBInstallation is used to retrieve and upload the installation data
