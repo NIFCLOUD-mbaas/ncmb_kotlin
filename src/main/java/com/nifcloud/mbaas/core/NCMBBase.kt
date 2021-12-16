@@ -24,7 +24,7 @@ import java.util.Date
 import kotlin.collections.HashSet
 
 /**
- * A class of ncmb_kotlin.
+ * NCMBObject, NCMBUser .. 's base class.
  *
  * To do neccessary tasks for NCMBBase, which is base for NCMBObject
  *

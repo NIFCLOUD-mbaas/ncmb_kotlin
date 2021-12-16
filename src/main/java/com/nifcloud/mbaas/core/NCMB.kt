@@ -21,15 +21,19 @@ import android.os.Build
 import android.util.Log
 
 /**
- * A class of ncmb_kotlin.
+ * Initialize class of Nifcloud mobile backend (NCMB) Kotlin SDK.
  *
  * This class is do initialize the SDK and necessary setting up to start to connect to NCMB.
  *
  */
-
-
 class NCMB {
 
+    /**
+     * This is companion object for NCMB class.
+     *
+     * This companion object contains main Settings for Kotlin SDK.
+     *
+     */
     companion object Settings{
         /**
          * Name of this SDK
@@ -96,7 +100,13 @@ class NCMB {
         var USER_ID: String? = ""
 
         /**
-         * apikeyの初期化
+         * SDK initialize method. Which set Application Key, Client Key to connect to NCMB server.
+         *
+         * @param context  Application context
+         * @param applicationKey Application key. (See Application settings in Control Panel for details)
+         * @param clientKey Client key. (See Application settings in Control Panel for details)
+         * @param domainUrl NCMB server domain (default is set to DEFAULT_DOMAIN_URL)
+         * @param apiVersion NCMB server domain (default is set to DEFAULT_API_VERSION)
          */
         fun initialize(
             context: Context,
@@ -115,8 +125,12 @@ class NCMB {
         }
 
         /**
-         * push機能を利用するための初期設定メソッド
-         * channelの設定、devicetokenの登録
+         * SDK initialize method to use push. This method do get device token and register to NCMB server for the first time.
+         * For second times or more to be executed, it will retrieve the device token and update registered installation
+         * (which represents by currentInstallation)
+         *
+         * @param context  Application context
+         *
          */
         fun initializePush(context: Context){
             //チャネル登録
@@ -144,7 +158,8 @@ class NCMB {
         }
 
         /**
-         * APPLICATION_KEYをgetする.
+         * This method is to get set application key.
+         *
          * @return APPLICATION_KEY.
          */
         fun getApplicationKey(): String {
@@ -152,7 +167,8 @@ class NCMB {
         }
 
         /**
-         * CLIENT_KEYをgetする.
+         * This method is to get set client key.
+         *
          * @return CLIENT_KEY.
          */
         fun getClientKey(): String {
@@ -160,23 +176,26 @@ class NCMB {
         }
 
         /**
-        * SESSION_TOKENをgetする.
-        * @return CLIENT_KEY.
+        * This method is to get current sessionToken.
+         *
+        * @return SESSION_TOKEN.
         */
         fun getSessionToken(): String? {
             return SESSION_TOKEN
         }
 
         /**
-         * API BASE URLをgetする.
-         * @return BASE_URL.
+         * This method is to get API BASE URL.
+         *
+         * @return API_BASE_URL.
          */
         fun getApiBaseUrl(): String {
             return API_BASE_URL
         }
 
         /**
-         * API TIMEOUTをgetする.
+         * This method is to get API TIMEOUT.
+         *
          * @return TIMEOUT.
          */
         fun getTimeOut(): Int {
@@ -184,17 +203,20 @@ class NCMB {
         }
 
         /**
-         * API TIMEOUTをsetする.
-         * timeout Int
-         * @return null.
+         * This method is to set API TIMEOUT.
+         *
+         * @param timeout Int
+         *
          */
         fun setTimeOut(timeout: Int){
             TIMEOUT = timeout
-
         }
 
         /**
-         * Get NCMBContext
+         * This method is to get Current context
+         *
+         * @return CURRENT_CONTEXT.
+         *
          */
         fun getCurrentContext(): Context? {
             if (CURRENT_CONTEXT == null) {
