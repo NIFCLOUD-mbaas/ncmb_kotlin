@@ -89,40 +89,6 @@ class NCMBPush : NCMBObject {
                 throw IllegalArgumentException(error.message)
             }
         }
-//
-//    /**
-//     * Get search condition
-//     *
-//     * @return JSONObject search condition
-//     */
-//    /**
-//     * Set search condition
-//     *
-//     * @param query NCMBQuery for installation search
-//     */
-//    var searchCondition: JSONObject?
-//        get() {
-//            return try {
-//                if (mFields.isNull("searchCondition")) {
-//                    null
-//                } else mFields.getJSONObject("searchCondition")
-//            } catch (error: JSONException) {
-//                throw IllegalArgumentException(error.message)
-//            }
-//        }
-//        set(query) {
-//            try {
-//                val whereConditions: JSONObject = query.getConditions()
-//                var value: JSONObject? = JSONObject()
-//                if (whereConditions.has("where")) {
-//                    value = whereConditions.getJSONObject("where")
-//                }
-//                mFields.put("searchCondition", value)
-//                mUpdateKeys.add("searchCondition")
-//            } catch (error: JSONException) {
-//                throw IllegalArgumentException(error.message)
-//            }
-//        }
 
     /**
      * Get push message
@@ -592,162 +558,25 @@ class NCMBPush : NCMBObject {
     @Throws(NCMBException::class)
     fun send() {
         //connect
-        val pushService: NCMBPushService = NCMBPushService()
+        val pushService = NCMBPushService()
         val responseData: JSONObject
         if (getObjectId() == null) {
             //new create
             responseData = pushService.sendPush(mFields)
         }
         else {
-            responseData = JSONObject()
-//            //update
-//            var updateJson: JSONObject? = null
-//            updateJson = try {
-//                createUpdateJsonData()
-//            } catch (e: JSONException) {
-//                throw IllegalArgumentException(e.message)
-//            }
-//            responseData = pushService.updatePush(getObjectId(), updateJson)
+            //update
+            val updateJson = try {
+                createUpdateJsonData()
+            } catch (e: JSONException) {
+                throw IllegalArgumentException(e.message)
+            }
+            responseData = pushService.updatePush(getObjectId(), updateJson)
         }
         setPushLocalData(responseData)
         mUpdateKeys.clear()
     }
-//    /**
-//     * Send push object inBackground
-//     *
-//     * @param callback DoneCallback
-//     */
-//    /**
-//     * Send push object inBackground
-//     * none callback
-//     */
-//    @JvmOverloads
-//    fun sendInBackground(callback: DoneCallback? = null) {
-//
-//        //connect
-//        val pushService: NCMBPushService = NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
-//
-//        //callback
-//        val exeCallback: ExecuteServiceCallback = object : ExecuteServiceCallback() {
-//            fun done(responseData: JSONObject, error: NCMBException?) {
-//                var error = error
-//                if (error == null) {
-//                    //instance set data
-//                    try {
-//                        setLocalData(responseData)
-//                    } catch (e: NCMBException) {
-//                        error = e
-//                    }
-//                }
-//                mUpdateKeys.clear()
-//                if (callback != null) {
-//                    callback.done(error)
-//                }
-//            }
-//        }
-//        if (getObjectId() == null) {
-//            //new create
-//            pushService.sendPushInBackground(mFields, exeCallback)
-//        } else {
-//            //update
-//            var updateJson: JSONObject? = null
-//            updateJson = try {
-//                createUpdateJsonData()
-//            } catch (e: JSONException) {
-//                throw IllegalArgumentException(e.message)
-//            }
-//            pushService.updatePushInBackground(getObjectId(), updateJson, exeCallback)
-//        }
-//    }
-//    //endregion
-//    //region fetch
-//    /**
-//     * Get push object
-//     *
-//     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
-//     */
-//    @Throws(NCMBException::class)
-//    fun fetch() {
-//        //connect
-//        val pushService: NCMBPushService = NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
-//        val push: NCMBPush = pushService.fetchPush(getObjectId())
-//        //afterFetch
-//        setLocalData(push.mFields)
-//    }
-//    /**
-//     * Get push object inBackground
-//     *
-//     * @param callback DoneCallback
-//     */
-//    /**
-//     * Get push object inBackground
-//     * none callback
-//     */
-//    @JvmOverloads
-//    fun fetchInBackground(callback: FetchCallback? = null) {
-//        //connect
-//        val pushService: NCMBPushService = NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
-//        pushService.fetchPushInBackground(getObjectId(), object : FetchCallback<NCMBPush?>() {
-//            fun done(push: NCMBPush, e: NCMBException?) {
-//                var error: NCMBException? = null
-//                if (e != null) {
-//                    error = e
-//                } else {
-//                    //instance set data
-//                    try {
-//                        setLocalData(push.mFields)
-//                    } catch (ncmbError: NCMBException) {
-//                        error = ncmbError
-//                    }
-//                }
-//                if (callback != null) {
-//                    callback.done(push, error)
-//                }
-//            }
-//        })
-//    }
-//    //endregion
-//    //region delete
-//    /**
-//     * Delete push object
-//     *
-//     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
-//     */
-//    @Throws(NCMBException::class)
-//    fun delete() {
-//        //connect
-//        val pushService: NCMBPushService = NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
-//        pushService.deletePush(getObjectId())
-//        //instance data clear
-//        mFields = JSONObject()
-//        mUpdateKeys.clear()
-//    }
-//    /**
-//     * Delete push object inBackground
-//     *
-//     * @param callback DoneCallback
-//     */
-//    /**
-//     * Delete push object inBackground
-//     * none callback
-//     */
-//    @JvmOverloads
-//    fun deleteInBackground(callback: DoneCallback? = null) {
-//        //connect
-//        val pushService: NCMBPushService = NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
-//        pushService.deletePushInBackground(getObjectId(), object : DoneCallback() {
-//            fun done(error: NCMBException?) {
-//                if (error == null) {
-//                    //instance data clear
-//                    mFields = JSONObject()
-//                    mUpdateKeys.clear()
-//                }
-//                if (callback != null) {
-//                    callback.done(error)
-//                }
-//            }
-//        })
-//    }
+
     // region internal method
     /**
      * Set data to instance
@@ -801,114 +630,5 @@ class NCMBPush : NCMBObject {
             "richUrl", "badgeSetting", "category",
             "acl", "createDate", "updateDate"
         )
-//        //endregion
-//        /**
-//         * Create query for push class
-//         * @return NCMBQuery for push class
-//         */
-//        val query: NCMBQuery<NCMBPush>
-//            get() = NCMBQuery("push")
-//        //endregion
-//        // region RichPush
-//        /**
-//         * If it contains the URL in the payload data, it will display the webview
-//         *
-//         * @param context context
-//         * @param intent  URL
-//         */
-//        fun richPushHandler(context: Context?, intent: Intent?) {
-//            if (intent == null) {
-//                return
-//            }
-//            // URLチェック
-//            val url = intent.getStringExtra("com.nifcloud.mbaas.RichUrl") ?: return
-//            // URLのバリデーションチェック
-//            if (!url.matches(MATCH_URL_REGEX)) {
-//                return
-//            }
-//
-//            // ダイアログ表示
-//            val dialog = NCMBRichPush(context, url)
-//            dialog.show()
-//        }
-//        // endregion
-//        /**
-//         * Open push registration in background
-//         *
-//         * @param intent ActivityIntent
-//         */
-//        fun trackAppOpened(intent: Intent?) {
-//            if (intent == null) {
-//                return
-//            }
-//            val pushId = intent.getStringExtra("com.nifcloud.mbaas.PushId") ?: return
-//            val pushService: NCMBPushService =
-//                NCMB.factory(NCMB.ServiceType.PUSH) as NCMBPushService
-//            pushService.sendPushReceiptStatusInBackground(pushId, null)
-//        }
-//        // endregion
-//        // region dialogPush
-//        /**
-//         * If it contains the dialog in the payload data, it will display the dialog
-//         *
-//         * @param context                 context
-//         * @param bundle                  pushData
-//         * @param dialogPushConfiguration push settings
-//         */
-//        fun dialogPushHandler(
-//            context: Context,
-//            bundle: Bundle,
-//            dialogPushConfiguration: NCMBDialogPushConfiguration
-//        ) {
-//            if (!bundle.containsKey("com.nifcloud.mbaas.Dialog")) {
-//                //dialogが有効になっていない場合
-//                return
-//            }
-//
-//            //Check duplicate notification
-//            val recentPushIdPref = context.getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE)
-//            val recentPushId = recentPushIdPref.getString("recentPushId", "")
-//            val currentPushId = bundle.getString("com.nifcloud.mbaas.PushId")
-//            if (recentPushId == currentPushId) {
-//                return
-//            }
-//            val editor = recentPushIdPref.edit()
-//            editor.putString("recentPushId", currentPushId)
-//            editor.apply()
-//            if (dialogPushConfiguration.getDisplayType() === NCMBDialogPushConfiguration.DIALOG_DISPLAY_NONE) {
-//                //ダイアログ設定クラスの表示形式が"表示しない"(DIALOG_DISPLAY_NONE)場合
-//                return
-//            }
-//            val appInfo: ApplicationInfo
-//            var activityName = ""
-//            try {
-//                appInfo = context.packageManager.getApplicationInfo(
-//                    context.packageName,
-//                    PackageManager.GET_META_DATA
-//                )
-//                activityName =
-//                    appInfo.packageName + appInfo.metaData.getString(NCMBFirebaseMessagingService.OPEN_PUSH_START_ACTIVITY_KEY)
-//            } catch (e: PackageManager.NameNotFoundException) {
-//                e.printStackTrace()
-//            }
-//
-//            //NCMBDialogActivityクラスを呼び出す
-//            val intent = Intent(Intent.ACTION_MAIN)
-//            intent.setClass(context.applicationContext, NCMBDialogActivity::class.java)
-//            intent.putExtra("com.nifcloud.mbaas.OriginalData", bundle)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            intent.putExtra(
-//                NCMBDialogActivity.INTENT_EXTRA_THEME,
-//                R.style.Theme_Wallpaper_NoTitleBar
-//            )
-//            intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_LAUNCH_CLASS, activityName)
-//            intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_SUBJECT, bundle.getString("title"))
-//            intent.putExtra(NCMBDialogActivity.INTENT_EXTRA_MESSAGE, bundle.getString("message"))
-//            intent.putExtra(
-//                NCMBDialogActivity.INTENT_EXTRA_DISPLAYTYPE,
-//                dialogPushConfiguration.getDisplayType()
-//            )
-//            context.applicationContext.startActivity(intent)
-//        } // endregion
     }
 }
