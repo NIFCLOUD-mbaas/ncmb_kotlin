@@ -24,9 +24,11 @@ import java.util.Date
 import kotlin.collections.HashSet
 
 /**
- * NCMBObject, NCMBUser .. 's base class.
  *
- * To do neccessary tasks for NCMBBase, which is base for NCMBObject
+ * Base class for NCMBObject.
+ *
+ * This class do necessary tasks such as put/set interface methods even internal tasks,
+ * which will be base for NCMBObject.
  *
  */
 

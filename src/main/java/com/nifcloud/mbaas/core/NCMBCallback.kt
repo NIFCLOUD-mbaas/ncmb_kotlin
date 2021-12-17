@@ -19,48 +19,79 @@ package com.nifcloud.mbaas.core
 import org.json.JSONObject
 
 /**
- * A class of ncmb_kotlin.
+ * Callback solving class
  *
- * To do handler callback from user in assynchronous task such as SaveInBackground etc.
+ * This class represent callback tasks which is used to be passed to asynchronous methods.
  *
  */
 
 class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
 
-   //For pass callback from User
+    /**
+     * This method executes passed callback functions (in general).
+     *
+     * @param e NCMBException from NCMB
+     * @param response Response from NCMB
+     */
     fun done(e: NCMBException?, response: NCMBResponse) {
-       //do sthing here for callback
         passCallback(e, response)
     }
 
-    //For pass callback from User
+    /**
+     * This method executes passed callback functions (in general).
+     *
+     * @param e NCMBException from NCMB
+     */
     fun done(e: NCMBException?) {
-        //do sthing here for callback
         passCallback(e, null)
     }
 
-    //For pass callback from User
+    /**
+     * This method executes passed callback functions (Mainly datastore functions).
+     *
+     * @param e NCMBException from NCMB
+     * @param obj NCMBObject which is applied response from NCMB
+     */
     fun done(e: NCMBException?, obj: NCMBObject) {
-        //do sthing here for callback
         passCallback(e, obj)
     }
 
-    //For pass callback from Query
+    /**
+     * This method executes passed callback functions (Mainly searching datastore functions).
+     *
+     * @param e NCMBException from NCMB
+     * @param objList List of NCMBObject which is reflect search response data from NCMB
+     */
     fun done(e: NCMBException?, objList: List<NCMBObject>) {
-        //do sthing here for callback
         passCallback(e, objList)
     }
+
+    /**
+     * This method executes passed callback functions (Mainly user login functions).
+     *
+     * @param e NCMBException from NCMB
+     * @param token Session token response data from NCMB
+     */
     fun done(e: NCMBException?, token: String?){
         passCallback(e, token)
     }
 
-
-    //For pass callback from Query count
+    /**
+     * This method executes passed callback functions (Mainly search data count functions).
+     *
+     * @param e NCMBException from NCMB
+     * @param countNumber Count data reflect count response data from NCMB
+     */
     fun done(e: NCMBException?, countNumber: Int) {
-        //do sthing here for callback
         passCallback(e, countNumber)
     }
 
+    /**
+     * This method executes passed callback functions (Mainly search data count functions).
+     *
+     * @param e NCMBException from NCMB
+     * @param responseData Response json object from NCMB
+     */
     fun done(e: NCMBException?, responseData: JSONObject) {
         passCallback(e, responseData)
     }

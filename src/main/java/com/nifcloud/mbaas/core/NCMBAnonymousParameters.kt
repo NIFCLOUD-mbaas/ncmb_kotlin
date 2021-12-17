@@ -16,7 +16,10 @@
 
 package com.nifcloud.mbaas.core
 /**
- * Parameters Object for login to NIFCLOUD mobile backend with Anonymous Account
+ *
+ * Parameters Class for login to NIFCLOUD mobile backend with Anonymous Account
+ * (Anonymous Account login is not yet supported)
+ *
  */
 class NCMBAnonymousParameters(id: String) {
     /**
