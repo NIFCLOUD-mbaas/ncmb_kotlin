@@ -16,7 +16,6 @@
 package com.nifcloud.mbaas.core
 
 import android.content.pm.PackageManager
-import android.util.Log
 import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
 import com.nifcloud.mbaas.core.NCMBLocalFile.create
 import com.nifcloud.mbaas.core.NCMBLocalFile.deleteFile
@@ -58,7 +57,7 @@ class NCMBInstallationService: NCMBObjectService() {
         }
 
         /**
-         * merge the JSONObject
+         * merge the JSONObject and apply merge result to base JSONObject
          *
          * @param base    base JSONObject
          * @param compare merge JSONObject
@@ -91,11 +90,6 @@ class NCMBInstallationService: NCMBObjectService() {
             }
         }
     }
-
-    //Todo
-//    @Throws(NCMBException::class)
-//    fun createInstallation(registrationId: String?, params: JSONObject): JSONObject {
-//    }
 
   /**
      * save installation object in background
@@ -161,16 +155,6 @@ class NCMBInstallationService: NCMBObjectService() {
         params: JSONObject,
         callback: NCMBCallback
     ) {
-        //set installation data
-        try {
-            //set basic data
-            setInstallationBasicData(params)
-        } catch (e: JSONException) {
-            throw NCMBException(NCMBException.INVALID_JSON, "Invalid json format.")
-        } catch (e: PackageManager.NameNotFoundException) {
-            throw NCMBException(NCMBException.DATA_NOT_FOUND, "PackageManager not found.")
-        }
-
         val installationHandler = NCMBHandler { installationcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -309,14 +293,6 @@ class NCMBInstallationService: NCMBObjectService() {
         sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
     }
 
-
-//        sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
-//    } catch (error: NCMBException) {
-//        //currentInstallation auto delete
-//        checkDataNotFound(objectId, error.code)
-//        throw error
-//    }
-
     // endregion
     // region internal method
     /**
@@ -338,12 +314,24 @@ class NCMBInstallationService: NCMBObjectService() {
             val appVersion = pm.getPackageInfo(packageName, 0).versionName
             //value set
             //Todo fix
-            params.put(NCMBInstallation.DEVICE_TYPE, NCMBInstallation.ANDROID)
-            params.put(NCMBInstallation.APPLICATION_NAME, applicationName)
-            params.put(NCMBInstallation.APP_VERSION, appVersion)
-            params.put(NCMBInstallation.SDK_VERSION, NCMB.SDK_VERSION)
-            params.put(NCMBInstallation.TIME_ZONE, timeZone)
-            params.put(NCMBInstallation.PUSH_TYPE, NCMBInstallation.FCM)
+            if(!params.has(NCMBInstallation.DEVICE_TYPE)){
+                params.put(NCMBInstallation.DEVICE_TYPE, NCMBInstallation.ANDROID)
+            }
+            if(!params.has(NCMBInstallation.APPLICATION_NAME)) {
+                params.put(NCMBInstallation.APPLICATION_NAME, applicationName)
+            }
+            if(!params.has(NCMBInstallation.APP_VERSION)) {
+                params.put(NCMBInstallation.APP_VERSION, appVersion)
+            }
+            if(!params.has(NCMBInstallation.SDK_VERSION)) {
+                params.put(NCMBInstallation.SDK_VERSION, NCMB.SDK_VERSION)
+            }
+            if(!params.has(NCMBInstallation.TIME_ZONE)) {
+                params.put(NCMBInstallation.TIME_ZONE, timeZone)
+            }
+            if(!params.has(NCMBInstallation.PUSH_TYPE)) {
+                params.put(NCMBInstallation.PUSH_TYPE, NCMBInstallation.FCM)
+            }
         }
     }
 
@@ -395,32 +383,46 @@ class NCMBInstallationService: NCMBObjectService() {
         return params
     }
 
-    //Todo
-//    @Throws(NCMBException::class)
-//    fun createSearchResults(responseData: JSONObject): ArrayList<NCMBInstallation?> {
-//    }
-
     /**
      * Run at the time of "POST" and "PUT"
-     * write the currentInstallation data in the file
-     *
-     * @param responseData installation parameters
+     * write/update the currentInstallation data and save to the file
+     * @param params JSONObject installation update/save parameters
+     * @param responseData JSONObject installation update/save results from Server
      */
     @Throws(NCMBException::class)
     fun writeCurrentInstallation(params: JSONObject, responseData: JSONObject) {
         //merge responseData to the params
         mergeJSONObject(params, responseData)
-
         //merge params to the currentData
-        val currentInstallation = NCMBInstallation.currentInstallation
-        val currentData = currentInstallation.localData
+        val currentData = NCMBInstallation.currentInstallation.localData
         mergeJSONObject(currentData, params)
         //write file
         val file = create(NCMBInstallation.INSTALLATION_FILENAME)
         writeFile(file, currentData)
-
         //held in a static
         NCMBInstallation.currentInstallation = NCMBInstallation(currentData)
+    }
+
+    /**
+     * Run getCurrentInstallation
+     * read the currentInstallation data from the file
+     *
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    fun getCurrentInstallationFromFile():NCMBInstallation {
+        //null check
+        checkNCMBContext()
+        //create currentInstallation
+        //ローカルファイルに配信端末情報があれば取得、なければ新規作成
+        val currentInstallationFile = create(NCMBInstallation.INSTALLATION_FILENAME)
+        if (currentInstallationFile.exists()) {
+            //ローカルファイルから端末情報を取得
+            val localData = NCMBLocalFile.readFile(currentInstallationFile)
+            return NCMBInstallation(localData)
+        }else {
+            return NCMBInstallation()
+        }
     }
 
     /**

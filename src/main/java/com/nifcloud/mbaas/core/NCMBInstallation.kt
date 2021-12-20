@@ -15,27 +15,16 @@
  */
 package com.nifcloud.mbaas.core
 
-import android.util.Log
-//import com.google.android.gms.tasks.OnCanceledListener
-//import com.google.android.gms.tasks.OnCompleteListener
-//import com.google.android.gms.tasks.Task
-//import com.google.firebase.FirebaseApp
-//import com.google.firebase.iid.FirebaseInstanceIdReceiver
-//import com.google.firebase.iid.FirebaseInstanceId
-//import com.google.firebase.iid.InstanceIdResult
-import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
-import com.nifcloud.mbaas.core.NCMBLocalFile.create
-import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import android.content.ContentValues.TAG
 import com.google.android.gms.tasks.OnCanceledListener
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
 import java.io.IOException
 import java.util.Arrays
+
 
 /**
  * NCMBInstallation is used to retrieve and upload the installation data
@@ -301,7 +290,7 @@ class NCMBInstallation : NCMBObject {
      * @param params params source JSON
      * @throws NCMBException
      */
-    internal constructor(params: JSONObject?) : super("installation", params!!) {
+    internal constructor(params: JSONObject) : super("installation", params) {
         mIgnoreKeys = ignoreKeys
     }
     // endregion
@@ -472,7 +461,6 @@ class NCMBInstallation : NCMBObject {
         /**
          * push device
          */
-        //var installation: NCMBInstallation? = null
         val ignoreKeys = Arrays.asList(
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
@@ -487,19 +475,13 @@ class NCMBInstallation : NCMBObject {
          */
         var currentInstallation: NCMBInstallation = NCMBInstallation()
             get() {
-                try {
-                    //null check
-                    checkNCMBContext()
-                    //create currentInstallation
-                    //ローカルファイルに配信端末情報があれば取得、なければ新規作成
-                    val currentInstallationFile = create(INSTALLATION_FILENAME)
-                    if (currentInstallationFile.exists()) {
-                        //ローカルファイルから端末情報を取得
-                        val localData = readFile(currentInstallationFile)
-                        field = NCMBInstallation(localData)
+                if(field.getObjectId() == null){
+                    try {
+                        val installationService = NCMBInstallationService()
+                        field = installationService.getCurrentInstallationFromFile()
+                    } catch (error: NCMBException) {
+                        throw NCMBException(error)
                     }
-                } catch (error: NCMBException) {
-                    throw NCMBException(error)
                 }
                 return field
             }
