@@ -24,7 +24,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
-open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
+internal open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
     private val OPEN_PUSH_START_ACTIVITY_KEY = "openPushStartActivity"
     private val SMALL_ICON_KEY = "smallIcon"
     private val SMALL_ICON_COLOR_KEY = "smallIconColor"

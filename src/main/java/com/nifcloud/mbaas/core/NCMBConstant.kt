@@ -23,7 +23,7 @@ package com.nifcloud.mbaas.core
  *
  */
 
-class NCMBConstant {
+internal class NCMBConstant {
     companion object {
         enum class HTTP_METHOD {
             GET, POST, PUT, DELETE
@@ -62,7 +62,7 @@ class NCMBConstant {
 }
 
 /// NCMBQueryで使用するコンスタント値を管理するクラスです。
-class NCMBQueryConstants {
+internal class NCMBQueryConstants {
 
     companion object {
         const val REQUEST_PARAMETER_WHERE : String = "where"
