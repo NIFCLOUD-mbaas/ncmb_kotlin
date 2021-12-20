@@ -27,8 +27,8 @@ import org.json.JSONObject
  * SDK handler is also set here.
  *
  */
-internal class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
-    val SERVICE_PATH = "classes/"
+internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
+    open val SERVICE_PATH = "classes/"
 
     /**
      * Initialization
@@ -347,15 +347,14 @@ internal class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObj
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun findObjectParams(className: String, query:JSONObject): RequestParams {
+    open fun findObjectParams(className: String, query:JSONObject): RequestParams {
         var url = NCMB.getApiBaseUrl() + this.mServicePath + className
         if(query.length() > 0) {
             url = url.plus("?" + queryUrlStringGenerate(query))
         }
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val params = JSONObject()
-        return RequestParams(url = url, method = method, params = params, contentType = contentType, query=query)
+        return RequestParams(url = url, method = method, contentType = contentType, query=query)
     }
 
     private fun validateClassName(className: String?): Boolean {
@@ -367,7 +366,7 @@ internal class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObj
     }
 
     @Throws(NCMBException::class)
-    fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject> {
+    open fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject> {
         return try {
             val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
             val array: MutableList<NCMBObject> = ArrayList()
@@ -439,7 +438,7 @@ internal class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObj
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun countObjectParams(className: String, query:JSONObject): RequestParams {
+    open fun countObjectParams(className: String, query:JSONObject): RequestParams {
         var url = NCMB.getApiBaseUrl() + this.mServicePath + className
         if(query.length() > 0) {
             url = url.plus("?" + queryUrlStringGenerate(query))

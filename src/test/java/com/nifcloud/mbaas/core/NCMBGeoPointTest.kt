@@ -27,7 +27,7 @@ class NCMBGeoPointTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        val ncmbDispatcher = NCMBDispatcher()
+        val ncmbDispatcher = NCMBDispatcher("geopoint")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -88,7 +88,7 @@ class NCMBGeoPointTest {
         var obj = NCMBObject("TestClassGeo")
         val geopoint = NCMBGeoPoint(latitude, longitude)
         obj.put("geoPoint", geopoint)
-        obj = obj.save()
+        obj.save()
         Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
     }
 

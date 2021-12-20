@@ -46,6 +46,8 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
                     NCMBException.GENERIC_ERROR,
                     "Need to set limit value from 1 to 1000"
                 )
+            }else{
+                field = value
             }
         }
 
@@ -59,12 +61,22 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
                     NCMBException.GENERIC_ERROR,
                     "Need to set skip value > 0"
                 )
+            }else{
+                field = value
             }
         }
 
     companion object {
         fun forObject(className: String): NCMBQuery<NCMBObject> {
-            return NCMBQuery<NCMBObject>(className, NCMBObjectService())
+            return NCMBQuery(className, NCMBObjectService())
+        }
+
+        fun forUser(): NCMBQuery<NCMBUser> {
+            return NCMBQuery("user", NCMBUserService()) as NCMBQuery<NCMBUser>
+        }
+
+        fun forInstallation(): NCMBQuery<NCMBInstallation> {
+            return NCMBQuery("installation", NCMBInstallationService()) as NCMBQuery<NCMBInstallation>
         }
     }
 
