@@ -125,13 +125,17 @@ open class NCMBBase(){
      * @return value of specified key or null
      */
     @Throws(NCMBException::class)
-    open fun getGeo(key : String): NCMBGeoPoint {
+    fun getGeo(key : String): NCMBGeoPoint {
         try {
             val geoPoint = mFields.getJSONObject(key)
-            val lat = geoPoint.getDouble("latitude")
-            val lon = geoPoint.getDouble("longitude")
-            val geo = NCMBGeoPoint(lat,lon)
-            return geo
+            if (geoPoint.getString("__type") == "GeoPoint") {
+                val lat = geoPoint.getDouble("latitude")
+                val lon = geoPoint.getDouble("longitude")
+                val geo = NCMBGeoPoint(lat, lon)
+                return geo
+            }else{
+                throw NCMBException(NCMBException.INVALID_TYPE, "type is not GeoPoint.")
+            }
         } catch (e: JSONException) {
             throw NCMBException(
                 NCMBException.INVALID_TYPE, e.localizedMessage

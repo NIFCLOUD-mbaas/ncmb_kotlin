@@ -116,6 +116,16 @@ class NCMBGeoPointTest {
 
     @Test
     fun test_geopoint_get(){
+        var obj = NCMBObject("TestClassGeo")
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        obj = obj.fetch()
+        val geo = obj.getGeo("geoPoint")
+        Assert.assertEquals(geo.mlatitude, 35.6666269, 0.0)
+        Assert.assertEquals(geo.mlongitude, 139.765607, 0.0)
+    }
+
+    @Test
+    fun test_geopoint_getInBackground(){
         val inBackgroundHelper = NCMBInBackgroundTestHelper()
         val obj = NCMBObject("TestClassGeo")
         obj.setObjectId("7FrmPTBKSNtVjajm")
