@@ -113,6 +113,7 @@ dependencies {
 task clearJar(type: Delete) {
     delete 'release/' + JAR_NAME
 }
+
 task makeJar(type: Copy) {
     from('build/intermediates/aar_main_jar/release')
     into('release/')
@@ -120,6 +121,26 @@ task makeJar(type: Copy) {
     rename('classes.jar', JAR_NAME)
 }
 makeJar.dependsOn(clearJar, build)
+
+dokkaHtml.configure{
+    outputDirectory.set(new File("${projectDir}/build/dokka"))
+    dokkaSourceSets{
+        named("main"){
+            moduleName.set("NIFCLOUD MOBILE BACKEND KOTLIN SDK")
+            supress.set(true)
+            includes.from("ref_intro.md")
+            noJdkLink.set(false)
+            noAndroidSdkLink.set(false)
+            includeNonPublic.set(false)
+            sourceLink {
+                localDirectory.set(file("src/main/java/com/nifcloud/mbaas"))
+                remoteUrl.set(URL("https://github.com/NIFCLOUD-mbaas/ncmb_kotlin"))
+                remoteLineSuffix.set("#L")
+            }
+            //  ...
+        }
+    }
+}
 
 
 
