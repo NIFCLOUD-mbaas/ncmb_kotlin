@@ -2,6 +2,11 @@
 request:
     url: /2013-09-01/push
     method: POST
+    body:
+        title: "title_update"
+        message: "message_update"
+        immediateDeliveryFlag: true
+        target: "[android]"
 response:
     status: 201
     file: valid_post_response.json
@@ -12,6 +17,8 @@ request:
     body:
         title: "title_update"
         message: "message_update"
+        immediateDeliveryFlag: true
+        target: "[android, ios]"
 response:
     status: 200
     file: valid_put_response.json

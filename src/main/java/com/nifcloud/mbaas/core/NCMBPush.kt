@@ -16,7 +16,6 @@
 package com.nifcloud.mbaas.core
 
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.IllegalArgumentException
@@ -29,29 +28,61 @@ import java.util.*
  * @see [NIFCLOUD mobile backend API Reference
 ](https://mbaas.nifcloud.com/doc/current/rest/push/pushRegistration.html) */
 class NCMBPush : NCMBObject {
+    var isSendToIOS :Boolean = false
+    var isSendToAndroid :Boolean = false
+
     /**
      * Get target device
      *
      * @return JSONArray target device
      */
-    var target: JSONArray?
+    var target: List<String>?
         get() {
             return try {
-                if (mFields.isNull("target")) {
+                if (mFields.isNull(TARGET)) {
                     null
-                } else mFields.getJSONArray("target")
+                } else listOf(mFields.getString(TARGET))
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
-        set(value) {
+        internal set(value) {
             try {
-                mFields.put("target", value)
-                mUpdateKeys.add("target")
+                mFields.put(TARGET, value)
+                mUpdateKeys.add(TARGET)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
+//    /**
+//     * Get badge increment flag
+//     *
+//     * @return Boolean badge increment flag
+//     */
+//    /**
+//     * Set badge increment flag
+//     *
+//     * @param value badge increment flag
+//     */
+//    var isSendToAndroid: Boolean? = null
+//        get(){
+//            return try {
+//                if (mFields.isNull(IMMEDIATE_DELIVERY_FLAG)) {
+//                    null
+//                } else mFields.getBoolean(IMMEDIATE_DELIVERY_FLAG)
+//            } catch (error: JSONException) {
+//                throw NCMBException(IllegalArgumentException(error.message))
+//            }
+//        }
+//        set(value) {
+//            try {
+//                mFields.put(IMMEDIATE_DELIVERY_FLAG, value)
+//                mUpdateKeys.add(IMMEDIATE_DELIVERY_FLAG)
+//            } catch (error: JSONException) {
+//                throw NCMBException(IllegalArgumentException(error.message))
+//            }
+//        }
 
     /**
      * Get push message
@@ -66,51 +97,19 @@ class NCMBPush : NCMBObject {
     var message: String?
         get() {
             return try {
-                if (mFields.isNull("message")) {
+                if (mFields.isNull(MESSAGE)) {
                     null
-                } else mFields.getString("message")
+                } else mFields.getString(MESSAGE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
             try {
-                mFields.put("message", value)
-                mUpdateKeys.add("message")
+                mFields.put(MESSAGE, value)
+                mUpdateKeys.add(MESSAGE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
-            }
-        }
-
-    /**
-     * Get delivery status
-     *
-     * @return int delivery status
-     */
-    var status: Int = 0
-        get() {
-            return try {
-                if (mFields.isNull("status")) {
-                    0
-                } else mFields.getInt("status")
-            } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
-            }
-        }
-
-    /**
-     * Get delivery error
-     *
-     * @return JSONObject delivery error
-     */
-    var error: JSONObject? = null
-        get(){
-            return try {
-                if (mFields.isNull("error")) {
-                    null
-                } else mFields.getJSONObject("error")
-            } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
 
@@ -127,19 +126,48 @@ class NCMBPush : NCMBObject {
     var title: String?
         get() {
             return try {
-                if (mFields.isNull("title")) {
+                if (mFields.isNull(TITLE)) {
                     null
-                } else mFields.getString("title")
+                } else mFields.getString(TITLE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
        set(value) {
             try {
-                mFields.put("title", value)
-                mUpdateKeys.add("title")
+                mFields.put(TITLE, value)
+                mUpdateKeys.add(TITLE)
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
+            }
+        }
+
+    /**
+     * Get badge increment flag
+     *
+     * @return Boolean badge increment flag
+     */
+    /**
+     * Set badge increment flag
+     *
+     * @param value badge increment flag
+     */
+    var immediateDeliveryFlag: Boolean?
+        get(){
+            return try {
+                if (mFields.isNull(IMMEDIATE_DELIVERY_FLAG)) {
+                    null
+                } else mFields.getBoolean(IMMEDIATE_DELIVERY_FLAG)
+            } catch (error: JSONException) {
+                throw NCMBException(IllegalArgumentException(error.message))
+            }
+        }
+        set(value) {
+            try {
+                mFields.put(IMMEDIATE_DELIVERY_FLAG, value)
+                mUpdateKeys.add(IMMEDIATE_DELIVERY_FLAG)
+            } catch (error: JSONException) {
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
 
@@ -166,10 +194,21 @@ class NCMBPush : NCMBObject {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun send() {
+    override fun save() {
         //connect
         val pushService = NCMBPushService()
         val responseData: JSONObject
+        target = if(isSendToIOS && isSendToAndroid){
+            listOf("android","ios")
+        } else if(isSendToIOS){
+            listOf("ios")
+        } else if(isSendToAndroid) {
+            listOf("android")
+        } else {
+            throw NCMBException(NCMBException.INVALID_FORMAT,
+                "'target' do not set."
+            )
+        }
         if (getObjectId() == null) {
             //new create
             responseData = pushService.sendPush(mFields)
@@ -179,7 +218,7 @@ class NCMBPush : NCMBObject {
             val updateJson = try {
                 createUpdateJsonData()
             } catch (e: JSONException) {
-                throw IllegalArgumentException(e.message)
+                throw NCMBException(IllegalArgumentException(e.message))
             }
             responseData = pushService.updatePush(getObjectId(), updateJson)
         }
@@ -212,21 +251,6 @@ class NCMBPush : NCMBObject {
         }
     }
 
-    /**
-     * create a date of mBaaS correspondence
-     *
-     * @param value iso value
-     * @return JSONObject
-     * @throws JSONException
-     */
-    @Throws(JSONException::class)
-    fun createIsoDate(value: Date?): JSONObject {
-        val dateJson = JSONObject()
-        dateJson.put("iso", getIso8601().format(value))
-        dateJson.put("__type", "Date")
-        return dateJson
-    }
-
     companion object {
         private const val MATCH_URL_REGEX =
             "^(https?)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)$"
@@ -240,5 +264,10 @@ class NCMBPush : NCMBObject {
             "richUrl", "badgeSetting", "category",
             "acl", "createDate", "updateDate"
         )
+
+        const val TARGET = "target"
+        const val MESSAGE = "message"
+        const val TITLE = "title"
+        const val IMMEDIATE_DELIVERY_FLAG = "immediateDeliveryFlag"
     }
 }

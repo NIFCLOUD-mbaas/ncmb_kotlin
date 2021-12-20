@@ -31,22 +31,7 @@ class NCMBPushService : NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendPush(params: JSONObject?): JSONObject {
-        if (params == null) {
-            throw NCMBException(NCMBException.INVALID_JSON, "params must not be null")
-        } else if (params.has("deliveryTime") && params.has("immediateDeliveryFlag")) {
-            throw NCMBException(
-                NCMBException.INVALID_JSON,
-                "'deliveryTime' and 'immediateDeliveryFlag' can not be set at the same time."
-            )
-        }
-        if (!params.has("deliveryTime")) {
-            try {
-                params.put("immediateDeliveryFlag", true)
-            } catch (e: JSONException) {
-                throw NCMBException(NCMBException.INVALID_JSON, "prams invalid JSON.")
-            }
-        }
+    fun sendPush(params: JSONObject): JSONObject {
         val request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST)
         val response = sendRequest(request)
         when (response) {
@@ -69,17 +54,7 @@ class NCMBPushService : NCMBService() {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun updatePush(pushId: String?, params: JSONObject?): JSONObject {
-        if (pushId == null) {
-            throw NCMBException(NCMBException.INVALID_JSON, "pushId must no be null")
-        } else if (params == null) {
-            throw NCMBException(NCMBException.INVALID_JSON, "params must no be null")
-        } else if (params.has("deliveryTime") && params.has("immediateDeliveryFlag")) {
-            throw NCMBException(
-                NCMBException.INVALID_JSON,
-                "'deliveryTime' and 'immediateDeliveryFlag' can not be set at the same time."
-            )
-        }
+    fun updatePush(pushId: String?, params: JSONObject): JSONObject {
         val request = createRequestParams(pushId, params, null, NCMBRequest.HTTP_METHOD_PUT)
         val response = sendRequest(request)
         when (response) {

@@ -70,7 +70,11 @@ class NCMBPushTest {
         var error: NCMBException? = null
         val push = NCMBPush()
         try {
-            push.send()
+            push.title = "title_update"
+            push.message = "message_update"
+            push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.save()
         } catch (e: NCMBException) {
             error = e
         }
@@ -96,7 +100,10 @@ class NCMBPushTest {
             push.setObjectId("7FrmPTBKSNtVjajm")
             push.title = "title_update"
             push.message = "message_update"
-            push.send()
+            push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.isSendToIOS = true
+            push.save()
         } catch (e: NCMBException) {
             error = e
         }
