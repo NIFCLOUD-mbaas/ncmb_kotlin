@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nifcloud.mbaas.core
 
 import android.content.ContentValues.TAG
@@ -9,9 +25,7 @@ import com.google.firebase.messaging.RemoteMessage
 import android.app.NotificationManager
 
 import android.content.pm.PackageManager
-
 import android.content.pm.ApplicationInfo
-
 import androidx.core.app.NotificationCompat
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -24,6 +38,15 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 
+/**
+ * Firebase messaging service class
+ *
+ * This class do initialize firebase and retrieve deviceToken,
+ * also handling push receive message show activity.
+ *
+ */
+
+
 internal open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
     private val OPEN_PUSH_START_ACTIVITY_KEY = "openPushStartActivity"
     private val SMALL_ICON_KEY = "smallIcon"
@@ -33,18 +56,26 @@ internal open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the InstanceID token
      * is initially generated so this is where you would retrieve the token.
+     *
+     * @param token  New devicetoken
+     *
      */
     override fun onNewToken(token: String) {
         //todo
+        print("On new token")
 //        if (NCMBApplicationController.applicationState != null) {
 //            NCMBInstallationUtils.updateToken(token)
 //        }
         super.onNewToken(token)
     }
 
+    /**
+     * Called when received push message
+     *
+     * @param remoteMessage  RemoteMessage
+     *
+     */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        // ...
-        print("in NCMB Message receiver")
         if (remoteMessage != null && remoteMessage.data != null) {
             val recentPushIdPref = getSharedPreferences("ncmbPushId", Context.MODE_PRIVATE)
             val recentPushId = recentPushIdPref.getString("recentPushId", "")
@@ -68,6 +99,13 @@ internal open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
             Log.d(TAG, "Message Notification Body: ${it.body}")
         }
     }
+
+    /**
+     * Called when received push message, get bundle data from remote message
+     *
+     * @param remoteMessage  RemoteMessage
+     *
+     */
     private fun getBundleFromRemoteMessage(remoteMessage: RemoteMessage): Bundle {
         val bundle = Bundle()
         val data = remoteMessage.data
@@ -77,14 +115,17 @@ internal open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
         return bundle
     }
 
+    /**
+     * Show notification based on pushData
+     *
+     * @param pushData  RemoteMessage
+     *
+     */
     private fun sendNotification(pushData: Bundle) {
-
-        print("NCMB: in sendNotification")
         //サイレントプッシュ
         if (!pushData.containsKey("message") && !pushData.containsKey("title")) {
             return
         }
-        print("NCMB: in sendNotification prepare to show")
         val notificationBuilder: NotificationCompat.Builder = notificationSettings(pushData)
 
         /*
@@ -116,6 +157,14 @@ internal open class NCMBFirebaseMessagingService: FirebaseMessagingService() {
         }
     }
 
+
+    /**
+     * Notification setup method
+     * Set up notifications properties for Notification.
+     *
+     * @param pushData  RemoteMessage
+     *
+     */
     open fun notificationSettings(pushData: Bundle): NotificationCompat.Builder {
         //AndroidManifestから情報を取得
         var appInfo: ApplicationInfo? = null
