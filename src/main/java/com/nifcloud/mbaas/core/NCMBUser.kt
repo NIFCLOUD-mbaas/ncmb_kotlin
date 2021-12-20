@@ -567,9 +567,4 @@ open class NCMBUser: NCMBObject {
         userService.logoutUserInBackground(this, logoutCallback)
     }
 
-    companion object {
-        fun getServiceInstance(): NCMBUserService {
-            return NCMBUserService()
-        }
-    }
 }

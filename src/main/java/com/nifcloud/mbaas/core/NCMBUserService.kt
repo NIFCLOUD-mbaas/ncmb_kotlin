@@ -25,7 +25,7 @@ import java.io.File
 /**
  * Service for user api
  */
-class NCMBUserService : NCMBService() {
+internal class NCMBUserService : NCMBService() {
 
     /**
      * Status code of signup success

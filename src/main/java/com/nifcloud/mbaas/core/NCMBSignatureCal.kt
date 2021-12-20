@@ -33,7 +33,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 
 
-class NCMBSignatureCal {
+internal class NCMBSignatureCal {
 
     companion object {
         //シグネチャメソッドのキー

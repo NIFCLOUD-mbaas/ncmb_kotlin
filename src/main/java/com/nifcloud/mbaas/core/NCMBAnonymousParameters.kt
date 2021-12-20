@@ -21,7 +21,7 @@ package com.nifcloud.mbaas.core
  * (Anonymous Account login is not yet supported)
  *
  */
-class NCMBAnonymousParameters(id: String) {
+internal class NCMBAnonymousParameters(id: String) {
     /**
      * User id of Anonymous account
      */

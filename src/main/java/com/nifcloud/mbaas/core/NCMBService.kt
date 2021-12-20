@@ -28,7 +28,7 @@ import java.net.URLEncoder
  *
  */
 
-open class NCMBService {
+internal open class NCMBService {
 
     /**
      * Service path of API URL

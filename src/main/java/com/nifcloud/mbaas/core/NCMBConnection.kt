@@ -44,7 +44,7 @@ import java.net.URLEncoder
  *
  */
 
-class NCMBConnection(request: NCMBRequest) {
+internal class NCMBConnection(request: NCMBRequest) {
 
     //time out millisecond from NIF Cloud mobile backend
     var sConnectionTimeout = NCMB.TIMEOUT

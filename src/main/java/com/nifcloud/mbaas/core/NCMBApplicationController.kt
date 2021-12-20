@@ -25,7 +25,7 @@ import android.app.Application
  *
  */
 
-class NCMBApplicationController : Application() {
+internal class NCMBApplicationController : Application() {
     /**
      *
      * Override super class method.

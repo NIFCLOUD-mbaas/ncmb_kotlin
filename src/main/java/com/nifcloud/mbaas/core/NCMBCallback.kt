@@ -31,16 +31,6 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
      * This method executes passed callback functions (in general).
      *
      * @param e NCMBException from NCMB
-     * @param response Response from NCMB
-     */
-    fun done(e: NCMBException?, response: NCMBResponse) {
-        passCallback(e, response)
-    }
-
-    /**
-     * This method executes passed callback functions (in general).
-     *
-     * @param e NCMBException from NCMB
      */
     fun done(e: NCMBException?) {
         passCallback(e, null)

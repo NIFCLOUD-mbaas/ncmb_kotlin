@@ -23,7 +23,7 @@ import java.util.SimpleTimeZone
 /**
  * Utils for SimpleDateFormat
  */
-object NCMBDateFormat {
+internal object NCMBDateFormat {
     /**
      * Get SimpleDataFomat object ready for ISO8601
      * @return SimpleDateFormat object ready for ISO8601

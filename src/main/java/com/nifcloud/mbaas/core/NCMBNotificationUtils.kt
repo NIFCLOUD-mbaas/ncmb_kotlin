@@ -13,7 +13,7 @@ import android.os.Build
 /**
  * The NCMBNotificationUtils Class contains register channel and get channel method
  */
-class NCMBNotificationUtils(base: Context?) : ContextWrapper(base) {
+internal class NCMBNotificationUtils(base: Context?) : ContextWrapper(base) {
     private var mManager: NotificationManager? = null
     private val CHANNEL_ID = "ChannelId"
     private val CHANNEL_NAME = "ChannelName"
