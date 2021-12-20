@@ -28,7 +28,7 @@ import kotlin.collections.HashMap
 
 
 /**
- * A class of ncmb_kotlin.
+ * Request handling class.
  *
  * NCMBRequest class is used to config api request
  *

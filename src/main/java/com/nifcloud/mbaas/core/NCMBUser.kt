@@ -23,7 +23,7 @@ import java.io.File
 /**
  * User information handle class
  *
- * NCMBInstallation is used to retrieve and save, update the installation user data,
+ * NCMBUser class is used to retrieve and save, update the installation user data,
  * also to sign up and login/logout the user.
  * Basic features are inherit from NCMBObject and NCMBBase
  */
@@ -77,48 +77,54 @@ open class NCMBUser: NCMBObject {
         }
     }
 
+
     /**
-     * Get user name
-     *
-     * @return String user name
-     */
-    /**
-     * set user name
-     *
-     * @param userName user name string
+     * user name string
      */
     var userName: String
+        /**
+         * Get user name
+         *
+         * @return String user name
+         */
         get() {
             return getUserInfo("userName")
         }
+        /**
+         * set user name
+         *
+         * @param userName user name string
+         */
         set(userName) {
             setUserInfo("userName", userName)
         }
 
     /**
-     * set password
-     *
-     * @param password password string
+     * password string
      */
     var password: String
         get() {
             return getUserInfo("password")
         }
+        /**
+         * set password
+         *
+         * @param password password string
+         */
         set(password) {
             setUserInfo("password", password)
         }
 
+
     /**
-     * Get sessionToken
-     *
-     * @return sessionToken
-     */
-    /**
-     * Set sessionToken
-     *
-     * @param sessionToken String sessionToken
+     * session token string
      */
     var sessionToken: String?
+        /**
+         * Get sessionToken
+         *
+         * @return sessionToken
+         */
         get() {
             return if (getCurrentUser().getString("sessionToken") != null) {
                 getCurrentUser().getString("sessionToken")
@@ -126,24 +132,33 @@ open class NCMBUser: NCMBObject {
                 null
             }
         }
+        /**
+         * Set sessionToken
+         *
+         * @param sessionToken String sessionToken
+         */
         set(sessionToken) {
             setUserInfo("sessionToken", sessionToken)
         }
 
+
     /**
-     * Get mail address
-     *
-     * @return String mail address
-     */
-    /**
-     * Set mail address
-     *
-     * @param mailAddress String mail address
+     * Mail address string
      */
     var mailAddress: String
+        /**
+         * Get mail address
+         *
+         * @return String mail address
+         */
         get() {
             return getUserInfo("mailAddress")
         }
+        /**
+         * Set mail address
+         *
+         * @param mailAddress String mail address
+         */
         set(mailAddress) {
             setUserInfo("mailAddress", mailAddress)
         }
@@ -165,7 +180,6 @@ open class NCMBUser: NCMBObject {
         }
     }
 
-    // action methods
     /**
      * saveWithoutLogin to NIFCLOUD mobile backend
      *

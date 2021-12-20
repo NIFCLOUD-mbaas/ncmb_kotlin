@@ -16,6 +16,10 @@
 
 package com.nifcloud.mbaas.core
 
+/**
+ * util class for NCMB
+ */
+
 internal class NCMBUtils {
     fun getText():String {
         var test = "text" //Sample to test

@@ -20,9 +20,10 @@ import org.json.JSONException
 import org.json.JSONObject
 
 /**
- * A class of ncmb_kotlin.
+ * Datastore handling class.
  *
- * Main class of datastore features. Inherits from NCMBBase.
+ * Main class of datastore features, do save, search, update data in datastor. Inherits from NCMBBase.
+ *
  */
 
 open class NCMBObject : NCMBBase {
@@ -56,7 +57,8 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * save current NCMBObject to data store
+     * Save current NCMBObject to data store. Saved result is reflect to this instance of object.
+     *
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
@@ -93,7 +95,8 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * save current NCMBObject to data store asynchronously
+     * Save current NCMBObject to data store asynchronously
+     *
      * @param saveCallback callback after object save
      */
     open fun saveInBackground(saveCallback: NCMBCallback) {
@@ -131,7 +134,7 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * fetch current NCMBObject data from data store
+     * Fetch current NCMBObject data from data store. Fetched result is reflect to this instance of object.
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
@@ -150,7 +153,7 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * fetch current NCMBObject data from data store asynchronously
+     * Fetch current NCMBObject data from data store asynchronously.
      * @param fetchCallback callback after fetch data
      */
     open fun fetchInBackground(fetchCallback: NCMBCallback) {
@@ -175,7 +178,8 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * save current NCMBObject to data store
+     * Delete current NCMBObject from data store.
+     *
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
@@ -191,7 +195,8 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * delete current NCMBObject from data store asynchronously
+     * Delete current NCMBObject from data store asynchronously.
+     *
      * @param deleteCallback callback after delete object
      */
     open fun deleteInBackground(deleteCallback: NCMBCallback) {

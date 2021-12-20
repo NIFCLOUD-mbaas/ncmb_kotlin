@@ -24,7 +24,7 @@ import java.io.*
 
 
 /**
- * LocalFile class
+ * LocalFile handling class
  */
 internal object NCMBLocalFile {
     /**

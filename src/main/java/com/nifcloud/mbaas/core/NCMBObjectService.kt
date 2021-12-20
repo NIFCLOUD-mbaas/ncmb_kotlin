@@ -21,7 +21,7 @@ import org.json.JSONObject
 
 
 /**
- * A class of ncmb_kotlin.
+ * Internal service class for Datastore.
  *
  * To do object service jobs, setup basis connection settings before doing connection.
  * SDK handler is also set here.

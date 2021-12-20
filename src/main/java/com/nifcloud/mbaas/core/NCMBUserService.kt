@@ -23,7 +23,7 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * Service for user api
+ * Service for user class
  */
 internal class NCMBUserService : NCMBService() {
 

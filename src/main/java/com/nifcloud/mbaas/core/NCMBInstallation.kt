@@ -503,7 +503,7 @@ class NCMBInstallation : NCMBObject {
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
         )
-        
+
         /**
          * Get current installation object
          *

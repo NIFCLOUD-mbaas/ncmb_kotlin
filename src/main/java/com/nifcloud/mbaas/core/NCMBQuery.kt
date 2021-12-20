@@ -24,7 +24,9 @@ import java.util.Date
 import org.json.JSONArray
 
 /**
- * NCMBQuery is used to search data from NIFCLOUD mobile backend
+ * Query handling class.
+ *
+ * NCMBQuery is used to set search conditions, to search data from NIFCLOUD mobile backend.
  */
 
 //プライベートコンストラクターとしてcompanion object内にあるfor〇〇メソッドを用いて、インスタンスを取得する
@@ -33,8 +35,11 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     private var mWhereConditions: JSONObject = JSONObject()
     private var mCountCondition: Int = 0
     private var order: List<String> = ArrayList()
-    
-    var limit: Int = 0 // default value is 0 (valid limit value is 1 to 1000)
+
+    /**
+     * Limit search operator (default value is 0 (valid limit value is 1 to 1000))
+     */
+    var limit: Int = 0
         set(value) {
             if (value < 1 || value >1000 ) {
                 throw NCMBException(
@@ -43,8 +48,11 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
                 )
             }
         }
-        
-    var skip: Int = 0 // default value is 0 (valid skip value is >0 )
+
+    /**
+     * Skip search operator (default value is 0 (valid skip value is >0 ))
+     */
+    var skip: Int = 0
         set(value) {
             if (value < 0 ) {
                 throw NCMBException(
@@ -61,7 +69,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * search data from NIFCLOUD mobile backend
+     * Search data from NIFCLOUD mobile backend
      * @return NCMBObject(include extend class) list of search result
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
@@ -71,7 +79,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * search data from NIFCLOUD mobile backend asynchronously
+     * Search data from NIFCLOUD mobile backend asynchronously
      * @param callback executed callback after data search
      */
     fun findInBackground(findCallback: NCMBCallback) {
@@ -79,7 +87,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * get total number of search result from NIFCLOUD mobile backend
+     * Get total number of search result from NIFCLOUD mobile backend
      * @return total number of search result
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
@@ -90,7 +98,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * get total number of search result from NIFCLOUD mobile backend asynchronously
+     * Get total number of search result from NIFCLOUD mobile backend asynchronously
      * @param callback executed callback after data search
      */
     fun countInBackground(countCallback: NCMBCallback) {
@@ -99,7 +107,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * get current search condition
+     * Get current search condition
      * @return current search condition
      */
     val query: JSONObject
@@ -137,7 +145,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that matches the value of the specified key.
+     * Set the conditions to search the data that matches the value of the specified key.
      * NOTICE that if this search condition is set, you can not set other search condition for this key.
      * OR if this search condition is set last, other set search condition for same key will be overwrite.
      * @param key field name to set the conditions
@@ -152,7 +160,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that does not match the value of the specified key
+     * Set the conditions to search the data that does not match the value of the specified key
      * @param key field name to set the conditions
      * @param value condition value
      */
@@ -165,7 +173,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
     
     /**
-     * set the conditions to search the data by ascending order with specified field name (key)
+     * Set the conditions to search the data by ascending order with specified field name (key)
      * @param key field name for order by ascending
      */
     fun addOrderByAscending(key: String) {
@@ -175,7 +183,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that greater than the value of the specified key
+     * Set the conditions to search the data that greater than the value of the specified key
      * @param key field name to set the conditions
      * @param value condition value
      */
@@ -188,7 +196,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that less than the value of the specified key
+     * Set the conditions to search the data that less than the value of the specified key
      * @param key field name to set the conditions
      * @param value condition value
      */
@@ -201,7 +209,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that greater than or equal to the value of the specified key
+     * Set the conditions to search the data that greater than or equal to the value of the specified key
      * @param key field name to set the conditions
      * @param value condition value
      */
@@ -214,7 +222,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that less than or equal to the value of the specified key
+     * Set the conditions to search the data that less than or equal to the value of the specified key
      * @param key field name to set the conditions
      * @param value condition value
      */
@@ -245,7 +253,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     
     
     /**
-     * set the conditions to search the data by descending order with specified field name (key)
+     * Set the conditions to search the data by descending order with specified field name (key)
      * @param key field name for order by ascending
      */
     fun addOrderByDescending(key: String) {
@@ -255,7 +263,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that contains value of the specified key
+     * Set the conditions to search the data that contains value of the specified key
      * @param key field name to set the conditions
      * @param objects condition objects
      */
@@ -268,7 +276,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that contains elements of array in the specified key
+     * Set the conditions to search the data that contains elements of array in the specified key
      * @param key field name to set the conditions (search field must be Array type field)
      * @param elements condition elements in the specified key array
      */
@@ -282,7 +290,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
 
 
     /**
-     * set the conditions to search the data that contains elements of array in the specified key
+     * Set the conditions to search the data that contains elements of array in the specified key
      * @param key field name to set the conditions (search field must be Array type field)
      * @param elements condition elements in the specified key array
      */
@@ -295,7 +303,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that not contains value of the specified key
+     * Set the conditions to search the data that not contains value of the specified key
      * @param key field name to set the conditions
      * @param objects condition objects
      */
@@ -308,7 +316,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     }
 
     /**
-     * set the conditions to search the data that contains all elements of array in the specified key
+     * Set the conditions to search the data that contains all elements of array in the specified key
      * @param Arraykey field name to set the conditions (search field must be Array type field)
      * @param elements condition elements in the specified key array
      */
