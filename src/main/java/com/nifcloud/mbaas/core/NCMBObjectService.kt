@@ -395,7 +395,7 @@ internal class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObj
         val response = sendRequest(reqParam)
         when (response) {
             is NCMBResponse.Success -> {
-                countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -419,7 +419,7 @@ internal class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObj
         val countHandler = NCMBHandler { countCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    var countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                    var countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
                     countCallback.done(null, countNumber)
                 }
                 is NCMBResponse.Failure -> {

@@ -119,7 +119,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             }
 
             if (order.size > 0) {
-                query.put("order", order.joinToString(separator = "," ))
+                query.put(NCMBQueryConstants.REQUEST_PARAMETER_ORDER, order.joinToString(separator = "," ))
             }
             return  query
         }
@@ -158,7 +158,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereNotEqualTo(key: String, value: Any) {
         try {
-            mWhereConditions.put(key, addSearchCondition(key, "\$ne" , value))
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NE , value))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -181,7 +181,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereGreaterThan(key: String, value: Any) {
         try {
-            mWhereConditions.put(key,addSearchCondition(key, "\$gt", value))
+            mWhereConditions.put(key,addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_GT, value))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -194,7 +194,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereLessThan(key: String, value: Any) {
         try {
-            mWhereConditions.put(key,addSearchCondition(key, "\$lt", value))
+            mWhereConditions.put(key,addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_LT, value))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -207,7 +207,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereGreaterThanOrEqualTo(key: String, value: Any) {
         try {
-            mWhereConditions.put(key,addSearchCondition(key, "\$gte", value))
+            mWhereConditions.put(key,addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_GTE, value))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -220,7 +220,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereLessThanOrEqualTo(key: String, value: Any) {
         try {
-            mWhereConditions.put(key,addSearchCondition(key, "\$lte", value))
+            mWhereConditions.put(key,addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_LTE, value))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -261,7 +261,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereContainedIn(key: String, objects: Collection<Any>) {
         try {
-            mWhereConditions.put(key,addSearchConditionArray(key, "\$in", objects))
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_IN, objects))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -274,7 +274,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereContainedInArray(key: String, objects: Collection<Any>) {
         try {
-            mWhereConditions.put(key,addSearchConditionArray(key, "\$inArray", objects))
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_INARRAY, objects))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -288,7 +288,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereNotContainedInArray(key: String, objects: Collection<Any>) {
         try {
-            mWhereConditions.put(key,addSearchConditionArray(key, "\$ninArray", objects))
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NINARRAY, objects))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -301,7 +301,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereNotContainedIn(key: String, objects: Collection<Any>) {
         try {
-            mWhereConditions.put(key,addSearchConditionArray(key, "\$nin", objects))
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NIN, objects))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -314,7 +314,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
      */
     fun whereContainsAll(key: String, elements: Collection<Any>) {
         try {
-            mWhereConditions.put(key,addSearchConditionArray(key, "\$all", elements))
+            mWhereConditions.put(key,addSearchConditionArray(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_ALL, elements))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }

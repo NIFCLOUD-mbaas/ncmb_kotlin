@@ -17,9 +17,9 @@
 package com.nifcloud.mbaas.core
 
 /**
- * A class of ncmb_kotlin.
+ * Constants value of NCMB
  *
- * To keep NCMBConstants
+ * To keep and setup NCMBConstants of NCMB
  *
  */
 
@@ -61,7 +61,14 @@ internal class NCMBConstant {
     }
 }
 
-/// NCMBQueryで使用するコンスタント値を管理するクラスです。
+/**
+ * Constants value of NCMBQuery.
+ *
+ * To keep and setup NCMBConstants of NCMBQuery.
+ * NCMBQueryで使用するコンスタント値を管理するクラスです。
+ *
+ */
+
 internal class NCMBQueryConstants {
 
     companion object {
