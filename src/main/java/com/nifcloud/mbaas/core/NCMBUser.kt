@@ -21,8 +21,13 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * NCMBUser is used to sign up and login/logout the user
+ * User information handle class
+ *
+ * NCMBInstallation is used to retrieve and save, update the installation user data,
+ * also to sign up and login/logout the user.
+ * Basic features are inherit from NCMBObject and NCMBBase
  */
+
 open class NCMBUser: NCMBObject {
 
     /**
