@@ -128,7 +128,6 @@ dokkaHtml.configure{
         named("main"){
             moduleName.set("NIFCLOUD MOBILE BACKEND KOTLIN SDK")
             supress.set(true)
-            includes.from("ref_intro.md")
             noJdkLink.set(false)
             noAndroidSdkLink.set(false)
             includeNonPublic.set(false)
@@ -137,7 +136,6 @@ dokkaHtml.configure{
                 remoteUrl.set(URL("https://github.com/NIFCLOUD-mbaas/ncmb_kotlin"))
                 remoteLineSuffix.set("#L")
             }
-            //  ...
         }
     }
 }
