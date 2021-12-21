@@ -13,6 +13,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.util.*
+import kotlin.test.assertFails
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = intArrayOf(27), manifest = Config.NONE)
@@ -52,4 +53,23 @@ class NCMBErrorGeoPointTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
     }
 
+    @Test
+    fun test_geopoint_getInBackground_wrong_type(){
+        val inBackgroundHelper = NCMBInBackgroundTestHelper()
+        val obj = NCMBObject("TestClassGeo400")
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        inBackgroundHelper.start()
+        obj.fetchInBackground(NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release()
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val throwable_wrong_type = assertFails { val geo: NCMBGeoPoint = (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geoPoint") }
+        val throwable_wrong_key = assertFails { val geo: NCMBGeoPoint = (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geo") }
+        Assert.assertEquals("type is not GeoPoint.", throwable_wrong_type.message)
+        Assert.assertEquals("No value for geo", throwable_wrong_key.message)
+    }
 }
