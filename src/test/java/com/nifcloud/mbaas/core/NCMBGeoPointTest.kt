@@ -1,4 +1,4 @@
-]package com.nifcloud.mbaas.core
+package com.nifcloud.mbaas.core
 
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
