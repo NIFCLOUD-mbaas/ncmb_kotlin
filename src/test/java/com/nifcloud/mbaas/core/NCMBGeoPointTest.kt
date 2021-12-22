@@ -1,4 +1,4 @@
-package com.nifcloud.mbaas.core
+]package com.nifcloud.mbaas.core
 
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -118,7 +118,7 @@ class NCMBGeoPointTest {
     fun test_geopoint_get(){
         var obj = NCMBObject("TestClassGeo")
         obj.setObjectId("7FrmPTBKSNtVjajm")
-        obj = obj.fetch()
+        obj.fetch()
         val geo = obj.getGeo("geoPoint")
         Assert.assertEquals(geo.mlatitude, 35.6666269, 0.0)
         Assert.assertEquals(geo.mlongitude, 139.765607, 0.0)
