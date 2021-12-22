@@ -39,7 +39,7 @@ class NCMB {
         /**
          * Version of this SDK
          */
-        const val SDK_VERSION = "0.2.0"
+        const val SDK_VERSION = "1.0.0"
 
         /**
          * Prefix of keys in metadata for NCMB settings
