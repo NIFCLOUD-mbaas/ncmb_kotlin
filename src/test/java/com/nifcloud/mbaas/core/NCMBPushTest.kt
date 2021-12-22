@@ -112,7 +112,6 @@ class NCMBPushTest {
         push3.isSendToAndroid = false
         push3.save()
         Assert.assertEquals(TestJSON.get("target"), push3.mFields.get("target"))
-
     }
 
     /**

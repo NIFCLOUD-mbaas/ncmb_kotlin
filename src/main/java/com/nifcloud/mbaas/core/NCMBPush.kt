@@ -50,59 +50,6 @@ class NCMBPush : NCMBObject {
             }
         }
 
-//    /**
-//     * Get target device
-//     *
-//     * @return JSONArray target device
-//     */
-//    var target: ArrayList<String>?
-//        get() {
-//            return try {
-//                if (mFields.isNull(TARGET)) {
-//                    null
-//                } else mFields.get(TARGET) as ArrayList<String>
-//            } catch (error: JSONException) {
-//                throw NCMBException(IllegalArgumentException(error.message))
-//            }
-//        }
-//        internal set(value) {
-//            try {
-//                mFields.put(TARGET, value)
-//                mUpdateKeys.add(TARGET)
-//            } catch (error: JSONException) {
-//                throw NCMBException(IllegalArgumentException(error.message))
-//            }
-//        }
-
-//    /**
-//     * Get badge increment flag
-//     *
-//     * @return Boolean badge increment flag
-//     */
-//    /**
-//     * Set badge increment flag
-//     *
-//     * @param value badge increment flag
-//     */
-//    var isSendToAndroid: Boolean? = null
-//        get(){
-//            return try {
-//                if (mFields.isNull(IMMEDIATE_DELIVERY_FLAG)) {
-//                    null
-//                } else mFields.getBoolean(IMMEDIATE_DELIVERY_FLAG)
-//            } catch (error: JSONException) {
-//                throw NCMBException(IllegalArgumentException(error.message))
-//            }
-//        }
-//        set(value) {
-//            try {
-//                mFields.put(IMMEDIATE_DELIVERY_FLAG, value)
-//                mUpdateKeys.add(IMMEDIATE_DELIVERY_FLAG)
-//            } catch (error: JSONException) {
-//                throw NCMBException(IllegalArgumentException(error.message))
-//            }
-//        }
-
     /**
      * Get push message
      *
@@ -152,7 +99,7 @@ class NCMBPush : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
-       set(value) {
+        set(value) {
             try {
                 mFields.put(TITLE, value)
                 mUpdateKeys.add(TITLE)
