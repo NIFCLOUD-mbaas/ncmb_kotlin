@@ -9,6 +9,13 @@ response:
     file: valid_post_geopoint_error_response.json
 ---
 request:
+    url: /2013-09-01/classes/TestClassGeo400/7FrmPTBKSNtVjajm
+    method: GET
+response:
+    status: 200
+    file: valid_get_geopoint_error_response.json
+---
+request:
     url: /2013-09-01/login
     query:
         userName: "Ncmb Ichiro"
