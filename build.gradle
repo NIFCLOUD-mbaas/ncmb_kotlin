@@ -123,7 +123,7 @@ task makeJar(type: Copy) {
 makeJar.dependsOn(clearJar, build)
 
 dokkaHtml.configure{
-    outputDirectory.set(new File("${projectDir}/build/dokka"))
+    outputDirectory.set(new File("${projectDir}/docs/"))
     dokkaSourceSets{
         named("main"){
             moduleName.set("NIFCLOUD MOBILE BACKEND KOTLIN SDK")
