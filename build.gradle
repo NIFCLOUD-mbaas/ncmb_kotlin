@@ -126,7 +126,8 @@ dokkaHtml.configure{
     outputDirectory.set(new File("${projectDir}/docs/"))
     dokkaSourceSets{
         named("main"){
-            moduleName.set("NIFCLOUD MOBILE BACKEND KOTLIN SDK")
+            moduleName.set("ncmb_kotlin")
+            includes.from("Module.md")
             supress.set(true)
             noJdkLink.set(false)
             noAndroidSdkLink.set(false)
