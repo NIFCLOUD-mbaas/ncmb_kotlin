@@ -15,7 +15,7 @@
 */
 package com.nifcloud.mbaas.core
 
-import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.IllegalArgumentException
@@ -28,32 +28,51 @@ import java.util.*
  * @see [NIFCLOUD mobile backend API Reference
 ](https://mbaas.nifcloud.com/doc/current/rest/push/pushRegistration.html) */
 class NCMBPush : NCMBObject {
+    var target = arrayListOf<String>()
     var isSendToIOS :Boolean = false
+        get(){
+            return field
+        }
+        set(value) {
+            field = value
+            if(value) {
+                target.add("ios")
+            }
+        }
     var isSendToAndroid :Boolean = false
+        get(){
+            return field
+        }
+        set(value) {
+            field = value
+            if(value) {
+                target.add("android")
+            }
+        }
 
-    /**
-     * Get target device
-     *
-     * @return JSONArray target device
-     */
-    var target: List<String>?
-        get() {
-            return try {
-                if (mFields.isNull(TARGET)) {
-                    null
-                } else listOf(mFields.getString(TARGET))
-            } catch (error: JSONException) {
-                throw NCMBException(IllegalArgumentException(error.message))
-            }
-        }
-        internal set(value) {
-            try {
-                mFields.put(TARGET, value)
-                mUpdateKeys.add(TARGET)
-            } catch (error: JSONException) {
-                throw NCMBException(IllegalArgumentException(error.message))
-            }
-        }
+//    /**
+//     * Get target device
+//     *
+//     * @return JSONArray target device
+//     */
+//    var target: ArrayList<String>?
+//        get() {
+//            return try {
+//                if (mFields.isNull(TARGET)) {
+//                    null
+//                } else mFields.get(TARGET) as ArrayList<String>
+//            } catch (error: JSONException) {
+//                throw NCMBException(IllegalArgumentException(error.message))
+//            }
+//        }
+//        internal set(value) {
+//            try {
+//                mFields.put(TARGET, value)
+//                mUpdateKeys.add(TARGET)
+//            } catch (error: JSONException) {
+//                throw NCMBException(IllegalArgumentException(error.message))
+//            }
+//        }
 
 //    /**
 //     * Get badge increment flag
@@ -187,6 +206,7 @@ class NCMBPush : NCMBObject {
     internal constructor(params: JSONObject) : super("push", params) {
         mIgnoreKeys = ignoreKeys
     }
+
     // region send
     /**
      * Send push object
@@ -198,13 +218,11 @@ class NCMBPush : NCMBObject {
         //connect
         val pushService = NCMBPushService()
         val responseData: JSONObject
-        target = if(isSendToIOS && isSendToAndroid){
-            listOf("android","ios")
-        } else if(isSendToIOS){
-            listOf("ios")
-        } else if(isSendToAndroid) {
-            listOf("android")
-        } else {
+        if(target.size > 0){
+            mFields.put(TARGET, JSONArray(target.distinct()))
+            mUpdateKeys.add(TARGET)
+        }
+        else{
             throw NCMBException(NCMBException.INVALID_FORMAT,
                 "'target' do not set."
             )

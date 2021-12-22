@@ -6,7 +6,31 @@ request:
         title: "title_update"
         message: "message_update"
         immediateDeliveryFlag: true
-        target: "[android]"
+        target: ["android"]
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/push
+    method: POST
+    body:
+        title: "title_update"
+        message: "message_update"
+        immediateDeliveryFlag: true
+        target: ["ios"]
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/push
+    method: POST
+    body:
+        title: "title_update"
+        message: "message_update"
+        immediateDeliveryFlag: true
+        target: ["ios", "android"]
 response:
     status: 201
     file: valid_post_response.json
@@ -18,7 +42,7 @@ request:
         title: "title_update"
         message: "message_update"
         immediateDeliveryFlag: true
-        target: "[android, ios]"
+        target: ["android", "ios"]
 response:
     status: 200
     file: valid_put_response.json

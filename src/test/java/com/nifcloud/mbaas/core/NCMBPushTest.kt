@@ -19,6 +19,9 @@ package com.nifcloud.mbaas.core
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import okhttp3.mockwebserver.MockWebServer
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -60,6 +63,59 @@ class NCMBPushTest {
     }
 
     /**
+     * putテスト
+     */
+    @Test
+    fun put_push_data_test() {
+        var pushObj = NCMBPush()
+        pushObj.title = "title_update"
+        pushObj.message = "message_update"
+        pushObj.immediateDeliveryFlag = true
+        Assert.assertEquals("title_update", pushObj.mFields.get("title"))
+        Assert.assertEquals("message_update", pushObj.mFields.get("message"))
+        Assert.assertEquals(true, pushObj.mFields.get("immediateDeliveryFlag"))
+    }
+    /**
+     * - 内容：send(POST)が成功することを確認する
+     * - 結果：同期でプッシュの送信が出来る事
+     */
+    @Test
+    @Throws(Exception::class)
+    fun send_post_target() {
+        //post
+        val push = NCMBPush()
+        push.title = "title_update"
+        push.message = "message_update"
+        push.immediateDeliveryFlag = true
+        push.isSendToIOS = true
+        push.save()
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+
+        val push2 = NCMBPush()
+        push2.title = "title_update"
+        push2.message = "message_update"
+        push2.immediateDeliveryFlag = true
+        push2.isSendToIOS = true
+        push2.isSendToAndroid = true
+        push2.save()
+        val TestJSON2 = JSONObject()
+        TestJSON2.put("target",JSONArray(arrayListOf("ios", "android")))
+        Assert.assertEquals(TestJSON2.get("target"), push2.mFields.get("target"))
+
+        val push3 = NCMBPush()
+        push3.title = "title_update"
+        push3.message = "message_update"
+        push3.immediateDeliveryFlag = true
+        push3.isSendToIOS = true
+        push3.isSendToAndroid = false
+        push3.save()
+        Assert.assertEquals(TestJSON.get("target"), push3.mFields.get("target"))
+
+    }
+
+    /**
      * - 内容：send(POST)が成功することを確認する
      * - 結果：同期でプッシュの送信が出来る事
      */
@@ -78,7 +134,9 @@ class NCMBPushTest {
         } catch (e: NCMBException) {
             error = e
         }
-
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
         //check
         Assert.assertNull(error)
         Assert.assertEquals("7FrmPTBKSNtVjajm", push.getObjectId())
@@ -93,7 +151,6 @@ class NCMBPushTest {
     @Throws(Exception::class)
     fun send_put() {
         var error: NCMBException? = null
-        //post
         val push = NCMBPush()
         //put
         try {
@@ -107,7 +164,9 @@ class NCMBPushTest {
         } catch (e: NCMBException) {
             error = e
         }
-
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
         //check
         Assert.assertNull(error)
         Assert.assertEquals("title_update", push.title)
