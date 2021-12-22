@@ -16,7 +16,6 @@
 package com.nifcloud.mbaas.core
 
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
-import kotlinx.serialization.json.JSON
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.SimpleDateFormat

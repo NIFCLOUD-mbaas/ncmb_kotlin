@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package com.nifcloud.mbaas.core
-
+import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
+import com.nifcloud.mbaas.core.NCMBLocalFile.create
+import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*

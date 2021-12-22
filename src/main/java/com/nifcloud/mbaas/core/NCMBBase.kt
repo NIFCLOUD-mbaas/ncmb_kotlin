@@ -16,6 +16,7 @@
 
 package com.nifcloud.mbaas.core
 
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.ParseException

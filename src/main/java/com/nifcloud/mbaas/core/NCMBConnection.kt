@@ -16,7 +16,6 @@
 
 package com.nifcloud.mbaas.core
 
-import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -31,7 +30,6 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.IOException
 import java.net.URL
-import java.net.URLEncoder
 
 
 /**
