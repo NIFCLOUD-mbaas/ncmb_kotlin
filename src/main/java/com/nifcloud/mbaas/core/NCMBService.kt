@@ -22,13 +22,13 @@ import java.net.URLEncoder
 
 
 /**
- * A class of ncmb_kotlin.
+ * Service parent class.
  *
  * To do main service tasks, base class for NCMBObjectService and others.
  *
  */
 
-open class NCMBService {
+internal open class NCMBService {
 
     /**
      * Service path of API URL

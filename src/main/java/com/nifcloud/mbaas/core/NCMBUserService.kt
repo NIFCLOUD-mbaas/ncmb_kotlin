@@ -23,10 +23,9 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * Service for user api
+ * Service for user class
  */
-class NCMBUserService : NCMBObjectService() {
-
+internal class NCMBUserService : NCMBObjectService() {
     /**
      * Status code of signup success
      */

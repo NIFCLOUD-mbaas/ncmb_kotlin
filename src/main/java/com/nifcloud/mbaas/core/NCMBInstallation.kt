@@ -29,22 +29,22 @@ import java.util.Arrays
 
 
 /**
- * NCMBInstallation is used to retrieve and upload the installation data
+ * Installation information handle class
+ *
+ * NCMBInstallation is used to retrieve and save, update the installation data.
+ * Basic features are inherit from NCMBObject and NCMBBase
  */
 class NCMBInstallation : NCMBObject {
 
-    //region getter
     /**
-     * Get application name
-     *
-     * @return application name
-     */
-    /**
-     * Set application name
-     *
-     * @param value applicationName
+     * Application name
      */
     var applicationName: String?
+        /**
+         * Get application name
+         *
+         * @return application name
+         */
         get() = try {
             if (mFields.isNull(APPLICATION_NAME)) {
                 null
@@ -52,6 +52,11 @@ class NCMBInstallation : NCMBObject {
         } catch (e: JSONException) {
             throw NCMBException(IllegalArgumentException(e.message))
         }
+        /**
+         * Set application name
+         *
+         * @param value applicationName
+         */
         set(value) {
             try {
                 mFields.put(APPLICATION_NAME, value)
@@ -60,18 +65,17 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(e.message))
             }
         }
+
+
     /**
-     * Get application version
-     *
-     * @return application Version
-     */
-    /**
-     * Set application version
-     * ReadOnly field
-     *
-     * @param value appVersion
+     * Application Version
      */
     var appVersion: String?
+        /**
+         * Get application version
+         *
+         * @return application Version
+         */
         get() {
             return try {
                 if (mFields.isNull(APP_VERSION)) {
@@ -81,6 +85,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set application version
+         * ReadOnly field
+         *
+         * @param value appVersion
+         */
         set(value) {
             try {
                 mFields.put(APP_VERSION, value)
@@ -89,17 +99,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get badge count
-     *
-     * @return badge count
-     */
-    /**
-     * Set badge count
-     *
-     * @param value applicationName
+     * Badge number (iOS)
      */
     var badge: Int?
+        /**
+         * Get badge count
+         *
+         * @return badge count
+         */
         get() {
             return try {
                 if (mFields.isNull(BADGE)) {
@@ -109,6 +118,11 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set badge count
+         *
+         * @param value applicationName
+         */
         set(value) {
             try {
                 mFields.put(BADGE, value)
@@ -117,17 +131,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get channels
-     *
-     * @return channels
-     */
-    /**
-     * Set channels
-     *
-     * @param value channels
+     * Channels information
      */
     var channels: Array<String>?
+        /**
+         * Get channels
+         *
+         * @return channels
+         */
         get() {
             return try {
                 if (mFields.isNull(CHANNELS)) {
@@ -137,6 +150,11 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set channels
+         *
+         * @param value channels
+         */
         set(value) {
             try {
                 mFields.put(CHANNELS, value)
@@ -145,18 +163,17 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
+
     /**
-     * Get device type
-     *
-     * @return device type
-     */
-    /**
-     * Set device type
-     * ReadOnly field
-     *
-     * @param value device type
+     * Device type information
      */
     var deviceType: String
+        /**
+         * Get device type
+         *
+         * @return device type
+         */
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TYPE)) {
@@ -166,6 +183,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set device type
+         * ReadOnly field
+         *
+         * @param value device type
+         */
         set(value) {
             try {
                 mFields.put(DEVICE_TYPE, value)
@@ -174,17 +197,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get device token
-     *
-     * @return device token
-     */
-    /**
-     * Set device token
-     *
-     * @param value device token
+     * Device token
      */
     var deviceToken: String
+        /**
+         * Get device token
+         *
+         * @return device token
+         */
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TOKEN)) {
@@ -194,6 +216,11 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set device token
+         *
+         * @param value device token
+         */
         set(value) {
             try {
                 mFields.put(DEVICE_TOKEN, value)
@@ -203,18 +230,16 @@ class NCMBInstallation : NCMBObject {
             }
         }
 
+
     /**
-     * Get SDK version
-     *
-     * @return SDK version
-     */
-    /**
-     * Set SDK version
-     * ReadOnly field
-     *
-     * @param value SDKversion
+     * SDK Version information
      */
     var sdkVersion: String?
+        /**
+         * Get SDK version
+         *
+         * @return SDK version
+         */
         get() {
             return try {
                 if (mFields.isNull(SDK_VERSION)) {
@@ -224,6 +249,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set SDK version
+         * ReadOnly field
+         *
+         * @param value SDKversion
+         */
         set(value) {
             try {
                 mFields.put(SDK_VERSION, value)
@@ -232,18 +263,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get timezone
-     *
-     * @return timezone
-     */
-    /**
-     * Set timezone
-     * ReadOnly field
-     *
-     * @param value timezone
+     * Timezone info
      */
     var timeZone: String?
+        /**
+         * Get timezone
+         *
+         * @return timezone
+         */
         get() {
             return try {
                 if (mFields.isNull(TIME_ZONE)) {
@@ -253,6 +282,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set timezone
+         * ReadOnly field
+         *
+         * @param value timezone
+         */
         set(value) {
             try {
                 mFields.put(TIME_ZONE, value)
@@ -277,10 +312,9 @@ class NCMBInstallation : NCMBObject {
             throw NCMBException(IllegalArgumentException(error.message))
         }
     }
-    //endregion
-    //region setter
+
     /**
-     * Constructor
+     * Constructor method
      */
     constructor() : super("installation") {
         mIgnoreKeys = ignoreKeys
@@ -295,8 +329,7 @@ class NCMBInstallation : NCMBObject {
     internal constructor(params: JSONObject) : super("installation", params) {
         mIgnoreKeys = ignoreKeys
     }
-    // endregion
-    //region save
+
     /**
      * Save installation object
      *
@@ -325,9 +358,9 @@ class NCMBInstallation : NCMBObject {
     }
 
     /**
-     * Save installation object inBackground
+     * Save installation object in Background
      *
-     * @param callback DoneCallback
+     * @param callback Save Callback
      */
     override fun saveInBackground(saveCallback: NCMBCallback) {
         //connect
@@ -369,7 +402,7 @@ class NCMBInstallation : NCMBObject {
         }
     }
     /**
-     * Get device token
+     * Get device token in background
      *
      * @param callback TokenCallback
      */
@@ -401,7 +434,7 @@ class NCMBInstallation : NCMBObject {
      *
      * @param callback TokenCallback
      */
-    fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
+    internal fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
         val context = NCMB.getCurrentContext()
         if(context!= null) {
             if (FirebaseApp.getApps(context.applicationContext).isNotEmpty()) {
@@ -468,7 +501,6 @@ class NCMBInstallation : NCMBObject {
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
         )
 
-        //endregion
         /**
          * Get current installation object
          *

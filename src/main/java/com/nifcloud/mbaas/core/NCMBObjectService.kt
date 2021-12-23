@@ -21,13 +21,13 @@ import org.json.JSONObject
 
 
 /**
- * A class of ncmb_kotlin.
+ * Internal service class for Datastore.
  *
  * To do object service jobs, setup basis connection settings before doing connection.
  * SDK handler is also set here.
  *
  */
-open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
+internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
     open val SERVICE_PATH = "classes/"
 
     /**
@@ -394,7 +394,7 @@ open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject>
         val response = sendRequest(reqParam)
         when (response) {
             is NCMBResponse.Success -> {
-                countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -418,7 +418,7 @@ open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject>
         val countHandler = NCMBHandler { countCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    var countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                    var countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
                     countCallback.done(null, countNumber)
                 }
                 is NCMBResponse.Failure -> {

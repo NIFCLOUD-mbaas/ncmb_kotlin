@@ -27,7 +27,7 @@ import java.util.TimeZone
 /**
  * Service class for installation api
  */
-class NCMBInstallationService: NCMBObjectService() {
+internal class NCMBInstallationService: NCMBObjectService() {
 
     /**
      * service path for API category

@@ -17,7 +17,7 @@
 package com.nifcloud.mbaas.core
 
 /**
- * A class of ncmb_kotlin.
+ * Internal SDK Handler (After get response from server) Tasks class
  *
  * This class is to process sdk handler after finishing connection to NCMB, and
  * process after-connection tasks such as reflect response, return error, and do callback from user.
@@ -26,9 +26,14 @@ package com.nifcloud.mbaas.core
  * @constructor Creates a handler to receveive handlerCallback with parameters as callback and response.
  */
 
-class NCMBHandler(val handlerCallback: (NCMBCallback, NCMBResponse) -> Unit) {
+internal class NCMBHandler(val handlerCallback: (NCMBCallback, NCMBResponse) -> Unit) {
 
-    //For NCMBConnection to solve NCMBResponse
+    /**
+     * For NCMBConnection to handler and solve NCMBResponse
+     *
+     * @param callback NCMBCallback
+     * @param response NCMB Response
+     */
     fun doneSolveResponse(callback: NCMBCallback, response: NCMBResponse) {
         //do sthing here for handler callback and response
         handlerCallback(callback, response)

@@ -19,15 +19,18 @@ package com.nifcloud.mbaas.core
 import android.app.Application
 
 /**
- * A class of ncmb_kotlin.
+ * Application's representative class.
  *
- * Holding the state of the application
+ * This class represent application and hold the state of the application
  *
  */
 
-class NCMBApplicationController : Application() {
+internal class NCMBApplicationController : Application() {
     /**
-     * Set application state
+     *
+     * Override super class method.
+     * Do set application state property.
+     *
      */
     override fun onCreate() {
         super.onCreate()
@@ -36,8 +39,10 @@ class NCMBApplicationController : Application() {
 
     companion object {
         /**
+         *
          * Get application state
          * @return ApplicationController
+         *
          */
         var applicationState: NCMBApplicationController? = null
     }
