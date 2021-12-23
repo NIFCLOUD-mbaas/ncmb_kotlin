@@ -69,7 +69,6 @@ $dokka.location:com.nifcloud.mbaas.core/NCMBAcl/toJson/#/PointingToDeclaration/
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase///PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/index.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/ACCESS_CONTROL_LIST/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/-a-c-c-e-s-s_-c-o-n-t-r-o-l_-l-i-s-t.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/NCMBBase/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/-n-c-m-b-base.html
-$dokka.location:com.nifcloud.mbaas.core/NCMBBase/copyFrom/#org.json.JSONObject/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/copy-from.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/get/#kotlin.String/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/get.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/getAcl/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/get-acl.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/getCreateDate/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/get-create-date.html
@@ -77,12 +76,9 @@ $dokka.location:com.nifcloud.mbaas.core/NCMBBase/getObjectId/#/PointingToDeclara
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/getString/#kotlin.String/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/get-string.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/getUpdateDate/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/get-update-date.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/isContainsKey/#kotlin.String?/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/is-contains-key.html
-$dokka.location:com.nifcloud.mbaas.core/NCMBBase/isIgnoreKey/#kotlin.String?/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/is-ignore-key.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/keys/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/keys.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/put/#kotlin.String#kotlin.Any/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/put.html
-$dokka.location:com.nifcloud.mbaas.core/NCMBBase/reflectResponse/#org.json.JSONObject/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/reflect-response.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/setAcl/#com.nifcloud.mbaas.core.NCMBAcl/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/set-acl.html
-$dokka.location:com.nifcloud.mbaas.core/NCMBBase/setAclFromInternal/#com.nifcloud.mbaas.core.NCMBAcl?/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/set-acl-from-internal.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/setCreateDate/#java.util.Date/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/set-create-date.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBBase/setObjectId/#kotlin.String/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-base/set-object-id.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBCallback///PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-callback/index.html
@@ -159,7 +155,6 @@ $dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/deviceType/#/PointingTo
 $dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/fetch/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-installation/fetch.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/fetchInBackground/#com.nifcloud.mbaas.core.NCMBCallback/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-installation/fetch-in-background.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/getDeviceTokenInBackground/#com.nifcloud.mbaas.core.NCMBCallback/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-installation/get-device-token-in-background.html
-$dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/getDeviceTokenInternalProcess/#com.nifcloud.mbaas.core.NCMBCallback/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-installation/get-device-token-internal-process.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/getValue/#kotlin.String?/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-installation/get-value.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/save/#/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-installation/save.html
 $dokka.location:com.nifcloud.mbaas.core/NCMBInstallation/saveInBackground/#com.nifcloud.mbaas.core.NCMBCallback/PointingToDeclaration/ncmb_kotlin/com.nifcloud.mbaas.core/-n-c-m-b-installation/save-in-background.html
