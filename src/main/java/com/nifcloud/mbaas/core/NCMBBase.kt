@@ -126,7 +126,7 @@ open class NCMBBase(){
      * @param response Response Data
      */
     @Throws(JSONException::class)
-    fun reflectResponse(responseData: JSONObject) {
+    internal fun reflectResponse(responseData: JSONObject) {
         for (key in responseData.keys()) {
             mFields.put(key, responseData[key])
             keys.add(key)
@@ -236,7 +236,7 @@ open class NCMBBase(){
      * @param key key name
      * @return ignore list contains given key or not
      */
-    fun isIgnoreKey(key: String?): Boolean {
+    internal fun isIgnoreKey(key: String?): Boolean {
         if (this.mIgnoreKeys.size > 0) {
             return false
         } else {
@@ -250,7 +250,7 @@ open class NCMBBase(){
      * @param from JSON that copy from
      */
     @Throws(JSONException::class)
-    open fun copyFrom(from: JSONObject) {
+    internal open fun copyFrom(from: JSONObject) {
         for(key in from.keys()){
             if (isIgnoreKey(key)) {
                 continue
@@ -262,7 +262,7 @@ open class NCMBBase(){
     }
 
     @Throws(NCMBException::class)
-    fun setAclFromInternal(acl: NCMBAcl?) {
+    internal fun setAclFromInternal(acl: NCMBAcl?) {
         try {
             if (acl == null) {
                 mFields.put(ACCESS_CONTROL_LIST, null)

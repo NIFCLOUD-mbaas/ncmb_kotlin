@@ -432,7 +432,7 @@ class NCMBInstallation : NCMBObject {
      *
      * @param callback TokenCallback
      */
-    fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
+    internal fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
         val context = NCMB.getCurrentContext()
         if(context!= null) {
             if (FirebaseApp.getApps(context.applicationContext).isNotEmpty()) {
