@@ -22,7 +22,7 @@ import java.util.*
 /**
  * Service class for push notification api
  */
-class NCMBPushService : NCMBService() {
+internal class NCMBPushService : NCMBService() {
     /**
      * Create push object
      *
