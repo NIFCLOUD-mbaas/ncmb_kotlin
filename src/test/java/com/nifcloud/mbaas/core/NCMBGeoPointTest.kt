@@ -27,7 +27,7 @@ class NCMBGeoPointTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        val ncmbDispatcher = NCMBDispatcher()
+        val ncmbDispatcher = NCMBDispatcher("geopoint")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -88,7 +88,7 @@ class NCMBGeoPointTest {
         var obj = NCMBObject("TestClassGeo")
         val geopoint = NCMBGeoPoint(latitude, longitude)
         obj.put("geoPoint", geopoint)
-        obj = obj.save()
+        obj.save()
         Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
     }
 
@@ -112,5 +112,34 @@ class NCMBGeoPointTest {
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
+    }
+
+    @Test
+    fun test_geopoint_get(){
+        var obj = NCMBObject("TestClassGeo")
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        obj.fetch()
+        val geo = obj.getGeo("geoPoint")
+        Assert.assertEquals(geo.mlatitude, 35.6666269, 0.0)
+        Assert.assertEquals(geo.mlongitude, 139.765607, 0.0)
+    }
+
+    @Test
+    fun test_geopoint_getInBackground(){
+        val inBackgroundHelper = NCMBInBackgroundTestHelper()
+        val obj = NCMBObject("TestClassGeo")
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        inBackgroundHelper.start()
+        obj.fetchInBackground(NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release()
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val geo: NCMBGeoPoint = (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geoPoint")
+        Assert.assertEquals(geo.mlatitude, 35.6666269, 0.0)
+        Assert.assertEquals(geo.mlongitude, 139.765607, 0.0)
     }
 }

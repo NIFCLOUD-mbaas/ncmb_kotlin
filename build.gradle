@@ -1,31 +1,33 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply plugin: 'com.android.library'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlinx-serialization'
+apply plugin: 'org.jetbrains.dokka'
+
 
 buildscript {
-    ext.kotlin_version = '1.3.61'
+
+    ext {
+        dokka_version = "1.6.0"
+        kotlin_version = '1.3.61'
+    }
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven { url "https://kotlin.bintray.com/kotlinx" }
         google()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.10'
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}")
     }
 }
-
 
 
 android {
@@ -63,7 +65,6 @@ repositories {
     // artifacts are published to this repository
     mavenCentral()
     gradlePluginPortal()
-    maven { url "https://kotlin.bintray.com/kotlinx" }
     google()
 }
 
@@ -112,6 +113,7 @@ dependencies {
 task clearJar(type: Delete) {
     delete 'release/' + JAR_NAME
 }
+
 task makeJar(type: Copy) {
     from('build/intermediates/aar_main_jar/release')
     into('release/')
@@ -119,3 +121,27 @@ task makeJar(type: Copy) {
     rename('classes.jar', JAR_NAME)
 }
 makeJar.dependsOn(clearJar, build)
+
+dokkaHtml.configure{
+    outputDirectory.set(new File("${projectDir}/docs/"))
+    dokkaSourceSets{
+        named("main"){
+            moduleName.set("ncmb_kotlin")
+            includes.from("Module.md")
+            supress.set(true)
+            noJdkLink.set(false)
+            noAndroidSdkLink.set(false)
+            includeNonPublic.set(false)
+            sourceLink {
+                localDirectory.set(file("src/main/java/com/nifcloud/mbaas"))
+                remoteUrl.set(URL("https://github.com/NIFCLOUD-mbaas/ncmb_kotlin"))
+                remoteLineSuffix.set("#L")
+            }
+        }
+    }
+}
+
+
+
+
+

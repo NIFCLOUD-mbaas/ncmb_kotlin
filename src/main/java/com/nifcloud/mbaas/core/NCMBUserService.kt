@@ -23,10 +23,9 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * Service for user api
+ * Service for user class
  */
-class NCMBUserService : NCMBService() {
-
+internal class NCMBUserService : NCMBObjectService() {
     /**
      * Status code of signup success
      */
@@ -40,7 +39,7 @@ class NCMBUserService : NCMBService() {
     /**
      * service path for API category
      */
-    val SERVICE_PATH = "users"
+    override  val SERVICE_PATH = "users"
 
     /**
      * Initialization
@@ -495,7 +494,7 @@ class NCMBUserService : NCMBService() {
             val file: File = NCMBLocalFile.create(user.USER_FILENAME)
             NCMBLocalFile.writeFile(file, currentData)
             //held in a static
-            user.currentuser = NCMBUser(currentData)
+            NCMBUser.currentuser = NCMBUser(currentData)
 
             if (currentData.has("sessionToken")) {
                 try {
@@ -747,9 +746,69 @@ class NCMBUserService : NCMBService() {
         val file = create(NCMBUser().USER_FILENAME)
         deleteFile(file)
         //discarded from the static
-        NCMBUser().currentuser = null
+        NCMBUser.currentuser = null
         NCMB.SESSION_TOKEN = null
         NCMB.USER_ID = null
     }
 
+    private fun validateClassName(className: String?): Boolean {
+        return (className == null || className.isEmpty())
+    }
+
+    private fun validateObjectId(objectId: String?): Boolean {
+        return (objectId == null || objectId.isEmpty())
+    }
+
+    /**
+     * Setup params to do find request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    override fun findObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        return RequestParams(url = url, method = method, contentType = contentType, query=query)
+    }
+
+    @Throws(NCMBException::class)
+    override fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBUser> {
+        return try {
+            val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
+            val array: MutableList<NCMBUser> = ArrayList()
+            for (i in 0 until results.length()) {
+                val tmpObj = NCMBUser(results.getJSONObject(i))
+                array.add(tmpObj)
+            }
+            array
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+        }
+    }
+
+    /**
+     * Setup params to do count request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    override fun countObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        return RequestParams(url = url, method = method, contentType = contentType, query = query)
+    }
 }

@@ -16,6 +16,7 @@
 
 package com.nifcloud.mbaas.core
 
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.text.ParseException
@@ -24,9 +25,11 @@ import java.util.Date
 import kotlin.collections.HashSet
 
 /**
- * A class of ncmb_kotlin.
  *
- * To do neccessary tasks for NCMBBase, which is base for NCMBObject
+ * Base class for NCMBObject.
+ *
+ * This class do necessary tasks such as put/set interface methods even internal tasks,
+ * which will be base for NCMBObject.
  *
  */
 
@@ -36,15 +39,15 @@ open class NCMBBase(){
      * ACL
      */
     val ACCESS_CONTROL_LIST = "acl"
-    var mFields = JSONObject()
-    var localData = JSONObject()
+    internal var mFields = JSONObject()
+    internal var localData = JSONObject()
     internal var mUpdateKeys = HashSet<String>()
         @Throws(NCMBException::class) get() {
             return field
         }
         internal set
     protected var mIgnoreKeys= listOf<String>()
-    protected var keys = HashSet<String>()
+    var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
     fun setObjectId(objectId: String) {
@@ -119,12 +122,37 @@ open class NCMBBase(){
     }
 
     /**
+     * get NCMBGeoPoint value from given key
+     *
+     * @param key field name to get the value
+     * @return value of specified key or null
+     */
+    @Throws(NCMBException::class)
+    fun getGeo(key : String): NCMBGeoPoint {
+        try {
+            val geoPoint = mFields.getJSONObject(key)
+            if (geoPoint.getString("__type") == "GeoPoint") {
+                val lat = geoPoint.getDouble("latitude")
+                val lon = geoPoint.getDouble("longitude")
+                val geo = NCMBGeoPoint(lat, lon)
+                return geo
+            }else{
+                throw NCMBException(NCMBException.INVALID_TYPE, "type is not GeoPoint.")
+            }
+        } catch (e: JSONException) {
+            throw NCMBException(
+                NCMBException.INVALID_TYPE, e.localizedMessage
+            )
+        }
+    }
+
+    /**
      * Update object from Response Data
      *
      * @param response Response Data
      */
     @Throws(JSONException::class)
-    fun reflectResponse(responseData: JSONObject) {
+    internal fun reflectResponse(responseData: JSONObject) {
         for (key in responseData.keys()) {
             mFields.put(key, responseData[key])
             keys.add(key)
@@ -234,7 +262,7 @@ open class NCMBBase(){
      * @param key key name
      * @return ignore list contains given key or not
      */
-    fun isIgnoreKey(key: String?): Boolean {
+    internal fun isIgnoreKey(key: String?): Boolean {
         if (this.mIgnoreKeys.size > 0) {
             return false
         } else {
@@ -248,17 +276,19 @@ open class NCMBBase(){
      * @param from JSON that copy from
      */
     @Throws(JSONException::class)
-    open fun copyFrom(from: JSONObject) {
+    internal open fun copyFrom(from: JSONObject) {
         for(key in from.keys()){
             if (isIgnoreKey(key)) {
                 continue
             }
+            this.keys.add(key)
             mFields.put(key, from[key])
+            localData.put(key, from[key])
         }
     }
 
     @Throws(NCMBException::class)
-    fun setAclFromInternal(acl: NCMBAcl?) {
+    internal fun setAclFromInternal(acl: NCMBAcl?) {
         try {
             if (acl == null) {
                 mFields.put(ACCESS_CONTROL_LIST, null)

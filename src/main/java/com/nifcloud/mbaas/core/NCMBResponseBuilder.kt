@@ -20,7 +20,7 @@ import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
 
-class NCMBResponseBuilder {
+internal class NCMBResponseBuilder {
 
     companion object {
         /** http status for success  */

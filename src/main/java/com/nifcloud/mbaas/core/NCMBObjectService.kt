@@ -21,14 +21,14 @@ import org.json.JSONObject
 
 
 /**
- * A class of ncmb_kotlin.
+ * Internal service class for Datastore.
  *
  * To do object service jobs, setup basis connection settings before doing connection.
  * SDK handler is also set here.
  *
  */
-class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
-    val SERVICE_PATH = "classes/"
+internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
+    open val SERVICE_PATH = "classes/"
 
     /**
      * Initialization
@@ -347,15 +347,14 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun findObjectParams(className: String, query:JSONObject): RequestParams {
+    open fun findObjectParams(className: String, query:JSONObject): RequestParams {
         var url = NCMB.getApiBaseUrl() + this.mServicePath + className
         if(query.length() > 0) {
             url = url.plus("?" + queryUrlStringGenerate(query))
         }
         val method = NCMBRequest.HTTP_METHOD_GET
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        val params = JSONObject()
-        return RequestParams(url = url, method = method, params = params, contentType = contentType, query=query)
+        return RequestParams(url = url, method = method, contentType = contentType, query=query)
     }
 
     private fun validateClassName(className: String?): Boolean {
@@ -367,7 +366,7 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
     }
 
     @Throws(NCMBException::class)
-    fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject> {
+    open fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBObject> {
         return try {
             val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
             val array: MutableList<NCMBObject> = ArrayList()
@@ -395,7 +394,7 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
         val response = sendRequest(reqParam)
         when (response) {
             is NCMBResponse.Success -> {
-                countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -419,7 +418,7 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
         val countHandler = NCMBHandler { countCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    var countNumber = response.data.getInt(NCMBQueryConstants.REQUEST_PARAMETER_COUNT)
+                    var countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
                     countCallback.done(null, countNumber)
                 }
                 is NCMBResponse.Failure -> {
@@ -439,7 +438,7 @@ class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NCMBObject> {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun countObjectParams(className: String, query:JSONObject): RequestParams {
+    open fun countObjectParams(className: String, query:JSONObject): RequestParams {
         var url = NCMB.getApiBaseUrl() + this.mServicePath + className
         if(query.length() > 0) {
             url = url.plus("?" + queryUrlStringGenerate(query))

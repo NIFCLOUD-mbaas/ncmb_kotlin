@@ -21,14 +21,14 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * NCMBUser is used to sign up and login/logout the user
+ * User information handle class
+ *
+ * NCMBUser class is used to retrieve and save, update the installation user data,
+ * also to sign up and login/logout the user.
+ * Basic features are inherit from NCMBObject and NCMBBase
  */
-open class NCMBUser: NCMBObject {
 
-    /**
-     * current user
-     */
-    var currentuser: NCMBUser? = null
+open class NCMBUser: NCMBObject {
 
     /**
      * currenUser fileName
@@ -72,48 +72,54 @@ open class NCMBUser: NCMBObject {
         }
     }
 
+
     /**
-     * Get user name
-     *
-     * @return String user name
-     */
-    /**
-     * set user name
-     *
-     * @param userName user name string
+     * user name string
      */
     var userName: String
+        /**
+         * Get user name
+         *
+         * @return String user name
+         */
         get() {
             return getUserInfo("userName")
         }
+        /**
+         * set user name
+         *
+         * @param userName user name string
+         */
         set(userName) {
             setUserInfo("userName", userName)
         }
 
     /**
-     * set password
-     *
-     * @param password password string
+     * password string
      */
     var password: String
         get() {
             return getUserInfo("password")
         }
+        /**
+         * set password
+         *
+         * @param password password string
+         */
         set(password) {
             setUserInfo("password", password)
         }
 
+
     /**
-     * Get sessionToken
-     *
-     * @return sessionToken
-     */
-    /**
-     * Set sessionToken
-     *
-     * @param sessionToken String sessionToken
+     * session token string
      */
     var sessionToken: String?
+        /**
+         * Get sessionToken
+         *
+         * @return sessionToken
+         */
         get() {
             return if (getCurrentUser().getString("sessionToken") != null) {
                 getCurrentUser().getString("sessionToken")
@@ -121,24 +127,33 @@ open class NCMBUser: NCMBObject {
                 null
             }
         }
+        /**
+         * Set sessionToken
+         *
+         * @param sessionToken String sessionToken
+         */
         set(sessionToken) {
             setUserInfo("sessionToken", sessionToken)
         }
 
+
     /**
-     * Get mail address
-     *
-     * @return String mail address
-     */
-    /**
-     * Set mail address
-     *
-     * @param mailAddress String mail address
+     * Mail address string
      */
     var mailAddress: String
+        /**
+         * Get mail address
+         *
+         * @return String mail address
+         */
         get() {
             return getUserInfo("mailAddress")
         }
+        /**
+         * Set mail address
+         *
+         * @param mailAddress String mail address
+         */
         set(mailAddress) {
             setUserInfo("mailAddress", mailAddress)
         }
@@ -160,14 +175,13 @@ open class NCMBUser: NCMBObject {
         }
     }
 
-    // action methods
     /**
      * saveWithoutLogin to NIFCLOUD mobile backend
      *
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    private fun saveWithoutLogin(): NCMBObject {
+    private fun saveWithoutLogin(){
         val userService = NCMBUserService()
         val params = JSONObject()
         try {
@@ -181,7 +195,6 @@ open class NCMBUser: NCMBObject {
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
-        return this
     }
 
     /**
@@ -189,7 +202,7 @@ open class NCMBUser: NCMBObject {
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun save(): NCMBObject {
+    override fun save(){
         val objectId = getObjectId() ?: return saveWithoutLogin()
         val userService = NCMBUserService()
         try {
@@ -200,7 +213,6 @@ open class NCMBUser: NCMBObject {
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_JSON, e.localizedMessage)
         }
-        return this
     }
 
     /**
@@ -495,14 +507,13 @@ open class NCMBUser: NCMBObject {
     }
 
     @Throws(NCMBException::class)
-    override fun fetch(): NCMBObject {
+    override fun fetch() {
         val objectId = getObjectId()
         val userService = NCMBUserService()
         if (objectId != null) {
             val user: NCMBUser = userService.fetchUser(this, objectId)
             mFields = user.mFields
         }
-        return this
     }
 
     @Throws(NCMBException::class)
@@ -515,7 +526,7 @@ open class NCMBUser: NCMBObject {
     }
 
     @Throws(NCMBException::class)
-    override fun delete(): NCMBObject? {
+    override fun delete() {
         val objectId = getObjectId()
         val userService = NCMBUserService()
         try {
@@ -524,7 +535,6 @@ open class NCMBUser: NCMBObject {
                 mFields = JSONObject()
                 mUpdateKeys.clear()
             }
-            return null
         } catch (e: NCMBException) {
             throw e
         }
@@ -568,8 +578,9 @@ open class NCMBUser: NCMBObject {
     }
 
     companion object {
-        fun getServiceInstance(): NCMBUserService {
-            return NCMBUserService()
-        }
+	      /**
+         * current user
+         */
+        var currentuser: NCMBUser? = null
     }
 }

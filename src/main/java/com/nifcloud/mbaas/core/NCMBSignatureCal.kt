@@ -26,14 +26,14 @@ import javax.crypto.spec.SecretKeySpec
 
 
 /**
- * A class of ncmb_kotlin.
+ * Signature calculate class.
  *
- * To do calculate signature task
+ * To do calculate signature headers every request.
  *
  */
 
 
-class NCMBSignatureCal {
+internal class NCMBSignatureCal {
 
     companion object {
         //シグネチャメソッドのキー

@@ -200,6 +200,15 @@ Testを実施する前に、@Beforeの setup() メソッドで必要な設定を
 モックの処理はNCMBDispatcherというファイルにて実施しています。
 また非同期処理のテストはInBackgroundTestHelperにてスレッド管理してテスト実施しています。
 
+#### レファレンス作成
+
+* 本SDKはdokkaを利用し、ドキュメントレファレンスの生成を行います。
+* 生成方法１）Android StudioのGradleタブ＞ncmb_kotlin＞Tasks＞documentation>dokkaHtmlをクリックし、実施します。
+  - ※Gradleタブにて、タスクが表示されない場合、タブの右にある「設定アイコン」＞Gradle Settings... をクリックします。表示されるPreferences画面にて、左にExperimentalを選択し、「Do not build Gradle task list during Gradle sync」のチェックを外し、OKを押します。Gradleタブでプロジェクト名を選択肢、右クリックで「Reload Gradle Project」を実施します。
+* 生成方法２）コマンドラインで、ncmb_kotlinのプロジェクトパスにて以下のコマンドを実施
+```
+./gradlew dokkaHtml
+```
 
 ### 4. 開発について
 
@@ -234,6 +243,7 @@ class Group<T>(val name: String) {
     fun add(member: T): Int { ... }
 }
 ```
+
 
 ### 5. 利用中外部ライブラリについて
 

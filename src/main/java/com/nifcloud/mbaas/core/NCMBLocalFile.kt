@@ -17,14 +17,13 @@
 package com.nifcloud.mbaas.core
 
 import android.content.Context
-import android.content.ContextWrapper
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
 
 
 /**
- * LocalFile class
+ * LocalFile handling class
  */
 internal object NCMBLocalFile {
     /**

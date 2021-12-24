@@ -12,11 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
+ *  OkHttp3 licence Information
+ *
+ *     Copyright 2019 Square, Inc.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.nifcloud.mbaas.core
 
-import android.net.Uri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -26,28 +42,27 @@ import okhttp3.Call
 import okhttp3.Response
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.IOException
 import java.net.URL
-import java.net.URLEncoder
 
 
 /**
- * A class of ncmb_kotlin.
+ * NCMB connection solving main class.
  *
- * To do connection to NCMB and do request, receive response/error and process callback after finishing receiving response.
- * Based on okhttp3 to do requests and receive response.
- *
- * <okhttp3 licences will be refer here>
+ * This class is to do connection to NCMB and execute request, do receive response/error and
+ * process callback after finishing receiving response.
+ * Requests done based on okhttp3.
  *
  */
 
-class NCMBConnection(request: NCMBRequest) {
+internal class NCMBConnection(request: NCMBRequest) {
 
     //time out millisecond from NIF Cloud mobile backend
-    var sConnectionTimeout = NCMB.TIMEOUT
+    // var sConnectionTimeout = NCMB.TIMEOUT  //TODO
     //synchronized lock
     val lock = Any()
     //API request object
@@ -58,7 +73,6 @@ class NCMBConnection(request: NCMBRequest) {
     /**
      * Constructor with NCMBRequest
      *
-     * @param request API request object
      */
     init{
         this.ncmbRequest = request
@@ -76,7 +90,6 @@ class NCMBConnection(request: NCMBRequest) {
             withContext(Dispatchers.Default) {
                 val headers: Headers = createHeader()
                 val client = OkHttpClient()
-                val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
                 println("Request Info (Sync):")
                 println("params: " + ncmbRequest.params.toString())
@@ -85,7 +98,7 @@ class NCMBConnection(request: NCMBRequest) {
                 println(headers)
                 println(ncmbRequest.query)
 
-                val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
+                val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
                 var request: Request
                 synchronized(lock) {
                     request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
@@ -94,20 +107,20 @@ class NCMBConnection(request: NCMBRequest) {
                 ncmbResponse = NCMBResponseBuilder.build(response)
             }
         }
-        return ncmbResponse;
+        return ncmbResponse
     }
 
     /**
      * Request NIF Cloud mobile backed api synchronously
      *
-     * @return result object from NIF Cloud mobile backend
+     * @param callback NCMBCallback
+     * @param responseHandler NCMBHandler
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
     fun sendRequestAsynchronously(callback: NCMBCallback, responseHandler: NCMBHandler) {
         val headers: Headers = createHeader()
         val client = OkHttpClient()
-        val JSON = "application/json; charset=utf-8".toMediaTypeOrNull()
 
         println("Request Info(Async):")
         println("params: " + ncmbRequest.params.toString())
@@ -115,20 +128,20 @@ class NCMBConnection(request: NCMBRequest) {
         println(ncmbRequest.url)
         println(headers)
 
-        val body: RequestBody = RequestBody.create(JSON, ncmbRequest.params.toString())
+        val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
                 ncmbResponse = NCMBResponse.Failure(NCMBException(e))
-                responseHandler?.doneSolveResponse(callback, ncmbResponse)
+                responseHandler.doneSolveResponse(callback, ncmbResponse)
             }
 
             override fun onResponse(call: Call, response: Response) {
                 //NCMBResponse 処理
                 ncmbResponse = NCMBResponseBuilder.build(response)
-                responseHandler?.doneSolveResponse(callback, ncmbResponse)
+                responseHandler.doneSolveResponse(callback, ncmbResponse)
             }
         })
     }
@@ -154,6 +167,10 @@ class NCMBConnection(request: NCMBRequest) {
     /**
      * Generate Request object while setting URL etc. in Builder class
      *
+     * @param requestMethod  Method of request
+     * @param requestUrl  Url of request
+     * @param requestHeaders Headers info of request
+     * @param requestBody  Header body info of request
      * @return request object
      */
     fun request(
@@ -162,7 +179,7 @@ class NCMBConnection(request: NCMBRequest) {
         requestHeaders: Headers,
         requestBody: RequestBody
     ):Request{
-        var request: Request? = null
+        lateinit var request: Request
         if (requestMethod == "GET") {
             request = Request.Builder()
                 .url(requestUrl)
@@ -190,9 +207,16 @@ class NCMBConnection(request: NCMBRequest) {
                 .delete(requestBody)
                 .build()
         }
-        return request!!
+        return request
     }
 
+    /**
+     * Generate headers info map set
+     *
+     * @param headerMap  Headers map
+     * @param headerInfo  Headers info
+     * @return HashMap of headers info
+     */
     fun headerMapSet(headerMap: HashMap<String, String>, headerInfo: String): HashMap<String, String>{
         val h_info = ncmbRequest.getRequestProperty(headerInfo)
         if (h_info != null) {

@@ -17,13 +17,13 @@
 package com.nifcloud.mbaas.core
 
 /**
- * A class of ncmb_kotlin.
+ * Constants value of NCMB
  *
- * To keep NCMBConstants
+ * To keep and setup NCMBConstants of NCMB
  *
  */
 
-class NCMBConstant {
+internal class NCMBConstant {
     companion object {
         enum class HTTP_METHOD {
             GET, POST, PUT, DELETE
@@ -61,8 +61,15 @@ class NCMBConstant {
     }
 }
 
-/// NCMBQueryで使用するコンスタント値を管理するクラスです。
-class NCMBQueryConstants {
+/**
+ * Constants value of NCMBQuery.
+ *
+ * To keep and setup NCMBConstants of NCMBQuery.
+ * NCMBQueryで使用するコンスタント値を管理するクラスです。
+ *
+ */
+
+internal class NCMBQueryConstants {
 
     companion object {
         const val REQUEST_PARAMETER_WHERE : String = "where"

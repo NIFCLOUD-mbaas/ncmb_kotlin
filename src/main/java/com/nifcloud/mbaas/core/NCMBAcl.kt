@@ -19,6 +19,12 @@ package com.nifcloud.mbaas.core
 import org.json.JSONException
 import org.json.JSONObject
 
+/**
+ * Access Control (ACL) feature class.
+ *
+ * This class is do features on settings Access Control of data for NCMB Kotlin SDK.
+ *
+ */
 class NCMBAcl {
     /**
      * ACL for user/public
@@ -48,7 +54,8 @@ class NCMBAcl {
     }
 
     /**
-     * Constructor from JSON
+     * Constructor for NCMBAcl from JSON
+     *
      * @param json json object of defalut acl
      * @throws JSONException exception from JSONObject
      */
@@ -86,7 +93,7 @@ class NCMBAcl {
         }
 
         /**
-         * Construct from JSON
+         * Construct for NCMBAcl from JSON
          */
         constructor(json: JSONObject) {
             readable = json.optBoolean("read", false)
@@ -316,7 +323,7 @@ class NCMBAcl {
     /**
      * Set whether the given role is allowed to read.
      * @param roleName role name
-     * @param allowed can reaad or not
+     * @param allowed can read or not
      */
     fun setRoleReadAccess(roleName: String, allowed: Boolean) {
         val p = getRoleAccess(roleName)

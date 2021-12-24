@@ -28,13 +28,13 @@ import kotlin.collections.HashMap
 
 
 /**
- * A class of ncmb_kotlin.
+ * Request handling class.
  *
  * NCMBRequest class is used to config api request
  *
  */
 
-class NCMBRequest(
+internal class NCMBRequest(
     var url: String,
     var method: String,
     var params: JSONObject = JSONObject(),

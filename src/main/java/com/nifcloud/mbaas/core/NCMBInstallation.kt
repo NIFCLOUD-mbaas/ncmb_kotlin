@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 package com.nifcloud.mbaas.core
-
-import android.util.Log
-//import com.google.android.gms.tasks.OnCanceledListener
-//import com.google.android.gms.tasks.OnCompleteListener
-//import com.google.android.gms.tasks.Task
-//import com.google.firebase.FirebaseApp
-//import com.google.firebase.iid.FirebaseInstanceIdReceiver
-//import com.google.firebase.iid.FirebaseInstanceId
-//import com.google.firebase.iid.InstanceIdResult
 import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
 import com.nifcloud.mbaas.core.NCMBLocalFile.create
 import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
-import android.content.ContentValues.TAG
 import com.google.android.gms.tasks.OnCanceledListener
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
@@ -37,23 +27,24 @@ import com.google.firebase.messaging.FirebaseMessaging
 import java.io.IOException
 import java.util.Arrays
 
+
 /**
- * NCMBInstallation is used to retrieve and upload the installation data
+ * Installation information handle class
+ *
+ * NCMBInstallation is used to retrieve and save, update the installation data.
+ * Basic features are inherit from NCMBObject and NCMBBase
  */
 class NCMBInstallation : NCMBObject {
 
-    //region getter
     /**
-     * Get application name
-     *
-     * @return application name
-     */
-    /**
-     * Set application name
-     *
-     * @param value applicationName
+     * Application name
      */
     var applicationName: String?
+        /**
+         * Get application name
+         *
+         * @return application name
+         */
         get() = try {
             if (mFields.isNull(APPLICATION_NAME)) {
                 null
@@ -61,6 +52,11 @@ class NCMBInstallation : NCMBObject {
         } catch (e: JSONException) {
             throw NCMBException(IllegalArgumentException(e.message))
         }
+        /**
+         * Set application name
+         *
+         * @param value applicationName
+         */
         set(value) {
             try {
                 mFields.put(APPLICATION_NAME, value)
@@ -69,18 +65,17 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(e.message))
             }
         }
+
+
     /**
-     * Get application version
-     *
-     * @return application Version
-     */
-    /**
-     * Set application version
-     * ReadOnly field
-     *
-     * @param value appVersion
+     * Application Version
      */
     var appVersion: String?
+        /**
+         * Get application version
+         *
+         * @return application Version
+         */
         get() {
             return try {
                 if (mFields.isNull(APP_VERSION)) {
@@ -90,6 +85,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set application version
+         * ReadOnly field
+         *
+         * @param value appVersion
+         */
         set(value) {
             try {
                 mFields.put(APP_VERSION, value)
@@ -98,17 +99,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get badge count
-     *
-     * @return badge count
-     */
-    /**
-     * Set badge count
-     *
-     * @param value applicationName
+     * Badge number (iOS)
      */
     var badge: Int?
+        /**
+         * Get badge count
+         *
+         * @return badge count
+         */
         get() {
             return try {
                 if (mFields.isNull(BADGE)) {
@@ -118,6 +118,11 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set badge count
+         *
+         * @param value applicationName
+         */
         set(value) {
             try {
                 mFields.put(BADGE, value)
@@ -126,17 +131,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get channels
-     *
-     * @return channels
-     */
-    /**
-     * Set channels
-     *
-     * @param value channels
+     * Channels information
      */
     var channels: Array<String>?
+        /**
+         * Get channels
+         *
+         * @return channels
+         */
         get() {
             return try {
                 if (mFields.isNull(CHANNELS)) {
@@ -146,6 +150,11 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set channels
+         *
+         * @param value channels
+         */
         set(value) {
             try {
                 mFields.put(CHANNELS, value)
@@ -154,18 +163,17 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
+
     /**
-     * Get device type
-     *
-     * @return device type
-     */
-    /**
-     * Set device type
-     * ReadOnly field
-     *
-     * @param value device type
+     * Device type information
      */
     var deviceType: String
+        /**
+         * Get device type
+         *
+         * @return device type
+         */
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TYPE)) {
@@ -175,6 +183,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set device type
+         * ReadOnly field
+         *
+         * @param value device type
+         */
         set(value) {
             try {
                 mFields.put(DEVICE_TYPE, value)
@@ -183,17 +197,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get device token
-     *
-     * @return device token
-     */
-    /**
-     * Set device token
-     *
-     * @param value device token
+     * Device token
      */
     var deviceToken: String
+        /**
+         * Get device token
+         *
+         * @return device token
+         */
         get() {
             return try {
                 if (mFields.isNull(DEVICE_TOKEN)) {
@@ -203,6 +216,11 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set device token
+         *
+         * @param value device token
+         */
         set(value) {
             try {
                 mFields.put(DEVICE_TOKEN, value)
@@ -212,18 +230,16 @@ class NCMBInstallation : NCMBObject {
             }
         }
 
+
     /**
-     * Get SDK version
-     *
-     * @return SDK version
-     */
-    /**
-     * Set SDK version
-     * ReadOnly field
-     *
-     * @param value SDKversion
+     * SDK Version information
      */
     var sdkVersion: String?
+        /**
+         * Get SDK version
+         *
+         * @return SDK version
+         */
         get() {
             return try {
                 if (mFields.isNull(SDK_VERSION)) {
@@ -233,6 +249,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set SDK version
+         * ReadOnly field
+         *
+         * @param value SDKversion
+         */
         set(value) {
             try {
                 mFields.put(SDK_VERSION, value)
@@ -241,18 +263,16 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+
     /**
-     * Get timezone
-     *
-     * @return timezone
-     */
-    /**
-     * Set timezone
-     * ReadOnly field
-     *
-     * @param value timezone
+     * Timezone info
      */
     var timeZone: String?
+        /**
+         * Get timezone
+         *
+         * @return timezone
+         */
         get() {
             return try {
                 if (mFields.isNull(TIME_ZONE)) {
@@ -262,6 +282,12 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
+        /**
+         * Set timezone
+         * ReadOnly field
+         *
+         * @param value timezone
+         */
         set(value) {
             try {
                 mFields.put(TIME_ZONE, value)
@@ -286,10 +312,9 @@ class NCMBInstallation : NCMBObject {
             throw NCMBException(IllegalArgumentException(error.message))
         }
     }
-    //endregion
-    //region setter
+
     /**
-     * Constructor
+     * Constructor method
      */
     constructor() : super("installation") {
         mIgnoreKeys = ignoreKeys
@@ -301,18 +326,17 @@ class NCMBInstallation : NCMBObject {
      * @param params params source JSON
      * @throws NCMBException
      */
-    internal constructor(params: JSONObject?) : super("installation", params!!) {
+    internal constructor(params: JSONObject) : super("installation", params) {
         mIgnoreKeys = ignoreKeys
     }
-    // endregion
-    //region save
+
     /**
      * Save installation object
      *
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    override fun save(): NCMBObject {
+    override fun save(){
         //connect
         val installationService = NCMBInstallationService()
         val responseData: JSONObject
@@ -331,13 +355,12 @@ class NCMBInstallation : NCMBObject {
         }
         //localData = responseData
         mUpdateKeys.clear()
-        return this
     }
 
     /**
-     * Save installation object inBackground
+     * Save installation object in Background
      *
-     * @param callback DoneCallback
+     * @param callback Save Callback
      */
     override fun saveInBackground(saveCallback: NCMBCallback) {
         //connect
@@ -379,7 +402,7 @@ class NCMBInstallation : NCMBObject {
         }
     }
     /**
-     * Get device token
+     * Get device token in background
      *
      * @param callback TokenCallback
      */
@@ -411,7 +434,7 @@ class NCMBInstallation : NCMBObject {
      *
      * @param callback TokenCallback
      */
-    fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
+    internal fun getDeviceTokenInternalProcess(callback: NCMBCallback) {
         val context = NCMB.getCurrentContext()
         if(context!= null) {
             if (FirebaseApp.getApps(context.applicationContext).isNotEmpty()) {
@@ -444,10 +467,10 @@ class NCMBInstallation : NCMBObject {
         const val DEVICE_TYPE = "deviceType"
         const val DEVICE_TOKEN = "deviceToken"
         const val SDK_VERSION = "sdkVersion"
-        const val TIME_ZONE= "timeZone"
-        const val PUSH_TYPE= "pushType"
-        const val ANDROID= "android"
-        const val FCM= "fcm"
+        const val TIME_ZONE = "timeZone"
+        const val PUSH_TYPE = "pushType"
+        const val ANDROID = "android"
+        const val FCM = "fcm"
 
         /**
          * currentInstallation fileName
@@ -473,64 +496,79 @@ class NCMBInstallation : NCMBObject {
         /**
          * push device
          */
-        var installation: NCMBInstallation? = null
         val ignoreKeys = Arrays.asList(
             "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
             "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
         )
 
-        //endregion
         /**
          * Get current installation object
          *
          * @return NCMBInstallation object that is created from data that is saved to local file.<br></br>
          * If local file is not available, it returns empty NCMBInstallation object
          */
-        fun getCurrentInstallation(): NCMBInstallation {
-            //null check
-            checkNCMBContext()
-            try {
-                //create currentInstallation
-                if (installation == null) {
-                    installation = NCMBInstallation()
-                    //ローカルファイルに配信端末情報があれば取得、なければ新規作成
-                    val currentInstallationFile = create(INSTALLATION_FILENAME)
-                    if (currentInstallationFile.exists()) {
-                        //ローカルファイルから端末情報を取得
-                        val localData = readFile(currentInstallationFile)
-                        installation = NCMBInstallation(localData)
+        var currentInstallation: NCMBInstallation = NCMBInstallation()
+            get() {
+                if(field.getObjectId() == null){
+                    try {
+                        val installationService = NCMBInstallationService()
+                        field = installationService.getCurrentInstallationFromFile()
+                    } catch (error: NCMBException) {
+                        throw NCMBException(error)
                     }
                 }
-            } catch (error: Exception) {
-                Log.e("Error", error.toString())
+                return field
             }
-            return installation as NCMBInstallation
-        }
+            internal set(value) {
+                field = value
+            }
     }
 
-    @Throws(NCMBException::class)
-    override fun fetch(): NCMBInstallation {
-        val objectId = getObjectId()
-        val installationService = NCMBInstallationService()
-        if (objectId != null) {
-            // 保存後に実施するsaveCallbackを渡す
-            installationService.fetchInstallation(this, objectId)
+        @Throws(NCMBException::class)
+        override fun fetch()  {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.fetchInstallation(this, objectId)
+            } else {
+                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+            }
         }
-        return this
-    }
 
-    /**
-     * save current NCMBObject to data store
-     * @throws NCMBException exception from NIFCLOUD mobile backend
-     */
-    @Throws(NCMBException::class)
-    override fun delete(): NCMBInstallation? {
-        val objectId = getObjectId()
-        val installationService = NCMBInstallationService()
-        if (objectId != null) {
-            // 保存後に実施するsaveCallbackを渡す
-            installationService.deleteInstallation(objectId)
+        @Throws(NCMBException::class)
+        override fun fetchInBackground(fetchCallback: NCMBCallback) {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.fetchInstallationInBackground(this, objectId, fetchCallback)
+            } else {
+                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+            }
         }
-        return null
-    }
+
+        /**
+         * save current NCMBObject to data store
+         * @throws NCMBException exception from NIFCLOUD mobile backend
+         */
+        @Throws(NCMBException::class)
+        override fun delete() {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.deleteInstallation(objectId)
+            } else {
+                throw NCMBException(IllegalArgumentException("objectId is must not be null."))
+            }
+        }
+
+        @Throws(NCMBException::class)
+        override fun deleteInBackground(deleteCallback: NCMBCallback) {
+            val objectId = getObjectId()
+            val installationService = NCMBInstallationService()
+            if (objectId != null) {
+                installationService.deleteInstallationInBackground(objectId, deleteCallback)
+            } else {
+                deleteCallback.done(NCMBException(IllegalArgumentException("objectId is must not be null.")))
+            }
+        }
 }

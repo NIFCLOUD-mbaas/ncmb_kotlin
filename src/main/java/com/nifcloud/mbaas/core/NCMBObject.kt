@@ -20,9 +20,10 @@ import org.json.JSONException
 import org.json.JSONObject
 
 /**
- * A class of ncmb_kotlin.
+ * Datastore handling class.
  *
- * Main class of datastore features. Inherits from NCMBBase.
+ * Main class of datastore features, do save, search, update data in datastor. Inherits from NCMBBase.
+ *
  */
 
 open class NCMBObject : NCMBBase {
@@ -56,11 +57,12 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * save current NCMBObject to data store
+     * Save current NCMBObject to data store. Saved result is reflect to this instance of object.
+     *
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    open fun save(): NCMBObject {
+    open fun save() {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -71,7 +73,6 @@ open class NCMBObject : NCMBBase {
                 className,
                 this.mFields
             )
-            return this
         } else {
             //Object update
             try {
@@ -88,12 +89,12 @@ open class NCMBObject : NCMBBase {
                     e.localizedMessage
                 )
             }
-            return this
         }
     }
 
     /**
-     * save current NCMBObject to data store asynchronously
+     * Save current NCMBObject to data store asynchronously
+     *
      * @param saveCallback callback after object save
      */
     open fun saveInBackground(saveCallback: NCMBCallback) {
@@ -131,11 +132,11 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * fetch current NCMBObject data from data store
+     * Fetch current NCMBObject data from data store. Fetched result is reflect to this instance of object.
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    open fun fetch(): NCMBObject {
+    open fun fetch() {
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -146,11 +147,10 @@ open class NCMBObject : NCMBBase {
                 className, objectId
             )
         }
-        return this
     }
 
     /**
-     * fetch current NCMBObject data from data store asynchronously
+     * Fetch current NCMBObject data from data store asynchronously.
      * @param fetchCallback callback after fetch data
      */
     open fun fetchInBackground(fetchCallback: NCMBCallback) {
@@ -175,11 +175,12 @@ open class NCMBObject : NCMBBase {
     }
 
     /**
-     * save current NCMBObject to data store
+     * Delete current NCMBObject from data store.
+     *
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    open fun delete(): NCMBObject? {
+    open fun delete(){
         val objectId = getObjectId()
         val className = this.mClassName
         val objService = NCMBObjectService()
@@ -187,11 +188,11 @@ open class NCMBObject : NCMBBase {
             // 保存後に実施するsaveCallbackを渡す
             objService.deleteObject(this, className, objectId)
         }
-        return null
     }
 
     /**
-     * delete current NCMBObject from data store asynchronously
+     * Delete current NCMBObject from data store asynchronously.
+     *
      * @param deleteCallback callback after delete object
      */
     open fun deleteInBackground(deleteCallback: NCMBCallback) {
@@ -211,5 +212,4 @@ open class NCMBObject : NCMBBase {
             deleteCallback.done(ex)
         }
     }
-
 }

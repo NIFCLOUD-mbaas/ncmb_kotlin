@@ -30,7 +30,7 @@ class NCMBQueryTest {
     fun setup() {
 
         //mockserver 制御するNCMBDispatcherを指定し、モックサーバを起動
-        val ncmbDispatcher = NCMBDispatcher()
+        val ncmbDispatcher = NCMBDispatcher("query")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -59,8 +59,16 @@ class NCMBQueryTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
-            ((inBackgroundHelper["objects"] as List<Any>)[0] as NCMBObject).getObjectId(),
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getString("key"),
+            "value"
+        )
+        Assert.assertEquals(
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].keys.size,
+            5
         )
     }
 
@@ -81,7 +89,7 @@ class NCMBQueryTest {
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
             0,
-            (inBackgroundHelper["objects"] as List<Any>).size
+            (inBackgroundHelper["objects"] as List<NCMBObject>).size
         )
     }
 
@@ -101,11 +109,11 @@ class NCMBQueryTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
-            ((inBackgroundHelper["objects"] as List<Any>)[0] as NCMBObject).getObjectId(),
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            ((inBackgroundHelper["objects"] as List<Any>)[1] as NCMBObject).getObjectId(),
+            (inBackgroundHelper["objects"] as List<NCMBObject>)[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -117,8 +125,16 @@ class NCMBQueryTest {
         query.whereEqualTo("key", "value");
         val objects = query.find()
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            objects[0].getString("key"),
+            "value"
+        )
+        Assert.assertEquals(
+            objects[0].keys.size,
+            5
         )
     }
 
@@ -139,11 +155,11 @@ class NCMBQueryTest {
         val query = NCMBQuery.forObject("TestClass")
         val objects = query.find()
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -156,6 +172,15 @@ class NCMBQueryTest {
         query.whereEqualTo("key", "value");
         val throwable = assertFails { query.skip = -1 }
         Assert.assertEquals("Need to set skip value > 0", throwable.message)
+    }
+
+    @Test
+    fun testSkip_valid_value() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        query.skip = 20
+        Assert.assertEquals(20, query.skip)
     }
 
     @Test
@@ -179,19 +204,29 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testLimit_valid_value() {
+        //TestClassクラスを検索するクエリを作成
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereEqualTo("key", "value");
+        query.limit = 200
+        Assert.assertEquals(200, query.limit)
+    }
+
+    @Test
     fun testNCMBObject_DoSearchSync_Skip() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassSkip")
+        query.skip = 3
         query.whereEqualTo("key", "value");
-        query.skip = 10
+
         val objects = query.find()
         Assert.assertEquals(2,objects.count())
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -204,15 +239,15 @@ class NCMBQueryTest {
         val objects = query.find()
         Assert.assertEquals(3,objects.count())
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
         Assert.assertEquals(
-            (objects[2] as NCMBObject).getObjectId(),
+            objects[2].getObjectId(),
             "YpfmeOtRkZJeRQWZ"
         )
     }
@@ -243,32 +278,31 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchSync_Asc() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassAsc")
-        query.limit = 3
         query.addOrderByAscending("key")
         val objects = query.find()
         Assert.assertEquals(3,objects.count())
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getString("key"),
+            objects[0].getString("key"),
             "value1"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getString("key"),
+            objects[1].getString("key"),
             "value2"
         )
         Assert.assertEquals(
-            (objects[2] as NCMBObject).getObjectId(),
+            objects[2].getObjectId(),
             "YpfmeOtRkZJeRQWZ"
         )
         Assert.assertEquals(
-            (objects[2] as NCMBObject).getString("key"),
+            objects[2].getString("key"),
             "value3"
         )
     }
@@ -277,32 +311,31 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchSync_Desc() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassDesc")
-        query.limit = 3
         query.addOrderByDescending("key")
         val objects = query.find()
         Assert.assertEquals(3,objects.count())
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "YpfmeOtRkZJeRQWZ"
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getString("key"),
+            objects[0].getString("key"),
             "value3"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getString("key"),
+            objects[1].getString("key"),
             "value2"
         )
         Assert.assertEquals(
-            (objects[2] as NCMBObject).getObjectId(),
+            objects[2].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[2] as NCMBObject).getString("key"),
+            objects[2].getString("key"),
             "value1"
         )
     }
@@ -329,11 +362,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -348,11 +381,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -368,11 +401,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -387,11 +420,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -407,11 +440,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }        
@@ -426,11 +459,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -446,11 +479,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }      
@@ -465,11 +498,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -485,11 +518,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }       
@@ -504,11 +537,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -524,11 +557,11 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (objects[1] as NCMBObject).getObjectId(),
+            objects[1].getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -553,8 +586,110 @@ class NCMBQueryTest {
             objects.size
         )
         Assert.assertEquals(
-            (objects[0] as NCMBObject).getObjectId(),
+            objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
+        )
+    }
+
+    @Test
+    fun test_NCMBUser_find_whereEqualTo_success() {
+        val query = NCMBQuery.forUser()
+        query.whereEqualTo("userName", "Ncmb Tarou")
+        val users = query.find()
+        Assert.assertEquals(
+            1,
+            users.size
+        )
+        Assert.assertEquals(
+            users[0].getObjectId(),
+            "dummyObjectId01"
+        )
+        Assert.assertEquals(
+            users[0].userName,
+            "Ncmb Tarou"
+        )
+    }
+
+    @Test
+    fun test_NCMBUser_findAllUser_success() {
+        val query = NCMBQuery.forUser()
+        val users = query.find()
+        Assert.assertEquals(
+            2,
+            users.size
+        )
+        Assert.assertEquals(
+            users[0].getObjectId(),
+            "dummyObjectId01"
+        )
+        Assert.assertEquals(
+            users[1].getObjectId(),
+            "dummyObjectId02"
+        )
+    }
+
+    @Test
+    fun test_NCMBUser_success() {
+        val query = NCMBQuery.forUser()
+        val number = query.count()
+        Assert.assertEquals(
+            50,
+            number
+        )
+    }
+
+    @Test
+    fun test_NCMBInstallation_find_whereEqualTo_success() {
+        val query = NCMBQuery.forInstallation()
+        query.whereEqualTo("sdkVersion", "3.0.4")
+        val installations = query.find()
+        Assert.assertEquals(
+            2,
+            installations.size
+        )
+        Assert.assertEquals(
+            installations[0].getObjectId(),
+            "dummyObjectId01"
+        )
+        Assert.assertEquals(
+            installations[0].sdkVersion,
+            "3.0.4"
+        )
+        Assert.assertEquals(
+            installations[1].getObjectId(),
+            "dummyObjectId02"
+        )
+        Assert.assertEquals(
+            installations[1].sdkVersion,
+            "3.0.4"
+        )
+    }
+
+    @Test
+    fun test_NCMBInstallation_findAll_success() {
+        val query = NCMBQuery.forInstallation()
+        val installations = query.find()
+        Assert.assertEquals(
+            2,
+            installations.size
+        )
+        Assert.assertEquals(
+            installations[0].getObjectId(),
+            "dummyObjectId01"
+        )
+        Assert.assertEquals(
+            installations[1].getObjectId(),
+            "dummyObjectId02"
+        )
+    }
+
+    @Test
+    fun test_NCMBInstallation_count_success() {
+        val query = NCMBQuery.forInstallation()
+        val number = query.count()
+        Assert.assertEquals(
+            50,
+            number
         )
     }
 
