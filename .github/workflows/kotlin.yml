@@ -9,4 +9,4 @@ jobs:
         uses: fwilhe2/setup-kotlin@main
 
       - name: build and test
-        run: ./gradlew build test --continue --info -PjavaVersion=1.11 -Dorg.gradle.java.home="C:\java\11"
+        run: ./gradlew build test --continue --info
