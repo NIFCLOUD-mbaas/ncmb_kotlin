@@ -339,6 +339,22 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         }
     }
 
+    /**
+     * Set the OR conditions to search the data that matches any one of the given query
+     * @param queries condition queries
+     */
+    fun or(queries: Collection<NCMBQuery<*>>) {
+        try {
+            val array = JSONArray()
+            for (query in queries) {
+                val queryJson = query.mWhereConditions
+                array.put(queryJson)
+            }
+            mWhereConditions.put("\$or", array)
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
 
     /**
      * Constructor
@@ -367,6 +383,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         newCondition.put(operand, array)
         return newCondition
     }
+
 
 }
 
