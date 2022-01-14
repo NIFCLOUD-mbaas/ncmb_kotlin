@@ -1,14 +1,12 @@
 name: Kotlin
 on: [push,pull_request]
 jobs:
-  build_and_test:
+  build:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v2
       - name: Setup Kotlin
         uses: fwilhe2/setup-kotlin@main
-        with :
-          java-version: 11
 
     - name: build and test
       run: ./gradlew build test --continue --info
