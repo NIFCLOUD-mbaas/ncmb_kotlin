@@ -268,6 +268,21 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         }
     }
 
+    /**
+     * Set the conditions to search the data with location information
+     * @param key field name that contains location information
+     * @param centerLocation center location for data searching
+     * @param maxDistance search radius distance from center point in kilometers
+     */
+    fun whereWithinKilometers(key: String, centerLocation:NCMBGeoPoint, maxDistance: Double) {
+        try {
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NEARSPHERE, centerLocation))
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_KM, maxDistance))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
 
     //Add new search condition (new 'operand' and 'value') for 'key', and return added search Condition for key
     internal fun addSearchCondition(key: String, operand: String, value: Any):JSONObject {

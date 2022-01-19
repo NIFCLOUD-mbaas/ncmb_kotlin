@@ -94,5 +94,9 @@ internal class NCMBQueryConstants {
         const val QUERY_OPERATOR_OR : String = "or"
         const val QUERY_OPERATOR_WITHIN : String = "within"
         const val QUERY_OPERATOR_BOX : String = "box"
+        const val QUERY_OPERATOR_NEARSPHERE : String = "nearSphere"
+        const val QUERY_OPERATOR_MILES : String = "maxDistanceInMiles"
+        const val QUERY_OPERATOR_KM : String = "maxDistanceInKilometers"
+        const val QUERY_OPERATOR_RAD : String = "maxDistanceInRadians"
     }
 }

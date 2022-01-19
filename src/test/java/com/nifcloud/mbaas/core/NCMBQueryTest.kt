@@ -611,6 +611,24 @@ class NCMBQueryTest {
     }
 
     @Test
+    fun testNCMBObject_whereWithinKilometers_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereWithinKilometers("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
     fun test_NCMBUser_find_whereEqualTo_success() {
         val query = NCMBQuery.forUser()
         query.whereEqualTo("userName", "Ncmb Tarou")
