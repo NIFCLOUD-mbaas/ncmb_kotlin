@@ -593,32 +593,60 @@ class NCMBQueryTest {
 
     @Test
     fun testNCMBObject_Or_Success() {
-        var applicationKey =  "APPKEY"
-        var clientKey = "CLIKEY"
-        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
-        val query1 = NCMBQuery.forObject("TODO")
+        val query1 = NCMBQuery.forObject("TestClass")
         query1.whereLessThan("keyInt", 100)
-        val query2 = NCMBQuery.forObject("TODO")
+        val query2 = NCMBQuery.forObject("TestClass")
         query2.whereGreaterThan("keyInt", 0)
         val queries: List<NCMBQuery<NCMBObject>> = listOf(query1, query2)
-        val query = NCMBQuery.forObject("TODO")
+        val query = NCMBQuery.forObject("TestClass")
         query.or(queries)
-        query.findInBackground (NCMBCallback { e, objects ->
-            if (e != null) {
-                //エラー時の処理
-                println( "検索に失敗しました。エラー:" + e.message)
-            } else {
-                //成功時の処理
-                println("検索に成功しました。")
-                if(objects is List<*>) {
-                    for (obj:Any? in objects) {
-                        if (obj is NCMBObject) {
-                            println(obj.getObjectId())
-                        }
-                    }
-                }
-            }
-        })
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_Or_1query_Success() {
+        val query1 = NCMBQuery.forObject("TestClass")
+        query1.whereLessThan("keyInt", 100)
+        val queries: List<NCMBQuery<NCMBObject>> = listOf(query1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.or(queries)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            objects[1].getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+
+    @Test
+    fun testNCMBObject_Or_3query_Success() {
+        val query1 = NCMBQuery.forObject("TestClass")
+        query1.whereLessThan("keyInt", 100)
+        val query2 = NCMBQuery.forObject("TestClass")
+        query2.whereGreaterThan("keyInt", 0)
+        val queries: List<NCMBQuery<NCMBObject>> = listOf(query1, query2, query1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.or(queries)
+        val objects = query.find()
+        Assert.assertEquals(
+            0,
+            objects.size
+        )
     }
 
     @Test
