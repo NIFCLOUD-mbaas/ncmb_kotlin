@@ -230,7 +230,34 @@ request:
     url: /2013-09-01/classes/TestClass
     method: GET
     query:
+        where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10}}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
         where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10},"$maxDistanceInKilometers":12}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10},"$maxDistanceInMiles":12}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10},"$maxDistanceInRadians":12}}'
 response:
     status: 200
     file: valid_search_response_geodata.json

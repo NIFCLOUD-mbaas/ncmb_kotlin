@@ -611,10 +611,64 @@ class NCMBQueryTest {
     }
 
     @Test
-    fun testNCMBObject_whereWithinKilometers_Success() {
+    fun testNCMBObject_whereNearSphereKilometers_Success() {
         val location = NCMBGeoPoint(10.0, 10.1)
         val query = NCMBQuery.forObject("TestClass")
-        query.whereWithinKilometers("geo", location, 12.0)
+        query.whereNearSphereKilometers("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereRadians_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereRadians("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereMiles_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereMiles("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphere_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphere("geo", location)
         val objects = query.find()
         Assert.assertEquals(
             1,
