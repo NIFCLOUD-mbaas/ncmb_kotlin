@@ -92,5 +92,7 @@ internal class NCMBQueryConstants {
         const val QUERY_OPERATOR_NINARRAY : String = "ninArray"
         const val QUERY_OPERATOR_ALL : String = "all"
         const val QUERY_OPERATOR_OR : String = "or"
+        const val QUERY_OPERATOR_WITHIN : String = "within"
+        const val QUERY_OPERATOR_BOX : String = "box"
     }
 }

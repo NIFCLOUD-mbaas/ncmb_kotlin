@@ -150,7 +150,11 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             val df: SimpleDateFormat = getIso8601()
             dateJson.put("iso", df.format(value as Date))
             dateJson
-        } else {
+        }
+        else if (value is NCMBGeoPoint) {
+               value.convertToJson()
+        }
+        else {
             value
         }
     }
@@ -240,6 +244,25 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     fun whereLessThanOrEqualTo(key: String, value: Any) {
         try {
             mWhereConditions.put(key,addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_LTE, value))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * Set the conditions to search the data with location information
+     * @param key field name that contains Geolocation data to search
+     * @param southwest NCMBGeoPoint object  lower left location information for search area
+     * @param northeast NCMBGeoPoint objectUpper right location information for search area
+     */
+    fun whereWithinGeoBox(key: String, southwest: NCMBGeoPoint, northeast: NCMBGeoPoint) {
+        try {
+            val boxArray = JSONArray()
+            boxArray.put(convertConditionValue(southwest))
+            boxArray.put(convertConditionValue(northeast))
+            val boxJson = JSONObject()
+            boxJson.put("\$" + NCMBQueryConstants.QUERY_OPERATOR_BOX, boxArray)
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_WITHIN, boxJson))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }

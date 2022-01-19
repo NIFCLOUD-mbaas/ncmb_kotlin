@@ -218,6 +218,15 @@ response:
     file: valid_get_include_response.json
 ---
 request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"geo":{"$within":{"$box":[{"__type":"GeoPoint","longitude":20,"latitude":10},{"__type":"GeoPoint","longitude":40,"latitude":30}]}}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
     url: /2013-09-01/roles
     method: GET
 response:
