@@ -97,7 +97,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
                 }
             }
         }
-        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = saveCallback, handler = saveHandler).query
+        val query =  RequestParams(url = url, method = method, contentType = contentType, callback = saveCallback, handler = saveHandler).query
         sendRequestAsync(url, method, params, contentType, query, saveCallback, saveHandler)
     }
 
@@ -157,8 +157,8 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
                 }
             }
         }
-        val params = RequestParamsAsync(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).params
-        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).query
+        val params = RequestParams(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).params
+        val query =  RequestParams(url = url, method = method, contentType = contentType, callback = fetchCallback, handler = fetchHandler).query
         sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
     }
 
@@ -220,7 +220,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
                 }
             }
         }
-        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = updateCallback, handler = updateHandler).query
+        val query =  RequestParams(url = url, method = method, contentType = contentType, callback = updateCallback, handler = updateHandler).query
         sendRequestAsync(url, method, params, contentType, query, updateCallback, updateHandler)
     }
 
@@ -280,8 +280,8 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
                 }
             }
         }
-        val params = RequestParamsAsync(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).params
-        val query =  RequestParamsAsync(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).query
+        val params = RequestParams(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).params
+        val query =  RequestParams(url = url, method = method, contentType = contentType, callback = deleteCallback, handler = deleteHandler).query
         sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
     }
 

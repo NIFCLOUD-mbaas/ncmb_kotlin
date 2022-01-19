@@ -342,7 +342,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         method: String,
         installationCallback: NCMBCallback,
         installationHandler: NCMBHandler
-    ): RequestParamsAsync {
+    ): RequestParams {
 
         //url set
         val url: String = if (objectId != null) {
@@ -354,7 +354,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         }
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
 
-        return RequestParamsAsync(
+        return RequestParams(
             url = url,
             method = method,
             params = params,
