@@ -35,21 +35,9 @@ internal open class NCMBService {
      */
     protected var mServicePath: String? = null
 
-//    /**
-//     * Data class for params of request
-//     */
-//    data class RequestParams(
-//        var url: String,
-//        var method: String,
-//        var params: JSONObject = JSONObject(),
-//        var contentType: String,
-//        var query: JSONObject = JSONObject()
-//    )
-
     /**
      * Data class for params of request
      */
-
     data class RequestParams(
         var url: String,
         var method: String,
@@ -155,7 +143,7 @@ internal open class NCMBService {
             connection.sendRequestAsynchronously(callback, handler)
         }
         else{
-            throw NCMBException(NCMBException.INVALID_FORMAT, "callback or hander don't set")
+            throw NCMBException(NCMBException.INVALID_FORMAT, "Need to set callback and handler for an inbackground method.")
         }
     }
 
