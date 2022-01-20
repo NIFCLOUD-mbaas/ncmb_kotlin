@@ -610,7 +610,7 @@ class NCMBQueryTest {
             "8FgKqFlH8dZRDrBJ"
         )
     }
-
+    
     @Test
     fun testNCMBObject_Or_1query_Success() {
         val query1 = NCMBQuery.forObject("TestClass")
@@ -632,7 +632,7 @@ class NCMBQueryTest {
             "eQRqoObEZmtrfgzH"
         )
     }
-
+    
     @Test
     fun testNCMBObject_Or_3query_Success() {
         val query1 = NCMBQuery.forObject("TestClass")
@@ -647,6 +647,97 @@ class NCMBQueryTest {
             0,
             objects.size
         )
+    }
+
+    @Test
+    fun testNCMBObject_whereWithinGeoBox_Success() {
+        val southwest = NCMBGeoPoint(10.0, 20.0)
+        val northeast = NCMBGeoPoint(30.0, 40.0)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereWithinGeoBox("geo", southwest, northeast)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereKilometers_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereKilometers("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+           objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereRadians_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereRadians("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereMiles_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereMiles("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphere_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphere("geo", location)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
     }
 
     @Test

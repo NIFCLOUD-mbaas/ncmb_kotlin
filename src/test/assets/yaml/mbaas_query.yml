@@ -221,6 +221,15 @@ request:
     url: /2013-09-01/classes/TestClass
     method: GET
     query:
+        where: '{"geo":{"$within":{"$box":[{"__type":"GeoPoint","longitude":20,"latitude":10},{"__type":"GeoPoint","longitude":40,"latitude":30}]}}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
         where: '{"$or":[{"keyInt":{"$lt":100}},{"keyInt":{"$gt":0}}]}'
 response:
     status: 200
@@ -230,10 +239,46 @@ request:
     url: /2013-09-01/classes/TestClass
     method: GET
     query:
+        where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10}}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
         where: '{"$or":[{"keyInt":{"$lt":100}},{"keyInt":{"$gt":0}},{"keyInt":{"$lt":100}}]}'
 response:
     status: 200
     file: valid_search_response_no_obj.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10},"$maxDistanceInKilometers":12}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10},"$maxDistanceInMiles":12}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: GET
+    query:
+        where: '{"geo":{"$nearSphere":{"__type":"GeoPoint","longitude":10.1,"latitude":10},"$maxDistanceInRadians":12}}'
+response:
+    status: 200
+    file: valid_search_response_geodata.json
 ---
 request:
     url: /2013-09-01/classes/TestClass
