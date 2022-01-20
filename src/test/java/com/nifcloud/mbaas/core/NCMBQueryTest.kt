@@ -738,7 +738,7 @@ class NCMBQueryTest {
         )
         Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
         Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
-　　}
+    }
 
     @Test
     fun test_NCMBUser_find_whereEqualTo_success() {
