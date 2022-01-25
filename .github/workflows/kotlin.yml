@@ -15,3 +15,6 @@ jobs:
 
       - name: build and test
         run: ./gradlew build test --continue --info
+      - name: Android Test Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{always()}}
