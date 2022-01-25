@@ -33,6 +33,9 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.lang.Exception
 import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 主に通信を行う自動化テストクラス
@@ -148,7 +151,7 @@ class NCMBPushTest {
      */
     @Test
     @Throws(Exception::class)
-    fun send_put() {
+    fun send_put_sametime() {
         var error: NCMBException? = null
         val push = NCMBPush()
         //put
@@ -157,6 +160,45 @@ class NCMBPushTest {
             push.title = "title_update"
             push.message = "message_update"
             push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.isSendToIOS = true
+            push.save()
+        } catch (e: NCMBException) {
+            error = e
+        }
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+        //check
+        Assert.assertNull(error)
+        Assert.assertEquals("title_update", push.title)
+        Assert.assertEquals("message_update", push.message)
+        val format: DateFormat = getIso8601()
+        Assert.assertEquals(format.parse("2014-06-04T11:28:30.348Z"), push.getUpdateDate())
+    }
+    /**
+     * - 内容：send(PUT)が成功することを確認する
+     * - 結果：同期でプッシュの更新が出来る事
+     */
+    @Test
+    @Throws(Exception::class)
+    fun send_put() {
+        var error: NCMBException? = null
+        val push = NCMBPush()
+        var date = Date()
+        //③特定の日時でDateのインスタンを作成して表示
+        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        try {
+            date = df.parse("2030-10-10 10:10:10")
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        //put
+        try {
+            push.setObjectId("7FrmPTBKSNtVjajm")
+            push.title = "title_update"
+            push.message = "message_update"
+            push.deliveryTime = date
             push.isSendToAndroid = true
             push.isSendToIOS = true
             push.save()

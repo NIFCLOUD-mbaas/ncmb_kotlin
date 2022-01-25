@@ -15,10 +15,13 @@
 */
 package com.nifcloud.mbaas.core
 
+import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.IllegalArgumentException
+import java.text.DateFormat
+import java.text.ParseException
 import java.util.*
 
 /**
@@ -29,26 +32,89 @@ import java.util.*
 ](https://mbaas.nifcloud.com/doc/current/rest/push/pushRegistration.html) */
 class NCMBPush : NCMBObject {
     var target = arrayListOf<String>()
-    var isSendToIOS :Boolean = false
-        get(){
+    var isSendToIOS: Boolean = false
+        get() {
             return field
         }
         set(value) {
             field = value
-            if(value) {
+            if (value) {
                 target.add("ios")
             }
         }
-    var isSendToAndroid :Boolean = false
-        get(){
+    var isSendToAndroid: Boolean = false
+        get() {
             return field
         }
         set(value) {
             field = value
-            if(value) {
+            if (value) {
                 target.add("android")
             }
         }
+
+    /**
+     * Get delivery date
+     *
+     * @return Date delivery date
+     */
+    /**
+     * Set delivery date
+     *
+     * @param value deliveryTime
+     */
+    var deliveryTime: Date?
+        get() {
+            return try {
+                if (mFields.isNull("deliveryTime")) {
+                    return null
+                }
+                val format: DateFormat = getIso8601()
+                format.parse(mFields.getJSONObject("deliveryTime").getString("iso"))
+            } catch (error: JSONException) {
+                throw NCMBException(IllegalArgumentException(error.message))
+            } catch (error: ParseException) {
+                throw NCMBException(IllegalArgumentException(error.message))
+            }
+        }
+        set(value) {
+            try {
+                //mBaaSの日付型文字列に変換して設定
+                mFields.put("deliveryTime", createIsoDate(value))
+                mUpdateKeys.add("deliveryTime")
+            } catch (error: JSONException) {
+                throw NCMBException(IllegalArgumentException(error.message))
+            }
+        }
+
+    /**
+     * Set delivery expiration date
+     *
+     * @param value delivery expiration date
+     */
+    fun setDeliveryExpirationDate(value: Date?) {
+        try {
+            //mBaaSの日付型に変換して設定
+            mFields.put("deliveryExpirationDate", createIsoDate(value))
+            mUpdateKeys.add("deliveryExpirationDate")
+        } catch (error: JSONException) {
+            throw IllegalArgumentException(error.message)
+        }
+    }
+
+    /**
+     * Set delivery expiration time
+     *
+     * @param value delivery expiration date
+     */
+    fun setDeliveryExpirationTime(value: String?) {
+        try {
+            mFields.put("deliveryExpirationTime", value)
+            mUpdateKeys.add("deliveryExpirationTime")
+        } catch (error: JSONException) {
+            throw IllegalArgumentException(error.message)
+        }
+    }
 
     /**
      * Get push message
@@ -191,6 +257,21 @@ class NCMBPush : NCMBObject {
         mUpdateKeys.clear()
     }
 
+    /**
+     * create a date of mBaaS correspondence
+     *
+     * @param value iso value
+     * @return JSONObject
+     * @throws JSONException
+     */
+    @Throws(JSONException::class)
+    fun createIsoDate(value: Date?): JSONObject? {
+        val dateJson = JSONObject()
+        dateJson.put("iso", getIso8601().format(value))
+        dateJson.put("__type", "Date")
+        return dateJson
+    }
+
     // region internal method
     /**
      * Set data to instance
@@ -215,6 +296,8 @@ class NCMBPush : NCMBObject {
             throw NCMBException(NCMBException.INVALID_JSON, e.message!!)
         }
     }
+
+
 
     companion object {
         private const val MATCH_URL_REGEX =
