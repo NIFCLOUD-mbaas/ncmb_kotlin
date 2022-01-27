@@ -88,33 +88,67 @@ class NCMBPush : NCMBObject {
         }
 
     /**
+     * Get delivery expiration date
+     *
+     * @return Date delivery expiration date
+     */
+    /**
      * Set delivery expiration date
      *
      * @param value delivery expiration date
      */
-    fun setDeliveryExpirationDate(value: Date?) {
-        try {
-            //mBaaSの日付型に変換して設定
-            mFields.put("deliveryExpirationDate", createIsoDate(value))
-            mUpdateKeys.add("deliveryExpirationDate")
-        } catch (error: JSONException) {
-            throw IllegalArgumentException(error.message)
+    var deliveryExpirationDate: Date?
+        get(){
+            return try {
+                if (mFields.isNull("deliveryExpirationDate")) {
+                    return null
+                }
+                val format: DateFormat = getIso8601()
+                format.parse(mFields.getJSONObject("deliveryExpirationDate").getString("iso"))
+            } catch (error: JSONException) {
+                throw IllegalArgumentException(error.message)
+            } catch (error: ParseException) {
+                throw IllegalArgumentException(error.message)
+            }
         }
-    }
+        set(value){
+            try {
+                //mBaaSの日付型に変換して設定
+                mFields.put("deliveryExpirationDate", createIsoDate(value))
+                mUpdateKeys.add("deliveryExpirationDate")
+            } catch (error: JSONException) {
+                throw IllegalArgumentException(error.message)
+            }
+        }
 
+    /**
+     * Get delivery expiration time
+     *
+     * @return Date delivery expiration time
+     */
     /**
      * Set delivery expiration time
      *
      * @param value delivery expiration date
      */
-    fun setDeliveryExpirationTime(value: String?) {
-        try {
-            mFields.put("deliveryExpirationTime", value)
-            mUpdateKeys.add("deliveryExpirationTime")
-        } catch (error: JSONException) {
-            throw IllegalArgumentException(error.message)
+    var deliveryExpirationTime: String?
+        get(){
+            return try {
+                if (mFields.isNull("deliveryExpirationTime")) {
+                    null
+                } else mFields.getString("deliveryExpirationTime")
+            } catch (error: JSONException) {
+                throw IllegalArgumentException(error.message)
+            }
         }
-    }
+        set(value) {
+            try {
+                mFields.put("deliveryExpirationTime", value)
+                mUpdateKeys.add("deliveryExpirationTime")
+            } catch (error: JSONException) {
+                throw IllegalArgumentException(error.message)
+            }
+        }
 
     /**
      * Get push message
