@@ -18,4 +18,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build_test_report
-          path: /build/reports/tests/
+          path: /home/runner/work/ncmb_kotlin/ncmb_kotlin/build/reports/tests/testDebugUnitTest
