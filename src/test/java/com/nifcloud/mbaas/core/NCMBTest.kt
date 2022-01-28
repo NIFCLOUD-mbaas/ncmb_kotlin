@@ -59,7 +59,7 @@ class NCMBTest {
             applicationKey,
             clientKey)
         Assert.assertEquals(applicationKey, NCMB.getApplicationKey())
-        Assert.assertEquals(applicationKey, NCMB.getClientKey())
+        Assert.assertEquals(clientKey, NCMB.getClientKey())
     }
 
     /**
