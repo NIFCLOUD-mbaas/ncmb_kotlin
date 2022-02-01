@@ -22,6 +22,7 @@ import org.json.JSONObject
 import java.lang.IllegalArgumentException
 import java.text.DateFormat
 import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -88,6 +89,27 @@ class NCMBPush : NCMBObject {
         }
 
     /**
+     * Get delivery date
+     *
+     * @return Date delivery date
+     */
+    /**
+     * Set delivery date
+     *
+     * @param value deliveryTime
+     */
+    open fun setDeliveryTimeString(value: String){
+        val date: Date?
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPANESE)
+        try {
+            date = df.parse(value)
+            deliveryTime = date
+        } catch (e: ParseException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
      * Get delivery expiration date
      *
      * @return Date delivery expiration date
@@ -108,7 +130,7 @@ class NCMBPush : NCMBObject {
             } catch (error: JSONException) {
                 throw IllegalArgumentException(error.message)
             } catch (error: ParseException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value){
@@ -117,7 +139,7 @@ class NCMBPush : NCMBObject {
                 mFields.put("deliveryExpirationDate", createIsoDate(value))
                 mUpdateKeys.add("deliveryExpirationDate")
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
 
@@ -138,7 +160,7 @@ class NCMBPush : NCMBObject {
                     null
                 } else mFields.getString("deliveryExpirationTime")
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
         set(value) {
@@ -146,7 +168,7 @@ class NCMBPush : NCMBObject {
                 mFields.put("deliveryExpirationTime", value)
                 mUpdateKeys.add("deliveryExpirationTime")
             } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
+                throw NCMBException(IllegalArgumentException(error.message))
             }
         }
 

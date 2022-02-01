@@ -262,6 +262,37 @@ class NCMBPushTest {
      */
     @Test
     @Throws(Exception::class)
+    fun send_post_setdeliveryTimeString() {
+        var error: NCMBException? = null
+        val push = NCMBPush()
+        //put
+        try {
+            push.title = "title_update"
+            push.message = "message_update"
+            push.setDeliveryTimeString("2030-10-10 10:10:10")
+            push.isSendToAndroid = true
+            push.isSendToIOS = true
+            push.save()
+        } catch (e: NCMBException) {
+            error = e
+        }
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+        //check
+        Assert.assertNull(error)
+        Assert.assertEquals("title_update", push.title)
+        Assert.assertEquals("message_update", push.message)
+        val format: DateFormat = getIso8601()
+        Assert.assertEquals(format.parse("2030-10-10T01:10:10.000Z"), push.deliveryTime)
+    }
+
+    /**
+     * - 内容：send(POST)が成功することを確認する
+     * - 結果：deliveryExpirationDateを設定してPush登録
+     */
+    @Test
+    @Throws(Exception::class)
     fun send_post_deliveryExpirationDate() {
         var error: NCMBException? = null
         val push = NCMBPush()
