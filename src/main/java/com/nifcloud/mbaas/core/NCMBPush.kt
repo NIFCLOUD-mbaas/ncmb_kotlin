@@ -57,12 +57,12 @@ class NCMBPush : NCMBObject {
     /**
      * Get delivery date
      *
-     * @return Date delivery date
+     * @return Date delivery time(UTC)
      */
     /**
      * Set delivery date
      *
-     * @param value deliveryTime
+     * @param value delivery Time(UTC)
      */
     var deliveryTime: Date?
         get() {
@@ -72,9 +72,7 @@ class NCMBPush : NCMBObject {
                 }
                 val format: DateFormat = getIso8601()
                 format.parse(mFields.getJSONObject("deliveryTime").getString("iso"))
-            } catch (error: JSONException) {
-                throw NCMBException(IllegalArgumentException(error.message))
-            } catch (error: ParseException) {
+            } catch (error: Exception) {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
@@ -127,9 +125,7 @@ class NCMBPush : NCMBObject {
                 }
                 val format: DateFormat = getIso8601()
                 format.parse(mFields.getJSONObject("deliveryExpirationDate").getString("iso"))
-            } catch (error: JSONException) {
-                throw IllegalArgumentException(error.message)
-            } catch (error: ParseException) {
+            } catch (error: Exception) {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
@@ -165,10 +161,17 @@ class NCMBPush : NCMBObject {
         }
         set(value) {
             try {
-                mFields.put("deliveryExpirationTime", value)
-                mUpdateKeys.add("deliveryExpirationTime")
+                if (value != null) {
+                    if (value.endsWith("day") || value.endsWith("hour")) {
+                        mFields.put("deliveryExpirationTime", value)
+                        mUpdateKeys.add("deliveryExpirationTime")
+                    }
+                    else{
+                        throw NCMBException(NCMBException.INVALID_FORMAT, "deliveryExpirationTime is invalid format.")
+                    }
+                }
             } catch (error: JSONException) {
-                throw NCMBException(IllegalArgumentException(error.message))
+            throw NCMBException(IllegalArgumentException(error.message))
             }
         }
 

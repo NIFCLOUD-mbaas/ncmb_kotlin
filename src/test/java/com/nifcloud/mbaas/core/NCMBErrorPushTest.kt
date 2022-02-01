@@ -85,29 +85,28 @@ class NCMBErrorPushTest {
         catch (e:NCMBException){
             Assert.assertEquals(NCMBException.INVALID_FORMAT, e.code)
             Assert.assertEquals("'target' do not set.", e.message)
-
         }
     }
 
     /**
-     * - 内容：send(POST)が失敗することを確認する
-     * - 結果：targetの指定がないとのエラーが出ること
+     * - 内容：deliveryExpirationTimeに誤った値を設定
+     * - 結果：deliveryExpirationTimeのset時にerrorが出ること
      */
     @Test
     @Throws(Exception::class)
-    fun send_post_false_target() {
+    fun send_post_invalid_deliveryExpirationTime() {
         //post
         val push = NCMBPush()
-        push.title = "title_update"
-        push.message = "message_update"
+        push.title = "title"
+        push.message = "message"
         push.immediateDeliveryFlag = true
-        push.isSendToAndroid = false
+        push.isSendToAndroid = true
         try {
-            push.save()
+            push.deliveryExpirationTime = "3yay"
         }
         catch (e:NCMBException){
             Assert.assertEquals(NCMBException.INVALID_FORMAT, e.code)
-            Assert.assertEquals("'target' do not set.", e.message)
+            Assert.assertEquals("deliveryExpirationTime is invalid format.", e.message)
         }
     }
 
