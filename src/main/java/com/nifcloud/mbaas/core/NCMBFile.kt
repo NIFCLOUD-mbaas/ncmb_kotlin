@@ -7,12 +7,13 @@ import java.util.*
 /**
  * File features handle class
  *
- * NCMBFilen is used to retrieve and save, update the installation data.
+ * NCMBFile is used to retrieve and save, update the installation data.
  * Basic features are inherit from NCMBObject and NCMBBase
  */
 
 class NCMBFile: NCMBObject {
 
+    var fileNameToSetURL: String = ""
     val ignoreKeys: List<String> = Arrays.asList(
         "fileName",
         "fileData",
@@ -24,7 +25,7 @@ class NCMBFile: NCMBObject {
     )
 
     companion object {
-        const val FILE_NAME = "file"
+        const val FILE_DATA = "file"
         const val FILE_ACL = "acl"
     }
 
@@ -38,16 +39,35 @@ class NCMBFile: NCMBObject {
     /**
      * File name
      */
-    var fileName: String?
+    var fileName: String
+        /**
+         * Get file name
+         *
+         * @return file name
+         */
+        get() = fileNameToSetURL
+        /**
+         * Set file name
+         *
+         * @param value file Name
+         */
+        set(value) {
+            fileNameToSetURL = value
+        }
+
+    /**
+     * File data
+     */
+    var fileData: ByteArray?
         /**
          * Get application name
          *
          * @return application name
          */
         get() = try {
-            if (mFields.isNull(NCMBFile.FILE_NAME)) {
+            if (mFields.isNull(NCMBFile.FILE_DATA)) {
                 null
-            } else mFields.getString(NCMBFile.FILE_NAME)
+            } else mFields.get(NCMBFile.FILE_DATA) as ByteArray?
         } catch (e: JSONException) {
             throw NCMBException(IllegalArgumentException(e.message))
         }
@@ -58,11 +78,15 @@ class NCMBFile: NCMBObject {
          */
         set(value) {
             try {
-                mFields.put(NCMBFile.FILE_NAME, value)
-                mUpdateKeys.add(NCMBFile.FILE_NAME)
+                print(value)
+                mFields.put(NCMBFile.FILE_DATA, value)
+                mUpdateKeys.add(NCMBFile.FILE_DATA)
             } catch (e: JSONException) {
                 throw NCMBException(IllegalArgumentException(e.message))
             }
         }
+
+
+
 
 }
