@@ -1,6 +1,7 @@
 package com.nifcloud.mbaas.core
 
 import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 
@@ -104,6 +105,36 @@ class NCMBFile: NCMBObject {
         }
 
 
+    /**
+     * Save File object
+     *
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun save(){
+        //connect
+        val fileService = NCMBFileService()
+        val responseData: JSONObject
+        //new create
+        responseData = fileService.saveFile(this)
+        mUpdateKeys.clear()
+    }
+
+    /**
+     * Save installation object in Background
+     *
+     * @param callback Save Callback
+     */
+    override fun saveInBackground(saveCallback: NCMBCallback) {
+        //connect
+        val fileService = NCMBFileService()
+        val objectId = getObjectId()
+        //new create
+        fileService.saveFileInBackground(
+            this,
+            saveCallback
+        )
+    }
 
 
 }
