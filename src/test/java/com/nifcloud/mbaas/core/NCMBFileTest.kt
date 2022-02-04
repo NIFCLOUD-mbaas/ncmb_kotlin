@@ -53,5 +53,19 @@ class NCMBFileTest {
         Assert.assertEquals("This is a test file data".toByteArray(Charsets.UTF_8).contentToString(), (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as ByteArray).contentToString())
     }
 
+    @Test
+    fun fileConstructor_filename_filedata() {
+        val data = "This is a test file data".toByteArray(Charsets.UTF_8)
+        val ncmbFile = NCMBFile("testfile.txt", data)
+        Assert.assertEquals("testfile.txt", ncmbFile.fileName)
+        Assert.assertEquals("This is a test file data".toByteArray(Charsets.UTF_8).contentToString(), ncmbFile.fileData!!.contentToString())
+        Assert.assertEquals("This is a test file data".toByteArray(Charsets.UTF_8).contentToString(), (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as ByteArray).contentToString())
+    }
+
+    @Test
+    fun fileConstructor_filename() {
+        val ncmbFile = NCMBFile("testfile.txt")
+        Assert.assertEquals("testfile.txt", ncmbFile.fileName)
+    }
 
 }

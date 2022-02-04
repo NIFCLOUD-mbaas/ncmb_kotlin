@@ -37,6 +37,23 @@ class NCMBFile: NCMBObject {
     }
 
     /**
+     * Constructor method with fileName and fileData
+     */
+    constructor(fileName:String, fileData:ByteArray) : super("file") {
+        mIgnoreKeys = this.ignoreKeys
+        this.fileName = fileName
+        this.fileData = fileData
+    }
+
+    /**
+     * Constructor method with fileName only
+     */
+    constructor(fileName:String) : super("file") {
+        mIgnoreKeys = this.ignoreKeys
+        this.fileName = fileName
+    }
+
+    /**
      * File name
      */
     var fileName: String
