@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'org.jetbrains.dokka'
+apply plugin: 'maven-publish'
 
 
 buildscript {
@@ -59,7 +60,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    publising{
+        withJavadocJar()
+        withSourcesJar()
+    }
 }
+
 
 repositories {
     // artifacts are published to this repository
@@ -143,5 +149,59 @@ dokkaHtml.configure{
 
 
 
+publishing{
+    publication{
+        mavenJava(MavanPublication){
+            artifactId = "ncmb_kotlin"
+
+            pom {
+                name = 'ncmb_kotlin'
+                // optionally artifactId can be defined here
+                description = 'NIFCLOUD mobile backend Kotlin SDK'
+                url = 'https://github.com/NIFCLOUD-mbaas/ncmb_kotlin#readme'
+
+                scm {
+                    connection = 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_kotlin.git'
+                    developerConnection = 'scm:git:https://github.com/NIFCLOUD-mbaas/ncmb_kotlin.git'
+                    url = 'https://github.com/NIFCLOUD-mbaas/ncmb_kotlin'
+                }
+
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://github.com/NIFCLOUD-mbaas/ncmb_kotlin/blob/master/LICENCE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'ncmbsdk'
+                        name = 'NCMB SDK Team'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+        }
+    }
+}
+
+signing{
+    sign publishing.publications.mavenJava
+}
+
+javadoc{
+    if(JavaVersion.current().isJava9Compatible()){
+        options.addBooleanOption('html5',true)
+    }
+}
 
 
