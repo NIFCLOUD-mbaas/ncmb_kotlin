@@ -79,6 +79,82 @@ class NCMBPushTest {
         Assert.assertEquals(true, pushObj.mFields.get("immediateDeliveryFlag"))
     }
     /**
+     * putテスト
+     */
+    @Test
+    fun test_deliveryTime() {
+        val push = NCMBPush()
+        var date = Date()
+        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        try {
+            date = df.parse("2030-10-10 10:10:10")
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        push.deliveryTime = date
+        Assert.assertEquals(date, push.deliveryTime)
+        val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+        Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
+    }
+    /**
+     * putテスト
+     */
+    @Test
+    fun test_setDeliveryTimeString() {
+        val push = NCMBPush()
+        var date = Date()
+        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        try {
+            date = df.parse("2030-10-10 10:10:10")
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        push.setDeliveryTimeString("2030-10-10 10:10:10")
+        Assert.assertEquals(date, push.deliveryTime)
+        val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+        Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
+    }
+    /**
+     * putテスト
+     */
+    @Test
+    fun test_deliveryExpirationDate() {
+        val push = NCMBPush()
+        var date = Date()
+        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        try {
+            date = df.parse("2030-10-10 10:10:10")
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        push.deliveryExpirationDate = date
+        Assert.assertEquals(date, push.deliveryExpirationDate)
+        val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+        Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryExpirationDate").toString())
+    }
+    /**
+     * putテスト
+     */
+    @Test
+    fun test_deliveryExpirationTime_day() {
+        val push = NCMBPush()
+        push.deliveryExpirationTime = "3day"
+        Assert.assertEquals("3day", push.deliveryExpirationTime)
+        Assert.assertEquals("3day", push.mFields.get("deliveryExpirationTime"))
+    }
+
+    /**
+     * putテスト
+     */
+    @Test
+    fun test_deliveryExpirationTime_hour() {
+        val push = NCMBPush()
+        push.deliveryExpirationTime = "3hour"
+        Assert.assertEquals("3hour", push.deliveryExpirationTime)
+        Assert.assertEquals("3hour", push.mFields.get("deliveryExpirationTime"))
+    }
+
+    /**
      * - 内容：send(POST)が成功することを確認する
      * - 結果：同期でプッシュの送信が出来る事
      */
@@ -238,7 +314,7 @@ class NCMBPushTest {
             push.title = "title_update"
             push.message = "message_update"
             push.deliveryTime = date
-            push.deliveryExpirationTime = "3 day"
+            push.deliveryExpirationTime = "3day"
             push.isSendToAndroid = true
             push.isSendToIOS = true
             push.save()
@@ -252,7 +328,7 @@ class NCMBPushTest {
         Assert.assertNull(error)
         Assert.assertEquals("title_update", push.title)
         Assert.assertEquals("message_update", push.message)
-        Assert.assertEquals("3 day", push.deliveryExpirationTime)
+        Assert.assertEquals("3day", push.deliveryExpirationTime)
         val format: DateFormat = getIso8601()
         Assert.assertEquals(format.parse("2014-06-04T11:28:30.348Z"), push.getUpdateDate())
     }

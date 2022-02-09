@@ -87,18 +87,16 @@ class NCMBPush : NCMBObject {
         }
 
     /**
-     * Get delivery date
-     *
-     * @return Date delivery date
-     */
-    /**
-     * Set delivery date
+     * Set delivery time as a character string.
+     * Type of string to set is "yyyy-MM-dd HH:mm:ss".
+     * An example is "2022-02-03 12:34:56".
+     * Also, The registered value is {"iso":"yyyy-MM-ddTHH:mm:ss.000Z","__type":"Date"}.
      *
      * @param value deliveryTime
      */
     open fun setDeliveryTimeString(value: String){
         val date: Date?
-        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.JAPANESE)
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         try {
             date = df.parse(value)
             deliveryTime = date
@@ -161,8 +159,11 @@ class NCMBPush : NCMBObject {
         }
         set(value) {
             try {
+                //数値+day or hourでない場合はException
+                val re1 = Regex("[0-9]{1,}day$")
+                val re2 = Regex("[0-9]{1,}hour$")
                 if (value != null) {
-                    if (value.endsWith("day") || value.endsWith("hour")) {
+                    if (value.matches(re1) || value.matches(re2)) {
                         mFields.put("deliveryExpirationTime", value)
                         mUpdateKeys.add("deliveryExpirationTime")
                     }
