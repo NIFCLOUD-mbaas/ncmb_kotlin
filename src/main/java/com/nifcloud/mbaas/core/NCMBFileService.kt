@@ -23,12 +23,13 @@ internal class NCMBFileService : NCMBObjectService(){
      * save file object in background
      *
      * @param fileObject File object
-     * @param callback       JSONCallback
+     * @param callback   JSONCallback
      */
     fun saveFileInBackground(
         fileObject: NCMBFile,
         callback: NCMBCallback
     ) {
+        print("in saveFileInBG")
         val fileHandler = NCMBHandler { fileCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -45,7 +46,7 @@ internal class NCMBFileService : NCMBObjectService(){
                 }
             }
         }
-        val request = createRequestParams(fileObject.fileName, params, NCMBRequest.HTTP_METHOD_POST,callback, fileHandler)
+        val request = createRequestParams(fileObject.fileName, fileObject.mFields,null, NCMBRequest.HTTP_METHOD_POST,callback, fileHandler)
         sendRequestAsync(request)
     }
 
@@ -57,8 +58,8 @@ internal class NCMBFileService : NCMBObjectService(){
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun saveFile(params: JSONObject): JSONObject {
-        val request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST)
+    fun saveFile(fileObject: NCMBFile): JSONObject {
+        val request = createRequestParams(fileObject.fileName, fileObject.mFields, null, NCMBRequest.HTTP_METHOD_POST, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -83,7 +84,9 @@ internal class NCMBFileService : NCMBObjectService(){
         fileName: String,
         params: JSONObject,
         queryParams: JSONObject?,
-        method: String
+        method: String,
+        callback: NCMBCallback?,
+        handler: NCMBHandler?
     ): RequestParams {
         //url set
         val url: String = NCMB.getApiBaseUrl() + mServicePath + "/" + fileName
@@ -91,7 +94,9 @@ internal class NCMBFileService : NCMBObjectService(){
             url = url,
             method = method,
             params = params,
-            contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+            contentType = NCMBRequest.HEADER_CONTENT_TYPE_FILE,
+            callback = callback,
+            handler = handler
         )
     }
 

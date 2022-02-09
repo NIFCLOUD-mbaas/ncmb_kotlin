@@ -119,6 +119,7 @@ internal class NCMBConnection(request: NCMBRequest) {
      */
     @Throws(NCMBException::class)
     fun sendRequestAsynchronously(callback: NCMBCallback, responseHandler: NCMBHandler) {
+        print("In CONNECTION")
         val headers: Headers = createHeader()
         val client = OkHttpClient()
 
@@ -126,24 +127,42 @@ internal class NCMBConnection(request: NCMBRequest) {
         println("params: " + ncmbRequest.params.toString())
         println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
+        println("HEADERS")
         println(headers)
 
+        println("CREATE BODY")
         val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+        println("CREATE REQUEST")
         val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
+//        val request = Request.Builder().
+//            .method(ncmbRequest.method)
+//            .url( URL(ncmbRequest.url))
+//            .headers(headers)
+//            .post(ncmbRequest.params.get("file").toString().toRequestBody(NCMBRequest.HEADER_CONTENT_TYPE_FILE.toMediaTypeOrNull()))
+//            .build()
+        try {
+            println("START CONNECT")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    println("ON FAILED")
+                    e.printStackTrace()
+                    ncmbResponse = NCMBResponse.Failure(NCMBException(e))
+                    responseHandler.doneSolveResponse(callback, ncmbResponse)
+                }
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-                ncmbResponse = NCMBResponse.Failure(NCMBException(e))
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                //NCMBResponse 処理
-                ncmbResponse = NCMBResponseBuilder.build(response)
-                responseHandler.doneSolveResponse(callback, ncmbResponse)
-            }
-        })
+                override fun onResponse(call: Call, response: Response) {
+                    println("ON SUCCEED")
+                    //NCMBResponse 処理
+                    ncmbResponse = NCMBResponseBuilder.build(response)
+                    responseHandler.doneSolveResponse(callback, ncmbResponse)
+                }
+            })
+        } catch (e: Exception) {
+            println("EXCEPTION")
+            e.printStackTrace()
+            ncmbResponse = NCMBResponse.Failure(NCMBException(e))
+            responseHandler.doneSolveResponse(callback, ncmbResponse)
+        }
     }
 
     /**

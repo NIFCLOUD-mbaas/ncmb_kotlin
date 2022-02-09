@@ -100,6 +100,9 @@ internal class NCMBRequest(
         //JSON形式のコンテントタイプの値
         const val HEADER_CONTENT_TYPE_JSON = "application/json"
 
+        //File形式のコンテントタイプの値
+        const val HEADER_CONTENT_TYPE_FILE = "multipart/form-data"
+
         //SDKVersionのキー
         const val HEADER_SDK_VERSION = "X-NCMB-SDK-Version"
 

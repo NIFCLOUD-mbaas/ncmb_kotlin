@@ -128,7 +128,6 @@ class NCMBFile: NCMBObject {
     override fun saveInBackground(saveCallback: NCMBCallback) {
         //connect
         val fileService = NCMBFileService()
-        val objectId = getObjectId()
         //new create
         fileService.saveFileInBackground(
             this,
