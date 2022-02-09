@@ -68,4 +68,39 @@ class NCMBFileTest {
         Assert.assertEquals("testfile.txt", ncmbFile.fileName)
     }
 
+    @Test
+    fun fileSaveInBG_success() {
+        var applicationKey =  "APPKEY"
+        var clientKey = "CLIKEY"
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
+//// クラスのNCMBObjectを作成
+//        val obj = NCMBObject("TestClass")
+//// オブジェクトの値を設定
+//        obj.put("message", "Hello, NCMB!")
+//        obj.saveInBackground(NCMBCallback { e, ncmbObj ->
+//            if (e != null) {
+//                //保存に失敗した場合の処理
+//                print("保存に失敗しました : " + e.message)
+//            } else {
+//                //保存に成功した場合の処理
+//                val result = ncmbObj as NCMBObject
+//                print("保存に成功しました ObjectID :" + result.getObjectId())
+//            }
+//        })
+
+        val file = NCMBFile("filename1.txt")
+        file.fileData = "This is a test file data".toByteArray(Charsets.UTF_8)
+        // ファイルストアへの登録を実施
+        file.saveInBackground(NCMBCallback { e, ncmbFile ->
+            if (e != null) {
+                //保存に失敗した場合の処理
+                print("保存に失敗しました : " + e.message)
+            } else {
+                val fileObj = ncmbFile  as NCMBFile
+                //保存に成功した場合の処理
+                print("保存に成功しました fileName:" + fileObj.fileName)
+            }
+        })
+    }
+
 }
