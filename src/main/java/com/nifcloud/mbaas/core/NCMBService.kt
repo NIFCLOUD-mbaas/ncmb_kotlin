@@ -42,6 +42,7 @@ internal open class NCMBService {
         var url: String,
         var method: String,
         var params: JSONObject = JSONObject(),
+        var fileData: ByteArray? = null,
         var contentType: String,
         var query: JSONObject = JSONObject(),
         var callback: NCMBCallback? = null,
@@ -81,8 +82,11 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
-        val response = connection.sendRequest()
-        return response
+        return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
+            connection.sendRequestForFile()
+        }else {
+            connection.sendRequest()
+        }
     }
 
     /**
@@ -140,7 +144,11 @@ internal open class NCMBService {
         )
         val connection = NCMBConnection(request)
         if(callback != null && handler != null) {
-            connection.sendRequestAsynchronously(callback, handler)
+            if(contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
+                connection.sendRequestAsynchronously(callback, handler)
+            }else {
+                connection.sendRequestAsynchronouslyForFile(callback, handler)
+            }
         }
         else{
             throw NCMBException(NCMBException.INVALID_FORMAT, "Need to set callback and handler for an inbackground method.")

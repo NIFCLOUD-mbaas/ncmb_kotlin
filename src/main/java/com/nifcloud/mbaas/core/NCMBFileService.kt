@@ -46,7 +46,7 @@ internal class NCMBFileService : NCMBObjectService(){
                 }
             }
         }
-        val request = createRequestParams(fileObject.fileName, fileObject.mFields,null, NCMBRequest.HTTP_METHOD_POST,callback, fileHandler)
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,null, fileObject.fileData, NCMBRequest.HTTP_METHOD_POST,callback, fileHandler)
         sendRequestAsync(request)
     }
 
@@ -59,7 +59,7 @@ internal class NCMBFileService : NCMBObjectService(){
      */
     @Throws(NCMBException::class)
     fun saveFile(fileObject: NCMBFile): JSONObject {
-        val request = createRequestParams(fileObject.fileName, fileObject.mFields, null, NCMBRequest.HTTP_METHOD_POST, null, null)
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, null, fileObject.fileData, NCMBRequest.HTTP_METHOD_POST, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -80,10 +80,11 @@ internal class NCMBFileService : NCMBObjectService(){
      * @return parameters in object
      */
     @Throws(NCMBException::class)
-    fun createRequestParams(
+    fun createRequestParamsFile(
         fileName: String,
         params: JSONObject,
         queryParams: JSONObject?,
+        fileData: ByteArray?,
         method: String,
         callback: NCMBCallback?,
         handler: NCMBHandler?
