@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 
 buildscript {
@@ -35,6 +36,9 @@ android {
     compileSdkVersion 29
 
     buildToolsVersion "29.0.2"
+
+    publishLibraryVariants("release","debug")
+
     defaultConfig {
         minSdkVersion 20
         targetSdkVersion 29
@@ -59,10 +63,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-    }
-    publising{
-        withJavadocJar()
-        withSourcesJar()
     }
 }
 
@@ -147,11 +147,40 @@ dokkaHtml.configure{
     }
 }
 
+task sourceJar(type:Jar){
+    archiveClassifier = "sources"
+}
 
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts{
+    archives sourceJar
+    archives javadocJar
+}
+
+signing{
+    useGpgCmd()
+    required { gradle.taskGraph.hasTask("publishing")}
+    sign publishing.publications.mavenJava
+}
 
 publishing{
     publication{
         mavenJava(MavanPublication){
+            from components.java
+
+//            artifact 'ncmb_kotlin.jar'
+//            artifact 'javaDocJar'
+//            artifact source: sourceJar, classifier: 'src',extension:'zip'
+
             artifactId = "ncmb_kotlin"
 
             pom {
@@ -194,14 +223,6 @@ publishing{
     }
 }
 
-signing{
-    sign publishing.publications.mavenJava
-}
 
-javadoc{
-    if(JavaVersion.current().isJava9Compatible()){
-        options.addBooleanOption('html5',true)
-    }
-}
 
 
