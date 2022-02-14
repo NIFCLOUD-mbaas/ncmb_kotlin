@@ -160,8 +160,8 @@ class NCMBPush : NCMBObject {
         set(value) {
             try {
                 //数値+day or hourでない場合はException
-                val re1 = Regex("[0-9]{1,}day$")
-                val re2 = Regex("[0-9]{1,}hour$")
+                val re1 = Regex("[0-9]{1,} day$")
+                val re2 = Regex("[0-9]{1,} hour$")
                 if (value != null) {
                     if (value.matches(re1) || value.matches(re2)) {
                         mFields.put("deliveryExpirationTime", value)

@@ -138,9 +138,9 @@ class NCMBPushTest {
     @Test
     fun test_deliveryExpirationTime_day() {
         val push = NCMBPush()
-        push.deliveryExpirationTime = "3day"
-        Assert.assertEquals("3day", push.deliveryExpirationTime)
-        Assert.assertEquals("3day", push.mFields.get("deliveryExpirationTime"))
+        push.deliveryExpirationTime = "3 day"
+        Assert.assertEquals("3 day", push.deliveryExpirationTime)
+        Assert.assertEquals("3 day", push.mFields.get("deliveryExpirationTime"))
     }
 
     /**
@@ -149,9 +149,9 @@ class NCMBPushTest {
     @Test
     fun test_deliveryExpirationTime_hour() {
         val push = NCMBPush()
-        push.deliveryExpirationTime = "3hour"
-        Assert.assertEquals("3hour", push.deliveryExpirationTime)
-        Assert.assertEquals("3hour", push.mFields.get("deliveryExpirationTime"))
+        push.deliveryExpirationTime = "3 hour"
+        Assert.assertEquals("3 hour", push.deliveryExpirationTime)
+        Assert.assertEquals("3 hour", push.mFields.get("deliveryExpirationTime"))
     }
 
     /**
@@ -314,7 +314,7 @@ class NCMBPushTest {
             push.title = "title_update"
             push.message = "message_update"
             push.deliveryTime = date
-            push.deliveryExpirationTime = "3day"
+            push.deliveryExpirationTime = "3 day"
             push.isSendToAndroid = true
             push.isSendToIOS = true
             push.save()
@@ -328,7 +328,7 @@ class NCMBPushTest {
         Assert.assertNull(error)
         Assert.assertEquals("title_update", push.title)
         Assert.assertEquals("message_update", push.message)
-        Assert.assertEquals("3day", push.deliveryExpirationTime)
+        Assert.assertEquals("3 day", push.deliveryExpirationTime)
         val format: DateFormat = getIso8601()
         Assert.assertEquals(format.parse("2014-06-04T11:28:30.348Z"), push.getUpdateDate())
     }
