@@ -18,6 +18,7 @@ package com.nifcloud.mbaas.core
 
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 import java.net.URLEncoder
 
 
@@ -42,9 +43,9 @@ internal open class NCMBService {
         var url: String,
         var method: String,
         var params: JSONObject = JSONObject(),
-        var fileData: ByteArray? = null,
         var contentType: String,
         var query: JSONObject = JSONObject(),
+        var fileData: File? = null,
         var callback: NCMBCallback? = null,
         var handler: NCMBHandler? = null
     )
@@ -64,7 +65,8 @@ internal open class NCMBService {
         method: String,
         params: JSONObject,
         contentType: String,
-        query: JSONObject
+        query: JSONObject,
+        fileData: File?
     ): NCMBResponse {
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()
@@ -82,8 +84,9 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
+        //print("In sendRequest check ConntentType:" + contentType)
         return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
-            connection.sendRequestForFile()
+            connection.sendRequestForFile(fileData)
         }else {
             connection.sendRequest()
         }
@@ -100,7 +103,8 @@ internal open class NCMBService {
             params.method,
             params.params,
             params.contentType,
-            params.query
+            params.query,
+            params.fileData
         )
     }
 
@@ -121,6 +125,7 @@ internal open class NCMBService {
         params: JSONObject,
         contentType: String,
         query: JSONObject,
+        fileData: File?,
         callback: NCMBCallback?,
         handler: NCMBHandler?
     ){
@@ -143,11 +148,12 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
+        //print("In sendRequestAsync check ConntentType:" + contentType + "|" +NCMBRequest.HEADER_CONTENT_TYPE_FILE )
         if(callback != null && handler != null) {
             if(contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
-                connection.sendRequestAsynchronously(callback, handler)
+                connection.sendRequestAsynchronouslyForFile(fileData, callback, handler)
             }else {
-                connection.sendRequestAsynchronouslyForFile(callback, handler)
+                connection.sendRequestAsynchronously(callback, handler)
             }
         }
         else{
@@ -169,6 +175,7 @@ internal open class NCMBService {
             params.params,
             params.contentType,
             params.query,
+            params.fileData,
             callback,
             handler
         )
@@ -186,6 +193,7 @@ internal open class NCMBService {
             params.params,
             params.contentType,
             params.query,
+            params.fileData,
             params.callback,
             params.handler
         )

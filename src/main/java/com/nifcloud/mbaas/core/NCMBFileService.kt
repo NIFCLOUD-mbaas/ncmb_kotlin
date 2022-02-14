@@ -3,12 +3,13 @@ package com.nifcloud.mbaas.core
 import android.content.pm.PackageManager
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 
 internal class NCMBFileService : NCMBObjectService(){
     /**
      * service path for API category
      */
-    override val SERVICE_PATH = "file"
+    override val SERVICE_PATH = "files"
 
     /**
      * Constructor
@@ -29,7 +30,6 @@ internal class NCMBFileService : NCMBObjectService(){
         fileObject: NCMBFile,
         callback: NCMBCallback
     ) {
-        print("in saveFileInBG")
         val fileHandler = NCMBHandler { fileCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -46,7 +46,7 @@ internal class NCMBFileService : NCMBObjectService(){
                 }
             }
         }
-        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,null, fileObject.fileData, NCMBRequest.HTTP_METHOD_POST,callback, fileHandler)
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,null, NCMBRequest.HTTP_METHOD_POST, fileObject.fileData, callback, fileHandler)
         sendRequestAsync(request)
     }
 
@@ -59,7 +59,7 @@ internal class NCMBFileService : NCMBObjectService(){
      */
     @Throws(NCMBException::class)
     fun saveFile(fileObject: NCMBFile): JSONObject {
-        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, null, fileObject.fileData, NCMBRequest.HTTP_METHOD_POST, null, null)
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, null, NCMBRequest.HTTP_METHOD_POST, fileObject.fileData, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -84,8 +84,8 @@ internal class NCMBFileService : NCMBObjectService(){
         fileName: String,
         params: JSONObject,
         queryParams: JSONObject?,
-        fileData: ByteArray?,
         method: String,
+        fileData: File?,
         callback: NCMBCallback?,
         handler: NCMBHandler?
     ): RequestParams {
@@ -97,7 +97,8 @@ internal class NCMBFileService : NCMBObjectService(){
             params = params,
             contentType = NCMBRequest.HEADER_CONTENT_TYPE_FILE,
             callback = callback,
-            handler = handler
+            handler = handler,
+            fileData = fileData
         )
     }
 

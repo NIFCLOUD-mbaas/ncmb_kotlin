@@ -36,18 +36,17 @@ package com.nifcloud.mbaas.core
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import okhttp3.Headers
-import okhttp3.Callback
-import okhttp3.Call
-import okhttp3.Response
+import okhttp3.*
 import okhttp3.Headers.Companion.toHeaders
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
 import java.io.IOException
 import java.net.URL
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 
 /**
@@ -117,13 +116,13 @@ internal class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestForFile(): NCMBResponse {
+    fun sendRequestForFile(fileData: File?): NCMBResponse {
         runBlocking {
             withContext(Dispatchers.Default) {
                 val headers: Headers = createHeader()
                 val client = OkHttpClient()
 
-                println("Request Info (Sync):")
+                println("Request Info for File (Sync):")
                 println("params: " + ncmbRequest.params.toString())
                 println("querys: " + ncmbRequest.query.toString())
                 println(ncmbRequest.url)
@@ -155,7 +154,7 @@ internal class NCMBConnection(request: NCMBRequest) {
         val headers: Headers = createHeader()
         val client = OkHttpClient()
 
-        println("Request Info(Async):")
+        println("Request Info (Async):")
         println("params: " + ncmbRequest.params.toString())
         println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
@@ -163,6 +162,7 @@ internal class NCMBConnection(request: NCMBRequest) {
         val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
         try {
+            println("START TO REQUEST")
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
@@ -192,45 +192,58 @@ internal class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestAsynchronouslyForFile(callback: NCMBCallback, responseHandler: NCMBHandler) {
-
-        val headers: Headers = createHeader()
-        val client = OkHttpClient()
-
-        println("Request Info(Async):")
-        println("params: " + ncmbRequest.params.toString())
-        println("querys: " + ncmbRequest.query.toString())
-        println(ncmbRequest.url)
-        println("HEADERS")
-        println(headers)
-
-        println("CREATE BODY")
-        val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-        println("CREATE REQUEST")
-        val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
+    fun sendRequestAsynchronouslyForFile(fileData: File?, callback: NCMBCallback, responseHandler: NCMBHandler) {
         try {
-            println("START CONNECT")
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    println("ON FAILED")
-                    e.printStackTrace()
-                    ncmbResponse = NCMBResponse.Failure(NCMBException(e))
-                    responseHandler.doneSolveResponse(callback, ncmbResponse)
-                }
+            val headers: Headers = createHeader()
+            val client = OkHttpClient()
 
-                override fun onResponse(call: Call, response: Response) {
-                    println("ON SUCCEED" + response.toString())
-                    //NCMBResponse 処理
-                    ncmbResponse = NCMBResponseBuilder.build(response)
-                    responseHandler.doneSolveResponse(callback, ncmbResponse)
-                }
-            })
+            println("Request Info for File(Async):")
+            println("params: " + ncmbRequest.params.toString())
+            println("querys: " + ncmbRequest.query.toString())
+            println(ncmbRequest.url)
+            println(headers)
+            println(fileData)
+
+            val media = "application/json; charset=utf-8".toMediaType()
+            val requestBody = MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", null,
+                    fileData!!.asRequestBody(media))
+                .build()
+
+            val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
+
+            println("SYNC REQUEST")
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                println(response.body!!.string())
+            }
+
+
+//            println("ASYNC FILE POST REQUEST")
+//            client.newCall(request).enqueue(object : Callback {
+//                override fun onFailure(call: Call, e: IOException) {
+//                    println("ON FAILED")
+//                    e.printStackTrace()
+//                    //ncmbResponse = NCMBResponse.Failure(NCMBException(e))
+//                    //responseHandler.doneSolveResponse(callback, ncmbResponse)
+//                }
+//
+//                override fun onResponse(call: Call, response: Response) {
+//                    println("ON SUCCEED" + response.toString())
+//                    //NCMBResponse 処理
+//                    //ncmbResponse = NCMBResponseBuilder.build(response)
+//                    //responseHandler.doneSolveResponse(callback, ncmbResponse)
+//                }
+//            })
+
         } catch (e: Exception) {
-            println("EXCEPTION")
-            e.printStackTrace()
+            println(e.printStackTrace())
             ncmbResponse = NCMBResponse.Failure(NCMBException(e))
             responseHandler.doneSolveResponse(callback, ncmbResponse)
         }
+
     }
 
     /**
