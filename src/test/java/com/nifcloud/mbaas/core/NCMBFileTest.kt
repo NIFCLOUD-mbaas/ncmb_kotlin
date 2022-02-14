@@ -63,21 +63,6 @@ class NCMBFileTest {
         }
     }
 
-//    @Test
-//    @kotlin.jvm.Throws(IOException::class)
-//    fun testTEMPFile() {
-//        // Write something to it.
-//        tmpFile.appendText("hello world")
-//
-//        // Read it from temp file
-//        val s: String = tmpFile.readText()
-//
-//        // Verify the content
-//        Assert.assertEquals("hello world", s)
-//
-//        //Note: File is guaranteed to be deleted after the test finishes.
-//    }
-
     @Test
     fun fileName_set_Get_test() {
         val ncmbFile = NCMBFile()
@@ -111,27 +96,10 @@ class NCMBFileTest {
 
     @Test
     fun fileSaveInBG_success() {
-        var applicationKey =  "3c99589bee9dda8184febdf64cdcfe65f84faf3ec5a2b158e477cea807299b30"
-        var clientKey = "4f77045784c3d667ccf2557cb31e507a1488e37bf0f88ba042610271f4e3f981"
+        var applicationKey =  "APKEY"
+        var clientKey = "CLIKEY"
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
-
-//// クラスのNCMBObjectを作成
-//        val obj = NCMBObject("TestClass")
-//// オブジェクトの値を設定
-//        obj.put("message", "Hello, NCMB!")
-//        obj.saveInBackground(NCMBCallback { e, ncmbObj ->
-//            if (e != null) {
-//                //保存に失敗した場合の処理
-//                print("保存に失敗しました : " + e.message)
-//            } else {
-//                //保存に成功した場合の処理
-//                val result = ncmbObj as NCMBObject
-//                print("保存に成功しました ObjectID :" + result.getObjectId())
-//            }
-//        })
-
         val fileObj = NCMBFile("tempFile.txt")
-        //fileObj.fileData = "This is a test file data".toByteArray(Charsets.UTF_8)
         fileObj.fileData = tmpFile
         // ファイルストアへの登録を実施
         fileObj.saveInBackground(NCMBCallback { e, ncmbFile ->
