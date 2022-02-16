@@ -53,7 +53,7 @@ class NCMBFileTest {
 
         try {
             // Create a temporary file.
-            tmpFile = tmpFolder.newFile("tempFile2.txt")
+            tmpFile = tmpFolder.newFile("tempFile.txt")
             // Write something to it.
             tmpFile.appendText("hello world")
         } catch (ioe: IOException) {
@@ -95,10 +95,7 @@ class NCMBFileTest {
     }
 
     @Test
-    fun fileSaveInBG_success() {
-        var applicationKey =  "APP"
-        var clientKey = "CLI"
-        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
+    fun fileSaveInBackGround_success() {
         val fileObj = NCMBFile("tempFile.txt")
         fileObj.fileData = tmpFile
         // ファイルストアへの登録を実施
@@ -114,6 +111,16 @@ class NCMBFileTest {
         })
     }
 
-
+    @Test
+    fun fileSave_success() {
+        val fileObj = NCMBFile("tempFile.txt")
+        fileObj.fileData = tmpFile
+        // ファイルストアへの登録を実施
+        try {
+            fileObj.save()
+        }catch (e:NCMBException) {
+            println("保存に失敗しました : " + e.code + " " + e.message)
+        }
+    }
 
 }

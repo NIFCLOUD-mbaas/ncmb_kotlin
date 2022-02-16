@@ -1,0 +1,10 @@
+---
+request:
+    url: /2013-09-01/files/tempFile.txt
+    method: POST
+    body:
+        file:  --5c57bc04-4756-4852-ad15-abd44ef20536
+response:
+    status: 201
+    file: valid_save_file.json
+---
