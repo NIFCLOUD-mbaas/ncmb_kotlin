@@ -122,7 +122,6 @@ internal class NCMBConnection(request: NCMBRequest) {
         runBlocking {
             withContext(Dispatchers.Default) {
                 val headers: Headers = createHeader()
-                val client = OkHttpClient()
 
                 println("Request Info for File (Sync):")
                 println("params: " + ncmbRequest.params.toString())
@@ -131,12 +130,21 @@ internal class NCMBConnection(request: NCMBRequest) {
                 println(headers)
                 println(ncmbRequest.query)
 
-                val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
-                var request: Request
-                synchronized(lock) {
-                    request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
-                }
-                val response = client.newCall(request).execute()
+                //Get file from params
+                var fileObj = ncmbRequest.params.get("file") as File
+
+                val requestBody = MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart(
+                        "file", null,
+                        fileObj.asRequestBody()
+                    )
+                    .build()
+
+                val request =
+                    request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
+                val client = OkHttpClient().newCall(request)
+                val response = client.execute()
                 ncmbResponse = NCMBResponseBuilder.build(response)
             }
         }

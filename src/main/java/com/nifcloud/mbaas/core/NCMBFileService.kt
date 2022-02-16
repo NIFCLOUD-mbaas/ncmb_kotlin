@@ -33,11 +33,6 @@ internal class NCMBFileService : NCMBObjectService(){
         val fileHandler = NCMBHandler { fileCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    try {
-                        //dosthing(params, response.data)
-                    } catch (e: NCMBException) {
-                        throw e
-                    }
                     fileObject.reflectResponse(response.data)
                     callback.done(null, fileObject)
                 }
@@ -58,12 +53,13 @@ internal class NCMBFileService : NCMBObjectService(){
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun saveFile(fileObject: NCMBFile): JSONObject {
+    fun saveFile(fileObject: NCMBFile){
         val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, null, NCMBRequest.HTTP_METHOD_POST, fileObject.fileData, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
-                return response.data
+                fileObject.reflectResponse(response.data)
+                response.data
             }
             is NCMBResponse.Failure -> {
                 throw response.resException

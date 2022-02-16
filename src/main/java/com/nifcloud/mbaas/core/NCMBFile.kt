@@ -116,9 +116,9 @@ class NCMBFile: NCMBObject {
     override fun save(){
         //connect
         val fileService = NCMBFileService()
-        val responseData: JSONObject
+        //val responseData: JSONObject
         //new create
-        responseData = fileService.saveFile(this)
+        fileService.saveFile(this)
         mUpdateKeys.clear()
     }
 
