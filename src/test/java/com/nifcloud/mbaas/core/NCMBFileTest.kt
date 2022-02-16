@@ -14,6 +14,7 @@ import org.robolectric.annotation.Config
 import org.junit.rules.TemporaryFolder
 import java.io.File
 import java.io.IOException
+import java.nio.charset.Charset
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -52,7 +53,7 @@ class NCMBFileTest {
 
         try {
             // Create a temporary file.
-            tmpFile = tmpFolder.newFile("tempFile.txt")
+            tmpFile = tmpFolder.newFile("tempFile2.txt")
             // Write something to it.
             tmpFile.appendText("hello world")
         } catch (ioe: IOException) {
@@ -71,22 +72,21 @@ class NCMBFileTest {
     }
 
 
-//    @Test
-//    fun fileData_set_Get_test() {
-//        val ncmbFile = NCMBFile()
-//        ncmbFile.fileData = "This is a test file data".toByteArray(Charsets.UTF_8)
-//        Assert.assertEquals("This is a test file data".toByteArray(Charsets.UTF_8).contentToString(), ncmbFile.fileData!!.contentToString())
-//        Assert.assertEquals("This is a test file data".toByteArray(Charsets.UTF_8).contentToString(), (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as ByteArray).contentToString())
-//    }
+    @Test
+    fun fileData_set_Get_test() {
+        val ncmbFile = NCMBFile()
+        ncmbFile.fileData = tmpFile
+        Assert.assertEquals("hello world", ncmbFile.fileData!!.readText(Charset.defaultCharset()).toString())
+        Assert.assertEquals("hello world", (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as File).readText(Charset.defaultCharset()).toString())
+    }
 
-//    @Test
-//    fun fileConstructor_filename_filedata() {
-//        val data = "This is a test file data".toByteArray(Charsets.UTF_8)
-//        val ncmbFile = NCMBFile("testfile.txt", data)
-//        Assert.assertEquals("testfile.txt", ncmbFile.fileName)
-//        Assert.assertEquals("This is a test file data".toByteArray(Charsets.UTF_8).contentToString(), ncmbFile.fileData!!.contentToString())
-//        Assert.assertEquals("This is a test file data".toByteArray(Charsets.UTF_8).contentToString(), (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as ByteArray).contentToString())
-//    }
+    @Test
+    fun fileConstructor_filename_filedata() {
+        val ncmbFile = NCMBFile("testfile.txt", tmpFile)
+        Assert.assertEquals("testfile.txt", ncmbFile.fileName)
+        Assert.assertEquals("hello world", ncmbFile.fileData!!.readText(Charset.defaultCharset()).toString())
+        Assert.assertEquals("hello world", (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as File).readText(Charset.defaultCharset()).toString())
+    }
 
     @Test
     fun fileConstructor_filename() {
@@ -96,8 +96,8 @@ class NCMBFileTest {
 
     @Test
     fun fileSaveInBG_success() {
-        var applicationKey =  "APKEY"
-        var clientKey = "CLIKEY"
+        var applicationKey =  "APP"
+        var clientKey = "CLI"
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
         val fileObj = NCMBFile("tempFile.txt")
         fileObj.fileData = tmpFile
@@ -105,7 +105,7 @@ class NCMBFileTest {
         fileObj.saveInBackground(NCMBCallback { e, ncmbFile ->
             if (e != null) {
                 //保存に失敗した場合の処理
-                println("保存に失敗しました : " + e.message)
+                println("保存に失敗しました : " + e.code + " " + e.message)
             } else {
                 val fileObj = ncmbFile  as NCMBFile
                 //保存に成功した場合の処理

@@ -46,6 +46,8 @@ import java.net.URL
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 
 
@@ -162,7 +164,6 @@ internal class NCMBConnection(request: NCMBRequest) {
         val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
         try {
-            println("START TO REQUEST")
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
@@ -177,7 +178,6 @@ internal class NCMBConnection(request: NCMBRequest) {
                 }
             })
         } catch (e: Exception) {
-            println("EXCEPTION")
             e.printStackTrace()
             ncmbResponse = NCMBResponse.Failure(NCMBException(e))
             responseHandler.doneSolveResponse(callback, ncmbResponse)
@@ -195,7 +195,6 @@ internal class NCMBConnection(request: NCMBRequest) {
     fun sendRequestAsynchronouslyForFile(callback: NCMBCallback, responseHandler: NCMBHandler) {
         try {
             val headers: Headers = createHeader()
-            val client = OkHttpClient()
 
             println("Request Info for File(Async):")
             println("params: " + ncmbRequest.params.toString())
@@ -206,40 +205,35 @@ internal class NCMBConnection(request: NCMBRequest) {
             //Get file from params
             var fileObj = ncmbRequest.params.get("file") as File
 
-            checkNotNull(fileObj)
-            val media = "application/json; charset=utf-8".toMediaType()
             val requestBody = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", null,
-                    fileObj.asRequestBody(media))
+                    fileObj.asRequestBody())
                 .build()
 
             val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
+            val client = OkHttpClient().newCall(request)
 
-            println("SYNC REQUEST")
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                println(response.body!!.string())
+            client.execute().use { response ->
+                if (!response.isSuccessful) {
+                    try{
+                        //Convert error json from response body
+                        var responseErrorString = response.body?.string()
+                        var responseErrorJson = JSONObject(responseErrorString)
+                        var fileException = NCMBException(responseErrorJson.getString("code"), responseErrorJson.getString("error"))
+                        ncmbResponse = NCMBResponse.Failure(fileException)
+                        responseHandler.doneSolveResponse(callback, ncmbResponse)
+                    }catch (e:JSONException) {
+                        var fileException = NCMBException(NCMBException.GENERIC_ERROR, "File save error: $response")
+                        ncmbResponse = NCMBResponse.Failure(fileException)
+                        responseHandler.doneSolveResponse(callback, ncmbResponse)
+                    }
+                } else {
+                    ncmbResponse = NCMBResponseBuilder.build(response)
+                    responseHandler.doneSolveResponse(callback, ncmbResponse)
+                }
             }
 
-
-//            println("ASYNC FILE POST REQUEST")
-//            client.newCall(request).enqueue(object : Callback {
-//                override fun onFailure(call: Call, e: IOException) {
-//                    println("ON FAILED")
-//                    e.printStackTrace()
-//                    //ncmbResponse = NCMBResponse.Failure(NCMBException(e))
-//                    //responseHandler.doneSolveResponse(callback, ncmbResponse)
-//                }
-//
-//                override fun onResponse(call: Call, response: Response) {
-//                    println("ON SUCCEED" + response.toString())
-//                    //NCMBResponse 処理
-//                    //ncmbResponse = NCMBResponseBuilder.build(response)
-//                    //responseHandler.doneSolveResponse(callback, ncmbResponse)
-//                }
-//            })
 
         } catch (e: Exception) {
             println(e.printStackTrace())
