@@ -116,7 +116,7 @@ internal class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestForFile(fileData: File?): NCMBResponse {
+    fun sendRequestForFile(): NCMBResponse {
         runBlocking {
             withContext(Dispatchers.Default) {
                 val headers: Headers = createHeader()
@@ -192,7 +192,7 @@ internal class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestAsynchronouslyForFile(fileData: File?, callback: NCMBCallback, responseHandler: NCMBHandler) {
+    fun sendRequestAsynchronouslyForFile(callback: NCMBCallback, responseHandler: NCMBHandler) {
         try {
             val headers: Headers = createHeader()
             val client = OkHttpClient()
@@ -202,13 +202,16 @@ internal class NCMBConnection(request: NCMBRequest) {
             println("querys: " + ncmbRequest.query.toString())
             println(ncmbRequest.url)
             println(headers)
-            println(fileData)
 
+            //Get file from params
+            var fileObj = ncmbRequest.params.get("file") as File
+
+            checkNotNull(fileObj)
             val media = "application/json; charset=utf-8".toMediaType()
             val requestBody = MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", null,
-                    fileData!!.asRequestBody(media))
+                    fileObj.asRequestBody(media))
                 .build()
 
             val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)

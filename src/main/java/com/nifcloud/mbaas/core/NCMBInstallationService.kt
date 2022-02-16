@@ -191,7 +191,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
             val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
             val params = RequestParams(url = url, method = method, contentType = contentType).params
             val query =  RequestParams(url = url, method = method, contentType = contentType).query
-            val response = sendRequest(url, method, params, contentType, query, null)
+            val response = sendRequest(url, method, params, contentType, query)
             when (response) {
                 is NCMBResponse.Success -> {
                     clearCurrentInstallation()
@@ -231,7 +231,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
                     }
                 }
             }
-            sendRequestAsync(url, method, params, contentType, query, null, deleteCallback, deleteHandler)
+            sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
         } catch (error: NCMBException) {
             //currentInstallation auto delete
             checkDataNotFound(objectId, error.code)
@@ -253,7 +253,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         val params = RequestParams(url = url, method = method, contentType = contentType).params
         val query =  RequestParams(url = url, method = method, contentType = contentType).query
-        val response = sendRequest(url, method, params, contentType, query, null)
+        val response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
                 fetchInstantiation.reflectResponse(response.data)
@@ -290,7 +290,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
                 }
             }
         }
-        sendRequestAsync(url, method, params, contentType, query, null, fetchCallback, fetchHandler)
+        sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
     }
 
     // endregion

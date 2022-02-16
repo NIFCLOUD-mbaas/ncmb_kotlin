@@ -97,8 +97,7 @@ internal class NCMBFileService : NCMBObjectService(){
             params = params,
             contentType = NCMBRequest.HEADER_CONTENT_TYPE_FILE,
             callback = callback,
-            handler = handler,
-            fileData = fileData
+            handler = handler
         )
     }
 

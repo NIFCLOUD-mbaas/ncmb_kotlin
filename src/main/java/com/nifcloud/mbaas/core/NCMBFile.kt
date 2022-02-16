@@ -76,86 +76,35 @@ class NCMBFile: NCMBObject {
         }
 
     /**
-     * File data
+     * File Object
      */
     var fileData: File?
         /**
-         * Get file
+         * Get application name
          *
-         * @return file
+         * @return application name
          */
-        get() = fileToSave
+        get() = try {
+            if (mFields.isNull(NCMBFile.FILE_DATA)) {
+                null
+            } else mFields.get(NCMBFile.FILE_DATA) as File
+        } catch (e: JSONException) {
+            throw NCMBException(IllegalArgumentException(e.message))
+        }
         /**
-         * Set file
+         * Set application name
          *
-         * @param value file
+         * @param value applicationName
          */
         set(value) {
-            fileToSave = value
+            try {
+                print(value)
+                mFields.put(NCMBFile.FILE_DATA, value)
+                mUpdateKeys.add(NCMBFile.FILE_DATA)
+            } catch (e: JSONException) {
+                throw NCMBException(IllegalArgumentException(e.message))
+            }
         }
-
-//    /**
-//     * File data
-//     */
-//    var fileData: ByteArray?
-//        /**
-//         * Get application name
-//         *
-//         * @return application name
-//         */
-//        get() = try {
-//            if (mFields.isNull(NCMBFile.FILE_DATA)) {
-//                null
-//            } else mFields.get(NCMBFile.FILE_DATA) as ByteArray?
-//        } catch (e: JSONException) {
-//            throw NCMBException(IllegalArgumentException(e.message))
-//        }
-//        /**
-//         * Set application name
-//         *
-//         * @param value applicationName
-//         */
-//        set(value) {
-//            try {
-//                print(value)
-//                mFields.put(NCMBFile.FILE_DATA, value)
-//                mUpdateKeys.add(NCMBFile.FILE_DATA)
-//            } catch (e: JSONException) {
-//                throw NCMBException(IllegalArgumentException(e.message))
-//            }
-//        }
-
-
-//    /**
-//     * File Object
-//     */
-//    var fileData: File?
-//        /**
-//         * Get application name
-//         *
-//         * @return application name
-//         */
-//        get() = try {
-//            if (mFields.isNull(NCMBFile.FILE_DATA)) {
-//                null
-//            } else mFields.get(NCMBFile.FILE_DATA) as File
-//        } catch (e: JSONException) {
-//            throw NCMBException(IllegalArgumentException(e.message))
-//        }
-//        /**
-//         * Set application name
-//         *
-//         * @param value applicationName
-//         */
-//        set(value) {
-//            try {
-//                print(value)
-//                mFields.put(NCMBFile.FILE_DATA, value)
-//                mUpdateKeys.add(NCMBFile.FILE_DATA)
-//            } catch (e: JSONException) {
-//                throw NCMBException(IllegalArgumentException(e.message))
-//            }
-//        }
 
 
     /**

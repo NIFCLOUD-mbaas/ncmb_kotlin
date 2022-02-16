@@ -45,7 +45,6 @@ internal open class NCMBService {
         var params: JSONObject = JSONObject(),
         var contentType: String,
         var query: JSONObject = JSONObject(),
-        var fileData: File? = null,
         var callback: NCMBCallback? = null,
         var handler: NCMBHandler? = null
     )
@@ -65,8 +64,7 @@ internal open class NCMBService {
         method: String,
         params: JSONObject,
         contentType: String,
-        query: JSONObject,
-        fileData: File?
+        query: JSONObject
     ): NCMBResponse {
         val sessionToken: String? = NCMB.getSessionToken()
         val applicationKey: String = NCMB.getApplicationKey()
@@ -84,9 +82,8 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
-        //print("In sendRequest check ConntentType:" + contentType)
         return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
-            connection.sendRequestForFile(fileData)
+            connection.sendRequestForFile()
         }else {
             connection.sendRequest()
         }
@@ -103,8 +100,7 @@ internal open class NCMBService {
             params.method,
             params.params,
             params.contentType,
-            params.query,
-            params.fileData
+            params.query
         )
     }
 
@@ -125,7 +121,6 @@ internal open class NCMBService {
         params: JSONObject,
         contentType: String,
         query: JSONObject,
-        fileData: File?,
         callback: NCMBCallback?,
         handler: NCMBHandler?
     ){
@@ -151,7 +146,7 @@ internal open class NCMBService {
         //print("In sendRequestAsync check ConntentType:" + contentType + "|" +NCMBRequest.HEADER_CONTENT_TYPE_FILE )
         if(callback != null && handler != null) {
             if(contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
-                connection.sendRequestAsynchronouslyForFile(fileData, callback, handler)
+                connection.sendRequestAsynchronouslyForFile(callback, handler)
             }else {
                 connection.sendRequestAsynchronously(callback, handler)
             }
@@ -175,7 +170,6 @@ internal open class NCMBService {
             params.params,
             params.contentType,
             params.query,
-            params.fileData,
             callback,
             handler
         )
@@ -193,7 +187,6 @@ internal open class NCMBService {
             params.params,
             params.contentType,
             params.query,
-            params.fileData,
             params.callback,
             params.handler
         )
