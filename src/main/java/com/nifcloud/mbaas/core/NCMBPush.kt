@@ -168,7 +168,7 @@ class NCMBPush : NCMBObject {
                         mUpdateKeys.add("deliveryExpirationTime")
                     }
                     else{
-                        throw NCMBException(NCMBException.INVALID_FORMAT, "deliveryExpirationTime is invalid format.")
+                        throw NCMBException(NCMBException.INVALID_FORMAT, "deliveryExpirationTime is invalid format. Please set string such as 'XX day' or 'YY hour'.")
                     }
                 }
             } catch (error: JSONException) {
