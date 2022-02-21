@@ -106,7 +106,7 @@ class NCMBErrorPushTest {
         }
         catch (e:NCMBException){
             Assert.assertEquals(NCMBException.INVALID_FORMAT, e.code)
-            Assert.assertEquals("deliveryExpirationTime is invalid format.", e.message)
+            Assert.assertEquals("deliveryExpirationTime is invalid format. Please set string such as 'XX day' or 'YY hour'.", e.message)
         }
     }
 
