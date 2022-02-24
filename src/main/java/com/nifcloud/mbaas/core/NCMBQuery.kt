@@ -150,7 +150,11 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
             val df: SimpleDateFormat = getIso8601()
             dateJson.put("iso", df.format(value as Date))
             dateJson
-        } else {
+        }
+        else if (value is NCMBGeoPoint) {
+               value.convertToJson()
+        }
+        else {
             value
         }
     }
@@ -240,6 +244,87 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
     fun whereLessThanOrEqualTo(key: String, value: Any) {
         try {
             mWhereConditions.put(key,addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_LTE, value))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * Set the conditions to search the data with location information
+     * @param key field name that contains Geolocation data to search
+     * @param southwest NCMBGeoPoint object  lower left location information for search area
+     * @param northeast NCMBGeoPoint objectUpper right location information for search area
+     */
+    fun whereWithinGeoBox(key: String, southwest: NCMBGeoPoint, northeast: NCMBGeoPoint) {
+        try {
+            val boxArray = JSONArray()
+            boxArray.put(convertConditionValue(southwest))
+            boxArray.put(convertConditionValue(northeast))
+            val boxJson = JSONObject()
+            boxJson.put("\$" + NCMBQueryConstants.QUERY_OPERATOR_BOX, boxArray)
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_WITHIN, boxJson))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * Set the conditions to search the data with location information, return data order by from near to far order,
+     * based on distance from centerLocation.
+     * @param key field name that contains location information
+     * @param centerLocation center location for data searching
+     */
+    fun whereNearSphere(key: String, centerLocation:NCMBGeoPoint) {
+        try {
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NEARSPHERE, centerLocation))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * Set the conditions to search the data with location information, return data order by from near to far order,
+     * based on distance from centerLocation.
+     * @param key field name that contains location information
+     * @param centerLocation center location for data searching
+     * @param maxDistance search radius distance from center point in kilometers
+     */
+    fun whereNearSphereKilometers(key: String, centerLocation:NCMBGeoPoint, maxDistance: Double) {
+        try {
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NEARSPHERE, centerLocation))
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_KM, maxDistance))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * Set the conditions to search the data with location information, return data order by from near to far order,
+     * based on distance from centerLocation.
+     * @param key field name that contains location information
+     * @param centerLocation center location for data searching
+     * @param maxDistance search radius distance from center point in miles
+     */
+    fun whereNearSphereMiles(key: String, centerLocation:NCMBGeoPoint, maxDistance: Double) {
+        try {
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NEARSPHERE, centerLocation))
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_MILES, maxDistance))
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
+
+    /**
+     * Set the conditions to search the data with location information, return data order by from near to far order,
+     * based on distance from centerLocation.
+     * @param key field name that contains location information
+     * @param centerLocation center location for data searching
+     * @param maxDistance search radius distance from center point in radians
+     */
+    fun whereNearSphereRadians(key: String, centerLocation:NCMBGeoPoint, maxDistance: Double) {
+        try {
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_NEARSPHERE, centerLocation))
+            mWhereConditions.put(key, addSearchCondition(key, "\$" + NCMBQueryConstants.QUERY_OPERATOR_RAD, maxDistance))
         } catch (e: JSONException) {
             throw NCMBException(e)
         }
@@ -339,6 +424,22 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         }
     }
 
+    /**
+     * Set the OR conditions to search the data that matches any one of the given query
+     * @param queries condition queries
+     */
+    fun or(queries: Collection<NCMBQuery<*>>) {
+        try {
+            val array = JSONArray()
+            for (query in queries) {
+                val queryJson = query.mWhereConditions
+                array.put(queryJson)
+            }
+            mWhereConditions.put("\$or", array)
+        } catch (e: JSONException) {
+            throw NCMBException(e)
+        }
+    }
 
     /**
      * Constructor
@@ -367,6 +468,7 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         newCondition.put(operand, array)
         return newCondition
     }
+
 
 }
 
