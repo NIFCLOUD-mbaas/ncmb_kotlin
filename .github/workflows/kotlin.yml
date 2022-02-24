@@ -1,0 +1,29 @@
+name: Kotlin
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Kotlin
+        uses: fwilhe2/setup-kotlin@main
+      - name: Setup JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin" 
+          java-version: '11'
+      - name: build and test
+        run: ./gradlew build test --continue --info
+      - name: Archive Result Files
+        uses: actions/upload-artifact@v2
+        with:
+          name: build_test_report
+          path: /home/runner/work/ncmb_kotlin/ncmb_kotlin/build/reports/tests/testDebugUnitTest 
