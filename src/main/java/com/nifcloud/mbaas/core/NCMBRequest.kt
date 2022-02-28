@@ -65,6 +65,12 @@ internal class NCMBRequest(
         return this.requestProperties
     }
 
+    fun isFileGetRequest() :Boolean {
+        if (method == HTTP_METHOD_GET && url.startsWith( NCMB.getApiBaseUrl()  + "files/" ))
+            return true
+        return false
+    }
+
     companion object {
         // region Constant
         // HTTP method "GET"

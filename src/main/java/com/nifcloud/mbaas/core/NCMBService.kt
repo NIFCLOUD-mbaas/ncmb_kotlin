@@ -83,7 +83,7 @@ internal open class NCMBService {
         )
         val connection = NCMBConnection(request)
         return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
-            connection.sendRequestForFile()
+            connection.sendRequestForUploadFile()
         }else {
             connection.sendRequest()
         }
@@ -146,7 +146,7 @@ internal open class NCMBService {
         //print("In sendRequestAsync check ConntentType:" + contentType + "|" +NCMBRequest.HEADER_CONTENT_TYPE_FILE )
         if(callback != null && handler != null) {
             if(contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
-                connection.sendRequestAsynchronouslyForFile(callback, handler)
+                connection.sendRequestAsynchronouslyForUploadFile(callback, handler)
             }else {
                 connection.sendRequestAsynchronously(callback, handler)
             }

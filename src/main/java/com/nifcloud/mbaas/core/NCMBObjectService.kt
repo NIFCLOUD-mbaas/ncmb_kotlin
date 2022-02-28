@@ -62,7 +62,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         var response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                saveObject.reflectResponse(response.data)
+                saveObject.reflectResponse(response.data as JSONObject)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -88,7 +88,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val saveHandler = NCMBHandler { savecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    saveObject.reflectResponse(response.data)
+                    saveObject.reflectResponse(response.data as JSONObject)
                     //saveCallback done to object
                     saveCallback.done(null, saveObject)
                 }
@@ -122,7 +122,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                fetchObject.reflectResponse(response.data)
+                fetchObject.reflectResponse(response.data as JSONObject)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -148,7 +148,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val fetchHandler = NCMBHandler{ fetchcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    fetchObject.reflectResponse(response.data)
+                    fetchObject.reflectResponse(response.data as JSONObject)
                     //saveCallback done to object
                     fetchCallback.done(null, fetchObject)
                 }
@@ -183,7 +183,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                updateObject.reflectResponse(response.data)
+                updateObject.reflectResponse(response.data as JSONObject)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -211,7 +211,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val updateHandler = NCMBHandler { updatecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    updateObject.reflectResponse(response.data)
+                    updateObject.reflectResponse(response.data as JSONObject)
                     //saveCallback done to object
                     updateCallback.done(null, updateObject)
                 }
@@ -245,7 +245,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         var response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                deleteObject.reflectResponse(response.data)
+                deleteObject.reflectResponse(response.data as JSONObject)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -271,7 +271,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val deleteHandler = NCMBHandler{ deletecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    deleteObject.reflectResponse(response.data)
+                    deleteObject.reflectResponse(response.data as JSONObject)
                     //saveCallback done to object
                     deleteCallback.done(null, deleteObject)
                 }
@@ -301,7 +301,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val response = sendRequest(reqParam)
         when (response) {
             is NCMBResponse.Success -> {
-                listObj = createSearchResponseList(className, response.data)
+                listObj = createSearchResponseList(className, response.data as JSONObject)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -326,7 +326,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val findHandler = NCMBHandler { findCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    var listObj = createSearchResponseList(className, response.data)
+                    var listObj = createSearchResponseList(className, response.data as JSONObject)
                     findCallback.done(null, listObj)
                 }
                 is NCMBResponse.Failure -> {
@@ -394,7 +394,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val response = sendRequest(reqParam)
         when (response) {
             is NCMBResponse.Success -> {
-                countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
+                countNumber = (response.data as JSONObject).getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -418,7 +418,7 @@ internal open class NCMBObjectService() : NCMBService(), NCMBServiceInterface<NC
         val countHandler = NCMBHandler { countCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    var countNumber = response.data.getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
+                    var countNumber = (response.data as JSONObject).getInt(NCMBQueryConstants.RESPONSE_PARAMETER_COUNT)
                     countCallback.done(null, countNumber)
                 }
                 is NCMBResponse.Failure -> {

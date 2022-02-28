@@ -118,7 +118,7 @@ internal class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestForFile(): NCMBResponse {
+    fun sendRequestForUploadFile(): NCMBResponse {
         runBlocking {
             withContext(Dispatchers.Default) {
                 val headers: Headers = createHeader()
@@ -172,6 +172,7 @@ internal class NCMBConnection(request: NCMBRequest) {
         val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
         try {
+
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
@@ -181,10 +182,16 @@ internal class NCMBConnection(request: NCMBRequest) {
 
                 override fun onResponse(call: Call, response: Response) {
                     //NCMBResponse 処理
-                    ncmbResponse = NCMBResponseBuilder.build(response)
+                    if (ncmbRequest.isFileGetRequest()) {
+                        ncmbResponse = NCMBResponseBuilder.buildFileResponse(response)
+                    }else {
+                        ncmbResponse = NCMBResponseBuilder.build(response)
+                    }
                     responseHandler.doneSolveResponse(callback, ncmbResponse)
+
                 }
             })
+
         } catch (e: Exception) {
             e.printStackTrace()
             ncmbResponse = NCMBResponse.Failure(NCMBException(e))
@@ -200,7 +207,7 @@ internal class NCMBConnection(request: NCMBRequest) {
      * @throws NCMBException exception from NIF Cloud mobile backend
      */
     @Throws(NCMBException::class)
-    fun sendRequestAsynchronouslyForFile(callback: NCMBCallback, responseHandler: NCMBHandler) {
+    fun sendRequestAsynchronouslyForUploadFile(callback: NCMBCallback, responseHandler: NCMBHandler) {
         try {
             val headers: Headers = createHeader()
 

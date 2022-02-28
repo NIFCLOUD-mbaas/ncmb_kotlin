@@ -36,7 +36,7 @@ internal class NCMBPushService : NCMBService() {
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
-                return response.data
+                return response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -59,7 +59,7 @@ internal class NCMBPushService : NCMBService() {
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
-                return response.data
+                return response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException

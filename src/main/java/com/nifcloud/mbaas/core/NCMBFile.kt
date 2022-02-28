@@ -116,14 +116,13 @@ class NCMBFile: NCMBObject {
     override fun save(){
         //connect
         val fileService = NCMBFileService()
-        //val responseData: JSONObject
         //new create
         fileService.saveFile(this)
         mUpdateKeys.clear()
     }
 
     /**
-     * Save installation object in Background
+     * Save file object in Background
      *
      * @param callback Save Callback
      */
@@ -137,5 +136,25 @@ class NCMBFile: NCMBObject {
         )
     }
 
+    /**
+     * Fetch file object in Background
+     *
+     * @param callback Save Callback
+     */
+    override fun fetchInBackground(fetchCallback: NCMBCallback) {
+        //connect
+        val fileService = NCMBFileService()
+        //new create
+        fileService.fetchFileInBackground(
+            this,
+            fetchCallback
+        )
+    }
+
+    fun reflectResponseFile(data: ByteArray?) {
+        if (data != null) {
+            this.fileData?.writeBytes(data)
+        }
+    }
 
 }
