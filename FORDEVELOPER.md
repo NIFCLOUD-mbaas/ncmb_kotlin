@@ -194,20 +194,6 @@ Android 8.x ~ Android 11.x
 ##### テストコード実行方法
 
 - テストケースは、'src/test/java/com/nifcloud/mbaas/core/'フォルダー内に格納されています。
-- Robolectricを利用するため、テストクラスの前に以下の記載が必要
-```
-@RunWith(RobolectricTestRunner::class)
-```
-
-また、テストメソッドの前に以下のように記載してください。
-
-```
-@Test
-fun testAbc(){
-
-}
-```
-
 - 実行する際、Android Studioでテストファイルもしくはフォルダーを選択し、右クリックメニューにて、「Run Tests ...」を選択し、行います。ファイルごとに、メソッドごとに、フォルダーごとにどちらでも可能。
 
 ##### Kotlin SDKのテスト構成
@@ -243,6 +229,19 @@ response:
 
 ##### テストを書く時に必要なこと
 
+- Robolectricを利用するため、テストクラスの前に以下の記載が必要
+```
+@RunWith(RobolectricTestRunner::class)
+```
+
+また、テストメソッドの前に以下のように記載してください。
+
+```
+@Test
+fun testAbc(){
+
+}
+```
 - API利用メソッドのテストに関しては、サーバモックを利用するために、以下のようにモックを定義しています。
 
 ```
