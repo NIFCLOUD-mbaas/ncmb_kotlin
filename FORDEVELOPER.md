@@ -9,6 +9,8 @@
 ### 1. SDK説明について
 #### ディレクトリ・ファイル構成
 
+SDKのメイン構成は以下となります。
+
 ```
 build/ ビルドフォルダー
 src/　　本体のソースコード
@@ -16,18 +18,19 @@ src/　　本体のソースコード
    main/
       java/com/nifcloud/mbaas/core/
          NCMB.kt	SDKの基本情報を定義し、初期化実施するクラス		
-         NCMBObject.kt　データストア機能を実施するインターフェース部分のクラス（NCMBBaseを継承）
-         NCMBUser.kt  ユーザ管理機能を実施するクラス（NCMBBaseを継承）
+         NCMBObject.kt データストア機能を実施するインターフェース部分のクラス（NCMBBaseを継承）
+         NCMBUser.kt, NCMBPush.kt, NCMBInstallation.ktなど   ユーザ管理、プッシュ通知、端末管理など機能を実施するクラス（NCMBOBjectを継承）
 
          NCMBObjectService.kt　データストア機能を実施する機能部分のクラス（NCMBService継承)
-         NCMBUserService.kt  会員管理機能を実施する機能部分のクラス（NCMBService継承)
+         NCMBUserService.kt, NCMBPushService.kt, NCMBInstallationService ..  ユーザ管理、プッシュ通知、端末管理などの機能を実施する機能部分のクラス（NCMBService継承)
          NCMBAnonymousParameters.kt
-         NCMBQuery.kt
+         NCMBQuery.kt  クエリを実施するクラス
 
          NCMBAcl.kt	　ACL管理機能を実施
          NCMBBase.kt　共有で使用する関数部分のクラス（NCMBObject, NCMBUserのベースクラス）		
 
          NCMBService.kt　NCMBConnectionの通信用メソッド（sendRequest()）を呼び出すクラス（NCMBUserService, NCMBObjectServiceのベースクラス）
+         NCMBServiceInterface.kt サービスクラスのインターフェースクラス（NCMBQueryの初期化時に利用）
          NCMBRequest.kt     リクエスト内容を入れておくクラス
          NCMBResponse.kt    レスポンスの成功・失敗を管理するクラス
          NCMBCallback.kt   非同期処理用のコールバックを受けるためクラス
@@ -51,9 +54,12 @@ src/　　本体のソースコード
          helpertest/
          NCMBAclTest.kt		
          NCMBDispatcher.kt
+         NCMBErrorDispatcher.kt
          NCMBUserTest.kt
          NCMBBaseTest.kt		
          NCMBObjectTest.kt
+         NCMBPushTest.kt, NCMBUserTest.ktなど
+         NCMBErrorPushTest.kt, NCMBErrorUserTest.ktなど
          NCMBUtilsTest.kt
          NCMBConnectionTest.kt
          NCMBSignatureCalTest.kt
@@ -80,7 +86,7 @@ SDK では以下の順序で REST API リクエストを行い、レスポンス
 ```
 var obj = NCMBObject("TestClass")
 obj.put("key", "value")
-obj = obj.save()
+obj.save()
 ```
 
 NCMBObject.save() /saveInBackground() データを保存するメソッドのUser interfaceの役割、内部は以下の流れ
@@ -125,7 +131,7 @@ NCMBObject.save() については REST API のレスポンスは 成功した場
 ```
 var obj = NCMBObject("TestClass")
 obj.put("key", "value")
-obj = obj.save()
+obj.save()
 ```
 
 ##### 非同期処理
@@ -177,28 +183,129 @@ Android 8.x ~ Android 11.x
 
 * 原則的にすべてのメソッドについてテストコードを作成し、不足している部分についても今後追加を行います。
 * バグ修正、新機能開発などの改修時には必ず全パターンのテストを行い、テスト失敗が発生していないことを確認します。
-* テストケースは、'src/test/java/com/nifcloud/mbaas/core/'フォルダー内に格納されています。
-* Mockitoを利用するため、テストクラスの前に以下の記載が必要
+
+##### 利用するライブラリー
+
+- テストでは以下のライブラリを利用しています。
+ - JUnit
+ - robolectric
+ - okhttp3.mockwebserver
+
+##### テストコード実行方法
+
+- テストケースは、'src/test/java/com/nifcloud/mbaas/core/'フォルダー内に格納されています。
+- Robolectricを利用するため、テストクラスの前に以下の記載が必要
 ```
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(RobolectricTestRunner::class)
 ```
+
 また、テストメソッドの前に以下のように記載してください。
+
 ```
 @Test
 fun testAbc(){
 
 }
 ```
-* また、API利用メソッドのテストに関しては、
-サーバモックを利用しており、以下のようにモックを定義しています。
+
+- 実行する際、Android Studioでテストファイルもしくはフォルダーを選択し、右クリックメニューにて、「Run Tests ...」を選択し、行います。ファイルごとに、メソッドごとに、フォルダーごとにどちらでも可能。
+
+##### Kotlin SDKのテスト構成
+
+- モックの設定
+  - ymlファイル：src/test/assets/yaml/mbaas***.yml リクエストレスポンスのマッピングファイル
+  - 例
+
+```
+request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
+        key: value
+response:
+    status: 201
+    file: valid_post_response.json
+```
+
+  - リクエストレスポンスファイル（複数）：src/test/assets/json(NCMBDispatcher用), src/test/assets/json_error(NCMBErrorDispatcher用)
+  - 例
+
+```
+{"objectId":"7FrmPTBKSNtVjajm","createDate":"2014-06-03T11:28:30.348Z"}
+```
+
+- モック制御する部分：ymlファイルを読み込み、受けているリクエストの情報とymlファイル設定情報を比較し、該当するレスポンスファイルをMockResponse()として返却します。
+    - 正常リクエスト用NCMBDispatcher.kt(ncmb_kotlin/src/test/java/com/nifcloud/mbaas/core/)
+    - 例外リクエスト用 NCMBErrorDispatcher.kt(ncmb_kotlin/src/test/java/com/nifcloud/mbaas/core/)
+
+- その他
+  - 非同期処理のcallbackをテストするためのhelperクラス：`ncmb_kotlin/src/test/java/com/nifcloud/mbaas/core/helper/NCMBInBackgroundTestHelper.kt`。コールバック内の結果のチェックを実施するために、スレッドを一時的に止めるように処理します。
+
+##### テストを書く時に必要なこと
+
+- API利用メソッドのテストに関しては、サーバモックを利用するために、以下のようにモックを定義しています。
 
 ```
 private var mServer: MockWebServer = MockWebServer()
 ```
 
-Testを実施する前に、@Beforeの setup() メソッドで必要な設定を記載します。
-モックの処理はNCMBDispatcherというファイルにて実施しています。
-また非同期処理のテストはInBackgroundTestHelperにてスレッド管理してテスト実施しています。
+- `@Before` 処理で、必要な初期化設定を行います
+
+```kotlin
+@Before
+    fun setup() {
+        val ncmbDispatcher = NCMBDispatcher()
+        mServer.dispatcher = ncmbDispatcher
+        mServer.start()
+        NCMB.initialize(
+            RuntimeEnvironment.application.getApplicationContext(),
+            "appKey",
+            "cliKey",
+            mServer.url("/").toString(),
+            "2013-09-01"
+        )
+
+        callbackFlag = false;
+    }
+```
+- 同期処理テスト
+
+```kotlin
+    @Test
+    @Throws(NCMBException::class)
+    fun save_object_with_post_data_save_success() {
+        var obj = NCMBObject("TestClass")
+        obj.put("key", "value")
+        obj = obj.save()
+        Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
+    }
+```
+
+- 非同期処理
+
+```kotlin
+    @Test
+    fun saveInBackground_object_with_post_data_save_success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val obj = NCMBObject("TestClass")
+        val callback = NCMBCallback { e, ncmbObj ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbObj"] = ncmbObj
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        obj.put("key", "value")
+        inBackgroundHelper.start()
+        obj.saveInBackground(callback)
+        inBackgroundHelper.await()
+        print("Success saved: ObjectID " + (inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId() + " | Response data: CreateDate " + (inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate())
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
+        val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
+        Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
+    }
+```
+
 
 #### レファレンス作成
 
