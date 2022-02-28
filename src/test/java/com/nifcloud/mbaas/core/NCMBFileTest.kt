@@ -35,7 +35,7 @@ class NCMBFileTest {
     @get:Rule
     var tmpFolder = TemporaryFolder()
     lateinit var tmpFile: File
-
+    lateinit var tmpFileDownload: File
 
     @Before
     fun setup() {
@@ -125,6 +125,29 @@ class NCMBFileTest {
         fileObj.save()
         val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
         Assert.assertEquals(fileObj.getCreateDate(), date)
+    }
+
+    @Test
+    fun fileFetchInBackGround_success() {
+        var applicationKey =  "APPKEY"
+        var clientKey = "CLIENTKEY" 
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
+        val fileObj = NCMBFile("tempFile.txt")
+        tmpFileDownload = tmpFolder.newFile("tempFileDownload.txt")
+        fileObj.fileData = tmpFileDownload
+        // ファイルストアへの登録を実施
+        fileObj.fetchInBackground(NCMBCallback { e, ncmbFile ->
+            if (e != null) {
+                //保存に失敗した場合の処理
+                println("File取得に失敗しました : " + e.code + " " + e.message)
+            } else {
+                val fileObj = ncmbFile  as NCMBFile
+                //保存に取得した場合の処理
+                println("保存に成功しました fileName:" + fileObj.fileName)
+                //Filedataチェック
+                println(fileObj.fileData!!.readText(Charset.defaultCharset()).toString())
+            }
+        })
     }
 
 }
