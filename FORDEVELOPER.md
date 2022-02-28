@@ -193,13 +193,13 @@ Android 8.x ~ Android 11.x
 
 ##### テストコード実行方法
 
-- テストケースは、'src/test/java/com/nifcloud/mbaas/core/'フォルダー内に格納されています。
+- テストケースは、`src/test/java/com/nifcloud/mbaas/core/` フォルダー内に格納されています。
 - 実行する際、Android Studioでテストファイルもしくはフォルダーを選択し、右クリックメニューにて、「Run Tests ...」を選択し、行います。ファイルごとに、メソッドごとに、フォルダーごとにどちらでも可能。
 
 ##### Kotlin SDKのテスト構成
 
 - モックの設定
-  - ymlファイル：src/test/assets/yaml/mbaas***.yml リクエストレスポンスのマッピングファイル
+  - ymlファイル：`src/test/assets/yaml/mbaas***.yml` リクエストレスポンスのマッピングファイル
   - 例
 
 ```
@@ -213,16 +213,16 @@ response:
     file: valid_post_response.json
 ```
 
-  - リクエストレスポンスファイル（複数）：src/test/assets/json(NCMBDispatcher用), src/test/assets/json_error(NCMBErrorDispatcher用)
+  - リクエストレスポンスファイル（複数）：`src/test/assets/json` (NCMBDispatcher用), `src/test/assets/json_error` (NCMBErrorDispatcher用)
   - 例
 
 ```
 {"objectId":"7FrmPTBKSNtVjajm","createDate":"2014-06-03T11:28:30.348Z"}
 ```
 
-- モック制御する部分：ymlファイルを読み込み、受けているリクエストの情報とymlファイル設定情報を比較し、該当するレスポンスファイルをMockResponse()として返却します。
-    - 正常リクエスト用NCMBDispatcher.kt(ncmb_kotlin/src/test/java/com/nifcloud/mbaas/core/)
-    - 例外リクエスト用 NCMBErrorDispatcher.kt(ncmb_kotlin/src/test/java/com/nifcloud/mbaas/core/)
+- モック制御する部分：`ncmb_kotlin/src/test/java/com/nifcloud/mbaas/core/`にある、以下のファイルとなります。ymlファイルを読み込み、受けているリクエストの情報とymlファイル設定情報を比較し、該当するレスポンスファイルをMockResponse()として返却します。
+    - 正常リクエスト用 `NCMBDispatcher.kt`
+    - 例外リクエスト用 `NCMBErrorDispatcher.kt`
 
 - その他
   - 非同期処理のcallbackをテストするためのhelperクラス：`ncmb_kotlin/src/test/java/com/nifcloud/mbaas/core/helper/NCMBInBackgroundTestHelper.kt`。コールバック内の結果のチェックを実施するために、スレッドを一時的に止めるように処理します。
