@@ -128,10 +128,7 @@ class NCMBFileTest {
 
     @Test
     fun fileFetchInBackGround_success() {
-        var applicationKey =  "APPKEY"
-        var clientKey = "CLIKEY"
-        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
-        val fileObj = NCMBFile("tempFile.txt")
+        val fileObj = NCMBFile("tempFileDownload.txt")
         // ファイルストアへの登録を実施
         fileObj.fetchInBackground(NCMBCallback { e, ncmbFile ->
             if (e != null) {

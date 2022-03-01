@@ -181,16 +181,13 @@ internal class NCMBConnection(request: NCMBRequest) {
                 }
 
                 override fun onResponse(call: Call, response: Response) {
-
                     //NCMBResponse 処理
                     if (ncmbRequest.isFileGetRequest()) {
-                        println("Start to solve file get request")
                         ncmbResponse = NCMBResponseBuilder.buildFileResponse(response)
                     }else {
                         ncmbResponse = NCMBResponseBuilder.build(response)
                     }
                     responseHandler.doneSolveResponse(callback, ncmbResponse)
-
                 }
             })
 
