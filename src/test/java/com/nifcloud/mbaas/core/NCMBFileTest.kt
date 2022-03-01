@@ -35,7 +35,6 @@ class NCMBFileTest {
     @get:Rule
     var tmpFolder = TemporaryFolder()
     lateinit var tmpFile: File
-    lateinit var tmpFileDownload: File
 
     @Before
     fun setup() {
@@ -57,6 +56,7 @@ class NCMBFileTest {
             tmpFile = tmpFolder.newFile("tempFile.txt")
             // Write something to it.
             tmpFile.appendText("hello world")
+
         } catch (ioe: IOException) {
             System.err.println(
                 "error creating temporary test file in " +
@@ -113,7 +113,6 @@ class NCMBFileTest {
         Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).get("fileName"),"tempFile.txt")
         val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate(),date)
-
     }
 
     @Test
@@ -130,11 +129,9 @@ class NCMBFileTest {
     @Test
     fun fileFetchInBackGround_success() {
         var applicationKey =  "APPKEY"
-        var clientKey = "CLIENTKEY" 
+        var clientKey = "CLIKEY"
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
         val fileObj = NCMBFile("tempFile.txt")
-        tmpFileDownload = tmpFolder.newFile("tempFileDownload.txt")
-        fileObj.fileData = tmpFileDownload
         // ファイルストアへの登録を実施
         fileObj.fetchInBackground(NCMBCallback { e, ncmbFile ->
             if (e != null) {
@@ -144,8 +141,11 @@ class NCMBFileTest {
                 val fileObj = ncmbFile  as NCMBFile
                 //保存に取得した場合の処理
                 println("保存に成功しました fileName:" + fileObj.fileName)
-                //Filedataチェック
-                println(fileObj.fileData!!.readText(Charset.defaultCharset()).toString())
+                //FileByteDataチェック
+                if (fileObj.fileDownloadByte != null)  {
+                    val encodedString = String(fileObj.fileDownloadByte!!, Charsets.UTF_8)
+                    println(encodedString)
+                }
             }
         })
     }

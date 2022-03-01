@@ -16,7 +16,7 @@ import java.util.*
 class NCMBFile: NCMBObject {
 
     var fileNameToSetURL: String = ""
-    var fileToSave: File? = null
+    var fileDownloadByte: ByteArray? = null
     val ignoreKeys: List<String> = Arrays.asList(
         "fileName",
         "fileData",
@@ -151,9 +151,14 @@ class NCMBFile: NCMBObject {
         )
     }
 
-    fun reflectResponseFile(data: ByteArray?) {
+    fun reflectResponseFileData(data: ByteArray?) {
         if (data != null) {
-            this.fileData?.writeBytes(data)
+            this.fileDownloadByte = data
+            // TODO
+            // if(this.fileData?.isFile == true && this.fileData?.canWrite() == true ) {
+            //    println("Write to file")
+            //    this.fileData?.writeBytes(data)
+            // }
         }
     }
 

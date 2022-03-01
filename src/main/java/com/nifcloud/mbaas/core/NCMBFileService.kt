@@ -80,7 +80,7 @@ internal class NCMBFileService : NCMBObjectService(){
         val fileHandler = NCMBHandler { fileCallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    fileObject.reflectResponseFile(response.data as ByteArray)
+                    fileObject.reflectResponseFileData(response.data as ByteArray)
                     callback.done(null, fileObject)
                 }
                 is NCMBResponse.Failure -> {

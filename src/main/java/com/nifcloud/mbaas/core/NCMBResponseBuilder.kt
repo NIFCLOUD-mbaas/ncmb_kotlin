@@ -98,15 +98,12 @@ internal class NCMBResponseBuilder {
                 try {
                     if(!responseDataString.isNullOrEmpty()) {
                         responseDataJson = JSONObject(responseDataString)
+                        return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
                     }
                 } catch (e: JSONException) {
                     responseError = NCMBException(e)
                     return NCMBResponse.Failure(responseError)
                 }
-            }
-            else {
-                var responseByteArray = response.body?.bytes()
-                return NCMBResponse.Success(statusCode, responseHeader, responseByteArray)
             }
 
             //Set error
@@ -121,7 +118,9 @@ internal class NCMBResponseBuilder {
                 invalidSessionToken(mbErrorCode)
                 return NCMBResponse.Failure(responseError)
             }
-            return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
+            var responseByteArray = response.body?.bytes()
+            return NCMBResponse.Success(statusCode, responseHeader, responseByteArray)
+
         }
 
         /**
