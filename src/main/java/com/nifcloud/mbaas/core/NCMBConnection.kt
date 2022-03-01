@@ -105,7 +105,12 @@ internal class NCMBConnection(request: NCMBRequest) {
                     request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
                 }
                 val response = client.newCall(request).execute()
-                ncmbResponse = NCMBResponseBuilder.build(response)
+                //NCMBResponse 処理
+                if (ncmbRequest.isFileGetRequest()) {
+                    ncmbResponse = NCMBResponseBuilder.buildFileResponse(response)
+                }else {
+                    ncmbResponse = NCMBResponseBuilder.build(response)
+                }
             }
         }
         return ncmbResponse

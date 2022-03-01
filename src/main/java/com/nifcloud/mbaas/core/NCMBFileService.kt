@@ -41,7 +41,8 @@ internal class NCMBFileService : NCMBObjectService(){
                 }
             }
         }
-        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,JSONObject(), NCMBRequest.HTTP_METHOD_POST, NCMBRequest.HEADER_CONTENT_TYPE_FILE, fileObject.fileData, callback, fileHandler)
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,JSONObject(), NCMBRequest.HTTP_METHOD_POST,
+            NCMBRequest.HEADER_CONTENT_TYPE_FILE, fileObject.fileData, callback, fileHandler)
         sendRequestAsync(request)
     }
 
@@ -54,12 +55,34 @@ internal class NCMBFileService : NCMBObjectService(){
      */
     @Throws(NCMBException::class)
     fun saveFile(fileObject: NCMBFile){
-        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST, NCMBRequest.HEADER_CONTENT_TYPE_FILE, fileObject.fileData, null, null)
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST,
+            NCMBRequest.HEADER_CONTENT_TYPE_FILE, fileObject.fileData, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
                 fileObject.reflectResponse(response.data as JSONObject)
-                response.data
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+    }
+
+    /**
+     * Fetch file object
+     *
+     * @param params file parameters
+     * @return JSONObject
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun fetchFile(fileObject: NCMBFile){
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST,
+            NCMBRequest.HEADER_CONTENT_TYPE_JSON, fileObject.fileData, null, null)
+        val response = sendRequest(request)
+        when (response) {
+            is NCMBResponse.Success -> {
+                fileObject.reflectResponseFileData(response.data as ByteArray)
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -88,7 +111,8 @@ internal class NCMBFileService : NCMBObjectService(){
                 }
             }
         }
-        val request = createRequestParamsFile(fileObject.fileName, JSONObject(),JSONObject(), NCMBRequest.HTTP_METHOD_GET, NCMBRequest.HEADER_CONTENT_TYPE_JSON, fileObject.fileData, callback, fileHandler)
+        val request = createRequestParamsFile(fileObject.fileName, JSONObject(),JSONObject(), NCMBRequest.HTTP_METHOD_GET,
+            NCMBRequest.HEADER_CONTENT_TYPE_JSON, fileObject.fileData, callback, fileHandler)
         sendRequestAsync(request)
     }
 

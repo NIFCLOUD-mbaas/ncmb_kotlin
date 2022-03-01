@@ -110,7 +110,7 @@ class NCMBFileTest {
         inBackgroundHelper.await()
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
-        Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).get("fileName"),"tempFile.txt")
+        Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).fileName,"tempFile.txt")
         val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate(),date)
     }
@@ -128,23 +128,33 @@ class NCMBFileTest {
 
     @Test
     fun fileFetchInBackGround_success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val fileObj = NCMBFile("tempFileDownload.txt")
+        inBackgroundHelper.start()
         // ファイルストアへの登録を実施
         fileObj.fetchInBackground(NCMBCallback { e, ncmbFile ->
-            if (e != null) {
-                //保存に失敗した場合の処理
-                println("File取得に失敗しました : " + e.code + " " + e.message)
-            } else {
-                val fileObj = ncmbFile  as NCMBFile
-                //保存に取得した場合の処理
-                println("保存に成功しました fileName:" + fileObj.fileName)
-                //FileByteDataチェック
-                if (fileObj.fileDownloadByte != null)  {
-                    val encodedString = String(fileObj.fileDownloadByte!!, Charsets.UTF_8)
-                    println(encodedString)
-                }
-            }
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbFile"] = ncmbFile
+            inBackgroundHelper.release() // ブロックをリリース
         })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val testFileObj = inBackgroundHelper["ncmbFile"] as NCMBFile
+        Assert.assertEquals(testFileObj.fileName,"tempFileDownload.txt")
+        //FileByteDataチェック
+        Assert.assertNotNull(testFileObj.fileDownloadByte)
+        val encodedString = String(testFileObj.fileDownloadByte!!, Charsets.UTF_8)
+        Assert.assertEquals(encodedString,"hello world")
     }
 
+//    @Test
+//    fun fileFetch_success() {
+//        val fileObj = NCMBFile("tempFileDownload.txt")
+//        // ファイルストアへの登録を実施
+//        fileObj.fetch()
+//        Assert.assertNotNull(fileObj.fileDownloadByte)
+//        val encodedString = String(fileObj.fileDownloadByte!!, Charsets.UTF_8)
+//        Assert.assertEquals(encodedString,"hello world")
+//    }
 }

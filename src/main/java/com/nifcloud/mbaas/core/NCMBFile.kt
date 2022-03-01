@@ -151,6 +151,20 @@ class NCMBFile: NCMBObject {
         )
     }
 
+    /**
+     * Fetch File object
+     *
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun fetch(){
+        //connect
+        val fileService = NCMBFileService()
+        //new create
+        fileService.fetchFile(this)
+        mUpdateKeys.clear()
+    }
+
     fun reflectResponseFileData(data: ByteArray?) {
         if (data != null) {
             this.fileDownloadByte = data
