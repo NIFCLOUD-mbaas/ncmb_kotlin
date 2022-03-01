@@ -96,7 +96,7 @@ class NCMBPush : NCMBObject {
      */
     open fun setDeliveryTimeString(value: String){
         val date: Date?
-        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         try {
             date = df.parse(value)
             deliveryTime = date
