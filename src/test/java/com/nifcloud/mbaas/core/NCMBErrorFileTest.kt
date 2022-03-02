@@ -113,4 +113,29 @@ class NCMBErrorFileTest {
         Assert.assertEquals(NCMBException.UNSUPPORT_MEDIA_TYPE, throwable.code)
     }
 
+    @Test
+    fun fileFetch_err401001() {
+        val fileObj = NCMBFile("tempFileDownloadE404.txt")
+        // ファイルストアへの取得を実施
+        val throwable = assertFails { fileObj.fetch() } as NCMBException
+        Assert.assertNull(fileObj.fileDownloadByte)
+        Assert.assertEquals(NCMBException.DATA_NOT_FOUND, throwable.code)
+    }
+
+    @Test
+    fun fileFetchInBackGround_err401001() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val fileObj = NCMBFile("tempFileDownloadE404.txt")
+        inBackgroundHelper.start()
+        // ファイルストアへの登録を実施
+        fileObj.fetchInBackground(NCMBCallback { e, ncmbFile ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbFile"] = ncmbFile
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(fileObj.fileDownloadByte)
+        Assert.assertEquals(NCMBException.DATA_NOT_FOUND, (inBackgroundHelper["e"] as NCMBException).code)
+    }
 }
