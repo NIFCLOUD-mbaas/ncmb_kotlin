@@ -61,7 +61,7 @@ class NCMBPush : NCMBObject {
      */
     /**
      * Set delivery date
-     * The argument is the time according to the default time zone of the device.
+     * The argument is the time based on default time zone of the device.
      * @param value delivery Time(UTC)
      */
     var deliveryTime: Date?
@@ -112,7 +112,7 @@ class NCMBPush : NCMBObject {
      */
     /**
      * Set delivery expiration date
-     * The argument is the time according to the default time zone of the device.
+     * The argument is the time based on default time zone of the device.
      * @param value delivery expiration date
      */
     var deliveryExpirationDate: Date?
