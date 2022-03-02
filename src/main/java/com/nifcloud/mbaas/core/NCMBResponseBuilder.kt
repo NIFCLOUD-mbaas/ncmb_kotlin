@@ -90,6 +90,8 @@ internal class NCMBResponseBuilder {
             var responseHeader = response.headers
 
             val contentType = response.headers["Content-Type"].toString()
+            //println("Content type:" + contentType)
+            //println("status Code:"  + statusCode)
 
             //Error case, json string response show error
             if (contentType == "application/json" || contentType == "application/json;charset=UTF-8") {
@@ -98,6 +100,18 @@ internal class NCMBResponseBuilder {
                 try {
                     if(!responseDataString.isNullOrEmpty()) {
                         responseDataJson = JSONObject(responseDataString)
+                        //Set error
+                        if (statusCode != HTTP_STATUS_OK &&
+                            statusCode != HTTP_STATUS_CREATED
+                        ) {
+                            /** mobile backendへのAPIリクエスト結果から取得したエラーコード  */
+                            var mbErrorCode = responseDataJson.getString("code")
+                            var mbErrorMessage = responseDataJson.getString("error")
+                            responseError = NCMBException(mbErrorCode, mbErrorMessage)
+                            //Checking invalid sessionToken
+                            invalidSessionToken(mbErrorCode)
+                            return NCMBResponse.Failure(responseError)
+                        }
                         return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
                     }
                 } catch (e: JSONException) {
@@ -106,18 +120,6 @@ internal class NCMBResponseBuilder {
                 }
             }
 
-            //Set error
-            if (statusCode != HTTP_STATUS_OK &&
-                statusCode != HTTP_STATUS_CREATED
-            ) {
-                /** mobile backendへのAPIリクエスト結果から取得したエラーコード  */
-                var mbErrorCode = responseDataJson.getString("code")
-                var mbErrorMessage = responseDataJson.getString("error")
-                responseError = NCMBException(mbErrorCode, mbErrorMessage)
-                //Checking invalid sessionToken
-                invalidSessionToken(mbErrorCode)
-                return NCMBResponse.Failure(responseError)
-            }
             var responseByteArray = response.body?.bytes()
             return NCMBResponse.Success(statusCode, responseHeader, responseByteArray)
 

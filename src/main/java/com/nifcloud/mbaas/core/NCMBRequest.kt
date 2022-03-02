@@ -65,6 +65,7 @@ internal class NCMBRequest(
         return this.requestProperties
     }
 
+    // Check if this request is to download file (get File) or not. Method GET + URL is .../files/FILENAME
     fun isFileGetRequest() :Boolean {
         if (method == HTTP_METHOD_GET && url.startsWith( NCMB.getApiBaseUrl()  + "files/" ))
             return true

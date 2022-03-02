@@ -77,11 +77,12 @@ internal class NCMBFileService : NCMBObjectService(){
      */
     @Throws(NCMBException::class)
     fun fetchFile(fileObject: NCMBFile){
-        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST,
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_GET,
             NCMBRequest.HEADER_CONTENT_TYPE_JSON, fileObject.fileData, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
+                //println("SUCCESS" + response.data)
                 fileObject.reflectResponseFileData(response.data as ByteArray)
             }
             is NCMBResponse.Failure -> {

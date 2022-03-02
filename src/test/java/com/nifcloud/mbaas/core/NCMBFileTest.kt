@@ -148,13 +148,17 @@ class NCMBFileTest {
         Assert.assertEquals(encodedString,"hello world")
     }
 
-//    @Test
-//    fun fileFetch_success() {
-//        val fileObj = NCMBFile("tempFileDownload.txt")
-//        // ファイルストアへの登録を実施
-//        fileObj.fetch()
-//        Assert.assertNotNull(fileObj.fileDownloadByte)
-//        val encodedString = String(fileObj.fileDownloadByte!!, Charsets.UTF_8)
-//        Assert.assertEquals(encodedString,"hello world")
-//    }
+    @Test
+    fun fileFetch_success() {
+        val fileObj = NCMBFile("tempFileDownload.txt")
+        // ファイルストアへの登録を実施
+        try {
+            fileObj.fetch()
+        } catch (e: NCMBException){
+            println("Error occured:" + e.message)
+        }
+        Assert.assertNotNull(fileObj.fileDownloadByte)
+        val encodedString = String(fileObj.fileDownloadByte!!, Charsets.UTF_8)
+        Assert.assertEquals(encodedString,"hello world")
+    }
 }

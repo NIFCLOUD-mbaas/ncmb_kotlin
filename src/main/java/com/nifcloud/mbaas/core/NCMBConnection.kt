@@ -111,8 +111,10 @@ internal class NCMBConnection(request: NCMBRequest) {
                 }else {
                     ncmbResponse = NCMBResponseBuilder.build(response)
                 }
+
             }
         }
+        //println()
         return ncmbResponse
     }
 
