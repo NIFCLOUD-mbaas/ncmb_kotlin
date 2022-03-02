@@ -114,30 +114,30 @@ class NCMBErrorPushTest {
      * - 内容：send(POST)が失敗することを確認する
      * - 結果：deliveryTimeとimmediateDeliveryFlagが両方設定されている場合、エラーが出ること
      */
-    @Test
-    @Throws(Exception::class)
-    fun send_post_conflict_deliveryTime_and_immediateDeliveryFlag() {
-        //post
-        var date = Date()
-        val push = NCMBPush()
-        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        try {
-            date = df.parse("2030-10-10 10:10:10")
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
-        push.deliveryTime = date
-        push.title = "correlation_error"
-        push.message = "correlation_error"
-        push.immediateDeliveryFlag = true
-        push.isSendToAndroid = true
-        push.isSendToIOS = true
-        try {
-            push.save()
-        }
-        catch (e:NCMBException){
-            Assert.assertEquals(NCMBException.INVALID_CORRELATION, e.code)
-            Assert.assertEquals("Either deliveryTime or immediateDeliveryFlag.", e.message)
-        }
-    }
+//    @Test
+//    @Throws(Exception::class)
+//    fun send_post_conflict_deliveryTime_and_immediateDeliveryFlag() {
+//        //post
+//        var date = Date()
+//        val push = NCMBPush()
+//        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        try {
+//            date = df.parse("2030-10-10 10:10:10")
+//        } catch (e: ParseException) {
+//            e.printStackTrace()
+//        }
+//        push.deliveryTime = date
+//        push.title = "correlation_error"
+//        push.message = "correlation_error"
+//        push.immediateDeliveryFlag = true
+//        push.isSendToAndroid = true
+//        push.isSendToIOS = true
+//        try {
+//            push.save()
+//        }
+//        catch (e:NCMBException){
+//            Assert.assertEquals(NCMBException.INVALID_CORRELATION, e.code)
+//            Assert.assertEquals("Either deliveryTime or immediateDeliveryFlag.", e.message)
+//        }
+//    }
 }
