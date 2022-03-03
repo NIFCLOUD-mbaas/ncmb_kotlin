@@ -265,7 +265,7 @@ class NCMBPushTest {
             push.setObjectId("7FrmPTBKSNtVjajm")
             push.title = "title_update"
             push.message = "message_update"
-            //push.deliveryTime = date
+            push.deliveryTime = date
             push.isSendToAndroid = true
             push.isSendToIOS = true
             push.save()
