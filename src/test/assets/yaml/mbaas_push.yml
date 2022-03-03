@@ -65,7 +65,6 @@ request:
     body:
         title: "title_update"
         message: "message_update"
-        deliveryTime: {"iso":"2030-10-10T01:10:10.000Z","__type":"Date"}
         target: ["android", "ios"]
 response:
     status: 200
