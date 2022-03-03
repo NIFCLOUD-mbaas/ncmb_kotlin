@@ -68,127 +68,127 @@ class NCMBPushTest {
     /**
      * putテスト
      */
-//    @Test
-//    fun put_push_data_test() {
-//        var pushObj = NCMBPush()
-//        pushObj.title = "title_update"
-//        pushObj.message = "message_update"
-//        pushObj.immediateDeliveryFlag = true
-//        Assert.assertEquals("title_update", pushObj.mFields.get("title"))
-//        Assert.assertEquals("message_update", pushObj.mFields.get("message"))
-//        Assert.assertEquals(true, pushObj.mFields.get("immediateDeliveryFlag"))
-//    }
+    @Test
+    fun put_push_data_test() {
+        var pushObj = NCMBPush()
+        pushObj.title = "title_update"
+        pushObj.message = "message_update"
+        pushObj.immediateDeliveryFlag = true
+        Assert.assertEquals("title_update", pushObj.mFields.get("title"))
+        Assert.assertEquals("message_update", pushObj.mFields.get("message"))
+        Assert.assertEquals(true, pushObj.mFields.get("immediateDeliveryFlag"))
+    }
     /**
      * putテスト
      */
-//    @Test
-//    fun test_deliveryTime() {
-//        val push = NCMBPush()
-//        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        try {
-//            val date = df.parse("2030-10-10 10:10:10")
-//            push.deliveryTime = date
-//            Assert.assertEquals(date, push.deliveryTime)
-//            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
-//            Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
-//        } catch (e: ParseException) {
-//            e.printStackTrace()
-//        }
-//    }
+    @Test
+    fun test_deliveryTime() {
+        val push = NCMBPush()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        try {
+            val date = df.parse("2030-10-10 10:10:10")
+            push.deliveryTime = date
+            Assert.assertEquals(date, push.deliveryTime)
+            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+            Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+    }
     /**
      * putテスト
      */
-//    @Test
-//    fun test_setDeliveryTimeString() {
-//        val push = NCMBPush()
-//        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        try {
-//            val date = df.parse("2030-10-10 10:10:10")
-//            push.setDeliveryTimeString("2030-10-10 10:10:10")
-//            Assert.assertEquals(date, push.deliveryTime)
-//            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
-//            Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
-//        } catch (e: ParseException) {
-//            e.printStackTrace()
-//        }
-//    }
+    @Test
+    fun test_setDeliveryTimeString() {
+        val push = NCMBPush()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        try {
+            val date = df.parse("2030-10-10 10:10:10")
+            push.setDeliveryTimeString("2030-10-10 10:10:10")
+            Assert.assertEquals(date, push.deliveryTime)
+            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+            Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+    }
     /**
      * putテスト
      */
-//    @Test
-//    fun test_deliveryExpirationDate() {
-//        val push = NCMBPush()
-//        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-//        try {
-//            val date = df.parse("2030-10-10 10:10:10")
-//            push.deliveryExpirationDate = date
-//            Assert.assertEquals(date, push.deliveryExpirationDate)
-//            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
-//            Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryExpirationDate").toString())
-//        } catch (e: ParseException) {
-//            e.printStackTrace()
-//        }
-//    }
+    @Test
+    fun test_deliveryExpirationDate() {
+        val push = NCMBPush()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        try {
+            val date = df.parse("2030-10-10 10:10:10")
+            push.deliveryExpirationDate = date
+            Assert.assertEquals(date, push.deliveryExpirationDate)
+            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+            Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryExpirationDate").toString())
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+    }
     /**
      * putテスト
      */
-//    @Test
-//    fun test_deliveryExpirationTime_day() {
-//        val push = NCMBPush()
-//        push.deliveryExpirationTime = "3 day"
-//        Assert.assertEquals("3 day", push.deliveryExpirationTime)
-//        Assert.assertEquals("3 day", push.mFields.get("deliveryExpirationTime"))
-//    }
+    @Test
+    fun test_deliveryExpirationTime_day() {
+        val push = NCMBPush()
+        push.deliveryExpirationTime = "3 day"
+        Assert.assertEquals("3 day", push.deliveryExpirationTime)
+        Assert.assertEquals("3 day", push.mFields.get("deliveryExpirationTime"))
+    }
 
     /**
      * putテスト
      */
-//    @Test
-//    fun test_deliveryExpirationTime_hour() {
-//        val push = NCMBPush()
-//        push.deliveryExpirationTime = "3 hour"
-//        Assert.assertEquals("3 hour", push.deliveryExpirationTime)
-//        Assert.assertEquals("3 hour", push.mFields.get("deliveryExpirationTime"))
-//    }
+    @Test
+    fun test_deliveryExpirationTime_hour() {
+        val push = NCMBPush()
+        push.deliveryExpirationTime = "3 hour"
+        Assert.assertEquals("3 hour", push.deliveryExpirationTime)
+        Assert.assertEquals("3 hour", push.mFields.get("deliveryExpirationTime"))
+    }
 
     /**
      * - 内容：send(POST)が成功することを確認する
      * - 結果：同期でプッシュの送信が出来る事
      */
-//    @Test
-//    @Throws(Exception::class)
-//    fun send_post_target() {
-//        //post
-//        val push = NCMBPush()
-//        push.title = "title_update"
-//        push.message = "message_update"
-//        push.immediateDeliveryFlag = true
-//        push.isSendToIOS = true
-//        push.save()
-//        val TestJSON = JSONObject()
-//        TestJSON.put("target",JSONArray(arrayListOf("ios")))
-//        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
-//
-//        val push2 = NCMBPush()
-//        push2.title = "title_update"
-//        push2.message = "message_update"
-//        push2.immediateDeliveryFlag = true
-//        push2.isSendToIOS = true
-//        push2.isSendToAndroid = true
-//        push2.save()
-//        val TestJSON2 = JSONObject()
-//        TestJSON2.put("target",JSONArray(arrayListOf("ios", "android")))
-//        Assert.assertEquals(TestJSON2.get("target"), push2.mFields.get("target"))
-//
-//        val push3 = NCMBPush()
-//        push3.title = "title_update"
-//        push3.message = "message_update"
-//        push3.immediateDeliveryFlag = true
-//        push3.isSendToIOS = true
-//        push3.isSendToAndroid = false
-//        push3.save()
-//        Assert.assertEquals(TestJSON.get("target"), push3.mFields.get("target"))
-//    }
+    @Test
+    @Throws(Exception::class)
+    fun send_post_target() {
+        //post
+        val push = NCMBPush()
+        push.title = "title_update"
+        push.message = "message_update"
+        push.immediateDeliveryFlag = true
+        push.isSendToIOS = true
+        push.save()
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+
+        val push2 = NCMBPush()
+        push2.title = "title_update"
+        push2.message = "message_update"
+        push2.immediateDeliveryFlag = true
+        push2.isSendToIOS = true
+        push2.isSendToAndroid = true
+        push2.save()
+        val TestJSON2 = JSONObject()
+        TestJSON2.put("target",JSONArray(arrayListOf("ios", "android")))
+        Assert.assertEquals(TestJSON2.get("target"), push2.mFields.get("target"))
+
+        val push3 = NCMBPush()
+        push3.title = "title_update"
+        push3.message = "message_update"
+        push3.immediateDeliveryFlag = true
+        push3.isSendToIOS = true
+        push3.isSendToAndroid = false
+        push3.save()
+        Assert.assertEquals(TestJSON.get("target"), push3.mFields.get("target"))
+    }
 
     /**
      * - 内容：send(POST)が成功することを確認する
@@ -222,33 +222,33 @@ class NCMBPushTest {
      * - 内容：send(PUT)が成功することを確認する
      * - 結果：同期でプッシュの更新が出来る事
      */
-//    @Test
-//    @Throws(Exception::class)
-//    fun send_put_sametime() {
-//        var error: NCMBException? = null
-//        val push = NCMBPush()
-//        //put
-//        try {
-//            push.setObjectId("7FrmPTBKSNtVjajm")
-//            push.title = "title_update"
-//            push.message = "message_update"
-//            push.immediateDeliveryFlag = true
-//            push.isSendToAndroid = true
-//            push.isSendToIOS = true
-//            push.save()
-//        } catch (e: NCMBException) {
-//            error = e
-//        }
-//        val TestJSON = JSONObject()
-//        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
-//        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
-//        //check
-//        Assert.assertNull(error)
-//        Assert.assertEquals("title_update", push.title)
-//        Assert.assertEquals("message_update", push.message)
-//        val format: DateFormat = getIso8601()
-//        Assert.assertEquals(format.parse("2014-06-04T11:28:30.348Z"), push.getUpdateDate())
-//    }
+    @Test
+    @Throws(Exception::class)
+    fun send_put_sametime() {
+        var error: NCMBException? = null
+        val push = NCMBPush()
+        //put
+        try {
+            push.setObjectId("7FrmPTBKSNtVjajm")
+            push.title = "title_update"
+            push.message = "message_update"
+            push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.isSendToIOS = true
+            push.save()
+        } catch (e: NCMBException) {
+            error = e
+        }
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+        //check
+        Assert.assertNull(error)
+        Assert.assertEquals("title_update", push.title)
+        Assert.assertEquals("message_update", push.message)
+        val format: DateFormat = getIso8601()
+        Assert.assertEquals(format.parse("2014-06-04T11:28:30.348Z"), push.getUpdateDate())
+    }
 
     /**
      * - 内容：send(PUT)が成功することを確認する
