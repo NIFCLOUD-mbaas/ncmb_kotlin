@@ -194,30 +194,30 @@ class NCMBPushTest {
      * - 内容：send(POST)が成功することを確認する
      * - 結果：同期でプッシュの送信が出来る事
      */
-//    @Test
-//    @Throws(Exception::class)
-//    fun send_post() {
-//        //post
-//        var error: NCMBException? = null
-//        val push = NCMBPush()
-//        try {
-//            push.title = "title_update"
-//            push.message = "message_update"
-//            push.immediateDeliveryFlag = true
-//            push.isSendToAndroid = true
-//            push.save()
-//        } catch (e: NCMBException) {
-//            error = e
-//        }
-//        val TestJSON = JSONObject()
-//        TestJSON.put("target",JSONArray(arrayListOf("android")))
-//        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
-//        //check
-//        Assert.assertNull(error)
-//        Assert.assertEquals("7FrmPTBKSNtVjajm", push.getObjectId())
-//        val format: DateFormat = getIso8601()
-//        Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), push.getCreateDate())
-//    }
+    @Test
+    @Throws(Exception::class)
+    fun send_post() {
+        //post
+        var error: NCMBException? = null
+        val push = NCMBPush()
+        try {
+            push.title = "title_update"
+            push.message = "message_update"
+            push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.save()
+        } catch (e: NCMBException) {
+            error = e
+        }
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+        //check
+        Assert.assertNull(error)
+        Assert.assertEquals("7FrmPTBKSNtVjajm", push.getObjectId())
+        val format: DateFormat = getIso8601()
+        Assert.assertEquals(format.parse("2014-06-03T11:28:30.348Z"), push.getCreateDate())
+    }
     /**
      * - 内容：send(PUT)が成功することを確認する
      * - 結果：同期でプッシュの更新が出来る事
@@ -265,7 +265,7 @@ class NCMBPushTest {
             push.setObjectId("7FrmPTBKSNtVjajm")
             push.title = "title_update"
             push.message = "message_update"
-            push.deliveryTime = date
+            push.immediateDeliveryFlag = true
             push.isSendToAndroid = true
             push.isSendToIOS = true
             push.save()
