@@ -41,7 +41,7 @@ request:
     body:
         title: "title_update"
         message: "message_update"
-        deliveryTime: {"iso":"2030-10-10T01:10:10.000Z","__type":"Date"}
+        deliveryTime: {"iso":"2030-10-10T10:10:10.000Z","__type":"Date"}
         target: ["ios", "android"]
 response:
     status: 201
@@ -65,7 +65,7 @@ request:
     body:
         title: "title_update"
         message: "message_update"
-        deliveryTime: {"iso":"2030-10-10T01:10:10.000Z","__type":"Date"}
+        deliveryTime: {"iso":"2030-10-10T10:10:10.000Z","__type":"Date"}
         target: ["android", "ios"]
         deliveryExpirationTime: "3 day"
 response:
@@ -80,7 +80,7 @@ request:
         message: "message_update"
         target: ["android", "ios"]
         immediateDeliveryFlag: true
-        deliveryExpirationDate: {"iso":"2030-10-10T01:10:10.000Z","__type":"Date"}
+        deliveryExpirationDate: {"iso":"2030-10-10T10:10:10.000Z","__type":"Date"}
 response:
     status: 200
     file: valid_put_response.json
