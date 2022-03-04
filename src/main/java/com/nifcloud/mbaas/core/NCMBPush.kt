@@ -93,10 +93,14 @@ class NCMBPush : NCMBObject {
      * Also, The registered value is {"iso":"yyyy-MM-ddTHH:mm:ss.000Z","__type":"Date"}.
      *
      * @param value deliveryTime
+     * @param timezone Timezone of time value. Default timezone of system will be use if not be set
      */
-    open fun setDeliveryTimeString(value: String){
+    open fun setDeliveryTimeString(value: String, timeZone: TimeZone? = null){
         val date: Date?
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        if (timeZone != null){
+            df.timeZone = timeZone
+        }
         try {
             date = df.parse(value)
             deliveryTime = date

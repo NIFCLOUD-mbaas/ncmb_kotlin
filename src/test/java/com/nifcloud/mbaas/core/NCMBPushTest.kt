@@ -85,11 +85,12 @@ class NCMBPushTest {
     fun test_deliveryTime() {
         val push = NCMBPush()
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        df.timeZone = TimeZone.getTimeZone("Etc/UTC")
         try {
             val date = df.parse("2030-10-10 10:10:10")
             push.deliveryTime = date
             Assert.assertEquals(date, push.deliveryTime)
-            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T10:10:10.000Z\", \"__type\":\"Date\"}")
             Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
         } catch (e: ParseException) {
             e.printStackTrace()
@@ -102,11 +103,12 @@ class NCMBPushTest {
     fun test_setDeliveryTimeString() {
         val push = NCMBPush()
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        df.timeZone = TimeZone.getTimeZone("Etc/UTC")
         try {
             val date = df.parse("2030-10-10 10:10:10")
-            push.setDeliveryTimeString("2030-10-10 10:10:10")
+            push.setDeliveryTimeString("2030-10-10 10:10:10", df.timeZone)
             Assert.assertEquals(date, push.deliveryTime)
-            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T10:10:10.000Z\", \"__type\":\"Date\"}")
             Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryTime").toString())
         } catch (e: ParseException) {
             e.printStackTrace()
@@ -119,11 +121,12 @@ class NCMBPushTest {
     fun test_deliveryExpirationDate() {
         val push = NCMBPush()
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        df.timeZone = TimeZone.getTimeZone("Etc/UTC")
         try {
             val date = df.parse("2030-10-10 10:10:10")
             push.deliveryExpirationDate = date
             Assert.assertEquals(date, push.deliveryExpirationDate)
-            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T01:10:10.000Z\", \"__type\":\"Date\"}")
+            val isoDate =  JSONObject("{\"iso\":\"2030-10-10T10:10:10.000Z\", \"__type\":\"Date\"}")
             Assert.assertEquals(isoDate.toString(), push.mFields.get("deliveryExpirationDate").toString())
         } catch (e: ParseException) {
             e.printStackTrace()
