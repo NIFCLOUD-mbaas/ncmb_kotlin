@@ -58,6 +58,14 @@ class NCMBErrorInstallationTest {
         )
         //Todo background method
     }
+    @Test
+    @Throws(Exception::class)
+    fun save_does_not_use() {
+        //post
+        val installation = NCMBInstallation()
+        val throwable = assertFails { installation.save()}
+        Assert.assertEquals("This method cannot be used. Please use saveInBackground.", throwable.message)
+    }
 
     @Test
     @Throws(Exception::class)
@@ -75,11 +83,6 @@ class NCMBErrorInstallationTest {
         inBackgroundHelper.await()
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals("registrationId is must not be null.", throwable.message)
-
-//        installation.saveInBackground(callback)
-//        inBackgroundHelper.await()
-//        Assert.assertNull(inBackgroundHelper["e"])
-//        Assert.assertEquals("registrationId is must not be null.", (inBackgroundHelper["e"] as NCMBException).message)
     }
 
     @Test

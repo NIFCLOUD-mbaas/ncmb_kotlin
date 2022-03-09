@@ -329,6 +329,16 @@ class NCMBInstallation : NCMBObject {
     }
 
     /**
+     * Save installation object
+     *
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    override fun save(){
+        throw NCMBException(UnsupportedOperationException("This method cannot be used. Please use saveInBackground."))
+    }
+
+    /**
      * Save installation object in Background
      *
      * @param callback Save Callback
