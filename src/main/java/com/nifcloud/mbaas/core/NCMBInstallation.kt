@@ -329,13 +329,13 @@ class NCMBInstallation : NCMBObject {
     }
 
     /**
-     * Save installation object
+     * This method is not available because of In synchronous processing Acquisition of deviceToken is deprecated.
      *
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
     override fun save(){
-        throw NCMBException(UnsupportedOperationException("This method cannot be used. Please use saveInBackground."))
+        throw NCMBException(UnsupportedOperationException("For NCMBInstallation class this method cannot be used. Please use saveInBackground() instead."))
     }
 
     /**

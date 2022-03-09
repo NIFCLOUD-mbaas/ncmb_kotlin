@@ -64,7 +64,7 @@ class NCMBErrorInstallationTest {
         //post
         val installation = NCMBInstallation()
         val throwable = assertFails { installation.save()}
-        Assert.assertEquals("This method cannot be used. Please use saveInBackground.", throwable.message)
+        Assert.assertEquals("For NCMBInstallation class this method cannot be used. Please use saveInBackground() instead.", throwable.message)
     }
 
     @Test
