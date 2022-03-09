@@ -112,6 +112,7 @@ class NCMBFileTest {
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).fileName,"tempFile.txt")
         val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
+        Assert.assertNotNull((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate())
         Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate(),date)
     }
 
@@ -161,4 +162,5 @@ class NCMBFileTest {
         val encodedString = String(fileObj.fileDownloadByte!!, Charsets.UTF_8)
         Assert.assertEquals(encodedString,"hello world")
     }
+
 }

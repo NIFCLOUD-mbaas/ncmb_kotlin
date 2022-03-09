@@ -139,7 +139,6 @@ internal class NCMBConnection(request: NCMBRequest) {
 
                 //Get file from params
                 var fileObj = ncmbRequest.params.get("file") as File
-
                 val requestBody = MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart(
@@ -235,26 +234,33 @@ internal class NCMBConnection(request: NCMBRequest) {
             val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
             val client = OkHttpClient().newCall(request)
 
-            client.execute().use { response ->
-                if (!response.isSuccessful) {
-                    try{
-                        //Convert error json from response body
-                        var responseErrorString = response.body?.string()
-                        var responseErrorJson = JSONObject(responseErrorString)
-                        var fileException = NCMBException(responseErrorJson.getString("code"), responseErrorJson.getString("error"))
-                        ncmbResponse = NCMBResponse.Failure(fileException)
-                        responseHandler.doneSolveResponse(callback, ncmbResponse)
-                    }catch (e:JSONException) {
-                        var fileException = NCMBException(NCMBException.GENERIC_ERROR, "File save error: $response")
-                        ncmbResponse = NCMBResponse.Failure(fileException)
-                        responseHandler.doneSolveResponse(callback, ncmbResponse)
-                    }
-                } else {
-                    ncmbResponse = NCMBResponseBuilder.build(response)
+            client.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace()
+                    ncmbResponse = NCMBResponse.Failure(NCMBException(e))
                     responseHandler.doneSolveResponse(callback, ncmbResponse)
                 }
-            }
 
+                override fun onResponse(call: Call, response: Response) {
+                    if (!response.isSuccessful) {
+                        try{
+                            //Convert error json from response body
+                            var responseErrorString = response.body?.string()
+                            var responseErrorJson = JSONObject(responseErrorString)
+                            var fileException = NCMBException(responseErrorJson.getString("code"), responseErrorJson.getString("error"))
+                            ncmbResponse = NCMBResponse.Failure(fileException)
+                            responseHandler.doneSolveResponse(callback, ncmbResponse)
+                        }catch (e:JSONException) {
+                            var fileException = NCMBException(NCMBException.GENERIC_ERROR, "File save error: $response")
+                            ncmbResponse = NCMBResponse.Failure(fileException)
+                            responseHandler.doneSolveResponse(callback, ncmbResponse)
+                        }
+                    } else {
+                        ncmbResponse = NCMBResponseBuilder.build(response)
+                        responseHandler.doneSolveResponse(callback, ncmbResponse)
+                    }
+                }
+            })
 
         } catch (e: Exception) {
             println(e.printStackTrace())
