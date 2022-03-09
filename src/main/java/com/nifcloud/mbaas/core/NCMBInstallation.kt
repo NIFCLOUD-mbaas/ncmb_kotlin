@@ -329,33 +329,6 @@ class NCMBInstallation : NCMBObject {
     }
 
     /**
-     * Save installation object
-     *
-     * @throws NCMBException exception from NIFCLOUD mobile backend
-     */
-    @Throws(NCMBException::class)
-    override fun save(){
-        //connect
-        val installationService = NCMBInstallationService()
-        val responseData: JSONObject
-        if (getObjectId() == null) {
-            //new create
-            //responseData = installationService.createInstallation(localDeviceToken, mFields)
-        } else {
-            //update
-            var updateJson: JSONObject? = null
-            updateJson = try {
-                createUpdateJsonData()
-            } catch (e: JSONException) {
-                throw NCMBException(e)
-            }
-            //responseData = installationService.updateInstallation(getObjectId(), updateJson)
-        }
-        //localData = responseData
-        mUpdateKeys.clear()
-    }
-
-    /**
      * Save installation object in Background
      *
      * @param callback Save Callback
