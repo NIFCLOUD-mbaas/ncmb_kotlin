@@ -105,6 +105,11 @@ class NCMBException : Exception {
         const val MISSING_VALUE = "E400006"
 
         /**
+         * E400008 Invalid Correlation (相関関係でエラー)
+         */
+        const val INVALID_CORRELATION = "E400008"
+
+        /**
          * E401001 Invalid Authentication header (Header不正による認証エラー)
          */
         const val INVALID_AUTH_HEADER = "E401001"

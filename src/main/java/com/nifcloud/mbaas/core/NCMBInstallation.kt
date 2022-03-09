@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 package com.nifcloud.mbaas.core
-import com.nifcloud.mbaas.core.NCMBLocalFile.checkNCMBContext
-import com.nifcloud.mbaas.core.NCMBLocalFile.create
-import com.nifcloud.mbaas.core.NCMBLocalFile.readFile
-import org.json.JSONException
-import org.json.JSONObject
-import java.util.*
 import com.google.android.gms.tasks.OnCanceledListener
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
-import java.util.Arrays
+import java.util.*
 
 
 /**
@@ -135,7 +132,7 @@ class NCMBInstallation : NCMBObject {
     /**
      * Channels information
      */
-    var channels: Array<String>?
+    var channels: JSONArray?
         /**
          * Get channels
          *
@@ -145,7 +142,9 @@ class NCMBInstallation : NCMBObject {
             return try {
                 if (mFields.isNull(CHANNELS)) {
                     null
-                } else arrayOf(mFields.getString(CHANNELS))
+                } else {
+                    mFields.getJSONArray(CHANNELS)
+                }
             } catch (error: JSONException) {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
@@ -163,7 +162,6 @@ class NCMBInstallation : NCMBObject {
                 throw NCMBException(IllegalArgumentException(error.message))
             }
         }
-
 
     /**
      * Device type information

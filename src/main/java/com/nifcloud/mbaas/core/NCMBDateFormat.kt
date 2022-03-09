@@ -30,8 +30,7 @@ internal object NCMBDateFormat {
      */
     fun getIso8601(): SimpleDateFormat {
         val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-        val locale = Locale.JAPAN
-        val format = SimpleDateFormat(pattern, locale)
+        val format = SimpleDateFormat(pattern)
         format.timeZone = SimpleTimeZone(0, "UTC")
         return format
     }

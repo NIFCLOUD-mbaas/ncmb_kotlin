@@ -170,3 +170,16 @@ response:
     status: 404
     file: E404001_error_response.json
 ---
+request:
+    url: /2013-09-01/push
+    method: POST
+    body:
+        title: "correlation_error"
+        message: "correlation_error"
+        immediateDeliveryFlag: true
+        deliveryTime: {"iso":"2030-10-10T10:10:10.000Z","__type":"Date"}
+        target: ["android", "ios"]
+response:
+    status: 400
+    file: E400008_error_response.json
+---
