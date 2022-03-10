@@ -115,7 +115,7 @@ class NCMBErrorFileTest {
 
     @Test
     fun fileFetch_err401001() {
-        val fileObj = NCMBFile("tempFileDownloadE404.txt")
+        val fileObj = NCMBFile("tempFileErrE404.txt")
         // ファイルストアへの取得を実施
         val throwable = assertFails { fileObj.fetch() } as NCMBException
         Assert.assertNull(fileObj.fileDownloadByte)
@@ -125,7 +125,7 @@ class NCMBErrorFileTest {
     @Test
     fun fileFetchInBackGround_err401001() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-        val fileObj = NCMBFile("tempFileDownloadE404.txt")
+        val fileObj = NCMBFile("tempFileErrE404.txt")
         inBackgroundHelper.start()
         // ファイルストアへの登録を実施
         fileObj.fetchInBackground(NCMBCallback { e, ncmbFile ->

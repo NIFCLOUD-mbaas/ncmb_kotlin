@@ -42,7 +42,7 @@ internal class NCMBFileService : NCMBObjectService(){
             }
         }
         val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,JSONObject(), NCMBRequest.HTTP_METHOD_POST,
-            NCMBRequest.HEADER_CONTENT_TYPE_FILE, fileObject.fileData, callback, fileHandler)
+            NCMBRequest.HEADER_CONTENT_TYPE_FILE, callback, fileHandler)
         sendRequestAsync(request)
     }
 
@@ -56,7 +56,7 @@ internal class NCMBFileService : NCMBObjectService(){
     @Throws(NCMBException::class)
     fun saveFile(fileObject: NCMBFile){
         val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST,
-            NCMBRequest.HEADER_CONTENT_TYPE_FILE, fileObject.fileData, null, null)
+            NCMBRequest.HEADER_CONTENT_TYPE_FILE, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -78,7 +78,7 @@ internal class NCMBFileService : NCMBObjectService(){
     @Throws(NCMBException::class)
     fun fetchFile(fileObject: NCMBFile){
         val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_GET,
-            NCMBRequest.HEADER_CONTENT_TYPE_JSON, fileObject.fileData, null, null)
+            NCMBRequest.HEADER_CONTENT_TYPE_JSON, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -113,7 +113,7 @@ internal class NCMBFileService : NCMBObjectService(){
             }
         }
         val request = createRequestParamsFile(fileObject.fileName, JSONObject(),JSONObject(), NCMBRequest.HTTP_METHOD_GET,
-            NCMBRequest.HEADER_CONTENT_TYPE_JSON, fileObject.fileData, callback, fileHandler)
+            NCMBRequest.HEADER_CONTENT_TYPE_JSON, callback, fileHandler)
         sendRequestAsync(request)
     }
 
@@ -132,7 +132,6 @@ internal class NCMBFileService : NCMBObjectService(){
         queryParams: JSONObject,
         method: String,
         contentType: String,
-        fileData: File?,
         callback: NCMBCallback?,
         handler: NCMBHandler?
     ): RequestParams {

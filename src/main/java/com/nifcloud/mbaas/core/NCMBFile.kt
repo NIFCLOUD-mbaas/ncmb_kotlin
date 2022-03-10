@@ -98,7 +98,6 @@ class NCMBFile: NCMBObject {
          */
         set(value) {
             try {
-                print(value)
                 mFields.put(NCMBFile.FILE_DATA, value)
                 mUpdateKeys.add(NCMBFile.FILE_DATA)
             } catch (e: JSONException) {
@@ -168,11 +167,6 @@ class NCMBFile: NCMBObject {
     fun reflectResponseFileData(data: ByteArray?) {
         if (data != null) {
             this.fileDownloadByte = data
-            // TODO
-            // if(this.fileData?.isFile == true && this.fileData?.canWrite() == true ) {
-            //    println("Write to file")
-            //    this.fileData?.writeBytes(data)
-            // }
         }
     }
 

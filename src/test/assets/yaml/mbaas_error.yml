@@ -164,7 +164,7 @@ response:
     file: E415001_error_response.json
 ---
 request:
-    url: /2013-09-01/files/tempFileDownloadE404.txt
+    url: /2013-09-01/files/tempFileErrE404.txt
     method: GET
 response:
     status: 404
