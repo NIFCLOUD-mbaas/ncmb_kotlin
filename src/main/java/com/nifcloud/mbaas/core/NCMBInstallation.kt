@@ -329,30 +329,13 @@ class NCMBInstallation : NCMBObject {
     }
 
     /**
-     * Save installation object
+     * This method is not available because of In synchronous processing Acquisition of deviceToken is deprecated.
      *
      * @throws NCMBException exception from NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
     override fun save(){
-        //connect
-        val installationService = NCMBInstallationService()
-        val responseData: JSONObject
-        if (getObjectId() == null) {
-            //new create
-            //responseData = installationService.createInstallation(localDeviceToken, mFields)
-        } else {
-            //update
-            var updateJson: JSONObject? = null
-            updateJson = try {
-                createUpdateJsonData()
-            } catch (e: JSONException) {
-                throw NCMBException(e)
-            }
-            //responseData = installationService.updateInstallation(getObjectId(), updateJson)
-        }
-        //localData = responseData
-        mUpdateKeys.clear()
+        throw NCMBException(UnsupportedOperationException("For NCMBInstallation class this method cannot be used. Please use saveInBackground() instead."))
     }
 
     /**
