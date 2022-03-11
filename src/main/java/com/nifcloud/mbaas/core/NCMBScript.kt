@@ -8,9 +8,17 @@ import java.util.Map
  */
 class NCMBScript {
 
-    var mScriptName: String
     var mMethod: MethodType
-    var mBaseUrl: String
+    var mScriptName: String
+//    var method: MethodType
+//        get() {
+//            return  mMethod
+//        }
+//        set(value) {
+//            mMethod = value
+//        }
+
+    var mBaseUrl: String =  "script.mbaas.api.nifcloud.com" //SCRIPT URL //TODO
 
     /**
      * HTTP method types
@@ -30,12 +38,15 @@ class NCMBScript {
      */
     @Throws(NCMBException::class)
     fun execute(header: Map<String?, String?>?, body: JSONObject?, query: JSONObject?){
-        val scriptService = NCMBScriptService()
-        return scriptService.executeScript(
-            mScriptName,
-            mMethod, header, body, query,
-            mBaseUrl
-        )
+//        val scriptService = NCMBScriptService()
+//        return scriptService.executeScript(
+//            mScriptName,
+//            mMethod,
+//            header,
+//            body,
+//            query,
+//            mBaseUrl
+//        )
     }
 
     /**
@@ -50,19 +61,19 @@ class NCMBScript {
         header: Map<String?, String?>?,
         body: JSONObject?,
         query: JSONObject?,
-        callback: ExecuteScriptCallback?
+        callback: NCMBCallback?
     ) {
-        val scriptService = NCMB.factory(NCMB.ServiceType.SCRIPT) as NCMBScriptService
-        scriptService.executeScriptInBackground(
-            mScriptName,
-            mMethod, header, body, query,
-            mBaseUrl, object : ExecuteScriptCallback() {
-                fun done(data: ByteArray?, e: NCMBException?) {
-                    if (callback != null) {
-                        callback.done(data, e)
-                    }
-                }
-            })
+//        val scriptService = NCMB.factory(NCMB.ServiceType.SCRIPT) as NCMBScriptService
+//        scriptService.executeScriptInBackground(
+//            mScriptName,
+//            mMethod, header, body, query,
+//            mBaseUrl, object : ExecuteScriptCallback() {
+//                fun done(data: ByteArray?, e: NCMBException?) {
+//                    if (callback != null) {
+//                        callback.done(data, e)
+//                    }
+//                }
+//            })
     }
     /**
      * Create NCMBScript instance with specified script name and request method
@@ -78,9 +89,9 @@ class NCMBScript {
      * @param scriptName script name
      * @param method     HTTP method
      */
-    constructor(scriptName: String,method: MethodType,baseUrl: String){
+    constructor(scriptName: String,method: MethodType){
         mScriptName = scriptName
         mMethod = method
-        mBaseUrl = baseUrl
     }
+
 }
