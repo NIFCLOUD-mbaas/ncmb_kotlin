@@ -2,6 +2,7 @@ package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
+import kotlinx.serialization.json.JSON
 import okhttp3.mockwebserver.MockWebServer
 import org.json.JSONObject
 import org.junit.Assert
@@ -35,37 +36,36 @@ class NCMBScriptTest {
             mServer.url("/").toString(),
             "2013-09-01"
         )
-
         callbackFlag = false;
     }
 
-//    @Test
-//    fun script_executeInBackground_success(){
-//        val inBackgroundHelper = NCMBInBackgroundTestHelper()
-//        val script = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
-//        val query = null
-//        try{
-//            inBackgroundHelper.start()
-//            script.executeInBackground(null, null, query, NCMBCallback{ e, ncmbScript ->
-//                inBackgroundHelper["e"] = e
-//                inBackgroundHelper["ncmbScript"] = ncmbScript
-//                inBackgroundHelper.release()
-//            })
-//            inBackgroundHelper.await()
-//            Assert.assertTrue(inBackgroundHelper.isCalledRelease())
-//            Assert.assertNull(inBackgroundHelper["e"])
-//            Assert.assertEquals((inBackgroundHelper["ncmbScript"] as NCMBScript).scriptName, "testScript.js")
-//        }
-//        catch(e: NCMBException){
-//            Assert.assertEquals(e.message, "")
-//        }
-//    }
 
     @Test
     fun script_method_test(){
-        val scriptObj:NCMBScript = NCMBScript("testscript.js", NCMBScript.MethodType.GET)
+        val scriptObj = NCMBScript("testscript.js", NCMBScript.MethodType.GET)
         Assert.assertEquals(scriptObj.mScriptName, "testscript.js")
         Assert.assertEquals(scriptObj.mMethod, NCMBScript.MethodType.GET)
     }
 
+    @Test
+    fun script_executeInBackground_success(){
+        var applicationKey =  "3c99589bee9dda8184febdf64cdcfe65f84faf3ec5a2b158e477cea807299b30"
+        var clientKey = "4f77045784c3d667ccf2557cb31e507a1488e37bf0f88ba042610271f4e3f981"
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
+
+        val header = HashMap<String, String>()
+        val body = JSONObject()
+        val query = JSONObject()
+        val scriptObj = NCMBScript("testscript.js", NCMBScript.MethodType.GET)
+        scriptObj.executeInBackground(header, body , query, NCMBCallback { e, ncmbScript ->
+            if (e != null) {
+                //エラー発生時の処理
+                println("Script error:" + e.message)
+            } else {
+                //成功時の処理
+                println("Script execute done")
+                //TODO Script result show
+            }
+        })
+    }
 }

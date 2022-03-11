@@ -10,13 +10,6 @@ class NCMBScript {
 
     var mMethod: MethodType
     var mScriptName: String
-//    var method: MethodType
-//        get() {
-//            return  mMethod
-//        }
-//        set(value) {
-//            mMethod = value
-//        }
 
     var mBaseUrl: String =  "script.mbaas.api.nifcloud.com" //SCRIPT URL //TODO
 
@@ -58,23 +51,23 @@ class NCMBScript {
      * @param callback callback after execute script
      */
     fun executeInBackground(
-        header: Map<String?, String?>?,
-        body: JSONObject?,
-        query: JSONObject?,
+        scriptHeader: HashMap<String, String>?,
+        scriptBody: JSONObject?,
+        scriptQuery: JSONObject?,
         callback: NCMBCallback?
     ) {
-//        val scriptService = NCMB.factory(NCMB.ServiceType.SCRIPT) as NCMBScriptService
-//        scriptService.executeScriptInBackground(
-//            mScriptName,
-//            mMethod, header, body, query,
-//            mBaseUrl, object : ExecuteScriptCallback() {
-//                fun done(data: ByteArray?, e: NCMBException?) {
-//                    if (callback != null) {
-//                        callback.done(data, e)
-//                    }
-//                }
-//            })
+        val scriptService = NCMBScriptService()
+        scriptService.executeScriptInBackground(
+            mScriptName,
+            mMethod,
+            scriptHeader,
+            scriptBody,
+            scriptQuery,
+            mBaseUrl,
+            callback
+            )
     }
+
     /**
      * Create NCMBScript instance with specified script name and request method
      * This constructor can set the custom endpoint for debug

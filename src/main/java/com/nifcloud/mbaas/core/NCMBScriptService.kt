@@ -27,12 +27,14 @@ internal class NCMBScriptService : NCMBService() {
     @Throws(NCMBException::class)
     fun executeScript(
         scriptName: String,
-        method: NCMBScript.MethodType?,
-        header: Map<String?, String?>?,
-        body: JSONObject?,
-        query: JSONObject?,
+        method: NCMBScript.MethodType,
+        scriptHeader: HashMap<String, String>?,
+        scriptBody: JSONObject?,
+        scriptQuery: JSONObject?,
         baseUrl: String?
     ) {
+
+
 //        val scriptUrl: String
 //        scriptUrl = if (baseUrl != null && baseUrl.length > 0) {
 //            "$baseUrl/$scriptName"
@@ -169,15 +171,28 @@ internal class NCMBScriptService : NCMBService() {
      * @param callback   callback for after script execute
      */
     fun executeScriptInBackground(
-        scriptName: String?,
-        method: NCMBScript.MethodType?,
-        header: Map<String?, String?>?,
-        body: JSONObject?,
-        query: JSONObject?,
+        scriptName: String,
+        method: NCMBScript.MethodType,
+        scriptHeader: HashMap<String, String>?,
+        scriptBody: JSONObject?,
+        scriptQuery: JSONObject?,
         baseUrl: String?,
-        callback: NCMBCallback?
+        executeCallback: NCMBCallback
     ) {
-        //StaticAsyncTask(this, callback).execute(scriptName, method, header, body, query, baseUrl)
+        val executeHandler = NCMBHandler { scriptcallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    //executeCallback.reflectResponse(responseData) //TODO
+                    executeCallback.done(null);
+                }
+                is NCMBResponse.Failure -> {
+                    executeCallback.done(response.resException)
+                }
+            }
+        }
+        val reqParams : RequestParams = getUserParams(userId, fetchCallback, fetchHandler)  //TODO
+        sendRequestAsync(reqParams, executeCallback, executeHandler)
+
     }
 
     fun isJSONString(str: String?): Boolean {
