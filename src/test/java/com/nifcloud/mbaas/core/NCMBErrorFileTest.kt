@@ -60,7 +60,7 @@ class NCMBErrorFileTest {
     }
 
     @Test
-    fun fileSaveInBackGround_err413001() {
+    fun fileSaveInBackGround_err413() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val fileObj = NCMBFile("tempFileErr413.txt")
         fileObj.fileData = tmpFile
@@ -77,7 +77,7 @@ class NCMBErrorFileTest {
     }
 
     @Test
-    fun fileSave_err413001() {
+    fun fileSave_err413() {
         val fileObj = NCMBFile("tempFileErr413.txt")
         fileObj.fileData = tmpFile
         // ファイルストアへの登録を実施
@@ -87,7 +87,7 @@ class NCMBErrorFileTest {
     }
 
     @Test
-    fun fileSaveInBackGround_err415001() {
+    fun fileSaveInBackGround_err415() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val fileObj = NCMBFile("tempFileErr415.txt")
         fileObj.fileData = tmpFile
@@ -104,7 +104,7 @@ class NCMBErrorFileTest {
     }
 
     @Test
-    fun fileSave_err415001() {
+    fun fileSave_err415() {
         val fileObj = NCMBFile("tempFileErr415.txt")
         fileObj.fileData = tmpFile
         // ファイルストアへの登録を実施
@@ -114,7 +114,7 @@ class NCMBErrorFileTest {
     }
 
     @Test
-    fun fileFetch_err401001() {
+    fun fileFetch_err404() {
         val fileObj = NCMBFile("tempFileErrE404.txt")
         // ファイルストアへの取得を実施
         val throwable = assertFails { fileObj.fetch() } as NCMBException
@@ -123,7 +123,7 @@ class NCMBErrorFileTest {
     }
 
     @Test
-    fun fileFetchInBackGround_err401001() {
+    fun fileFetchInBackGround_err404() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val fileObj = NCMBFile("tempFileErrE404.txt")
         inBackgroundHelper.start()
