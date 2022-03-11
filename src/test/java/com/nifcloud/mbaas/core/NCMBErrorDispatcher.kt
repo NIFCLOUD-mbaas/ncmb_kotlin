@@ -77,6 +77,17 @@ class NCMBErrorDispatcher: Dispatcher() {
                     )
                     .setBody(readJsonResponse(responseMap["file"].toString()))
             }
+            //Form data file upload request and response
+            if(requestMap["url"] == "/2013-09-01/files/tempFileErr413.txt" || requestMap["url"] == "/2013-09-01/files/tempFileErr415.txt") {
+                if (requestMap["method"] != request.method) {
+                    continue
+                }
+                if (requestMap.containsKey("body")) {
+                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                        .setHeader("Content-Type", "application/json")
+                        .setBody(readJsonResponse(responseMap["file"].toString()))
+                }
+            }
             if (requestMap["method"] != request.method) {
                 continue
                 //return defaultErrorResponse();

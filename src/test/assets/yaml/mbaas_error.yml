@@ -146,6 +146,31 @@ response:
     file: duplicate_post_signup_response.json
 ---
 request:
+    url: /2013-09-01/files/tempFileErr413.txt
+    method: POST
+    body:
+        file:  FILEDATA
+response:
+    status: 413
+    file: E413001_error_response.json
+---
+request:
+    url: /2013-09-01/files/tempFileErr415.txt
+    method: POST
+    body:
+        file:  FILEDATA
+response:
+    status: 415
+    file: E415001_error_response.json
+---
+request:
+    url: /2013-09-01/files/tempFileErrE404.txt
+    method: GET
+response:
+    status: 404
+    file: E404001_error_response.json
+---
+request:
     url: /2013-09-01/push
     method: POST
     body:

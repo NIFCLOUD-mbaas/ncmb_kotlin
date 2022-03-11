@@ -175,6 +175,11 @@ class NCMBException : Exception {
         const val FILE_TOO_LARGE = "E413001"
 
         /**
+         * E415001 Unsupported media type (非サポートContent Type)
+         */
+        const val UNSUPPORT_MEDIA_TYPE = "E415001"
+
+        /**
          * E429001 Usage restrict over (使用制限（APIコール数、PUSH通知数、ストレージ容量）超過)
          */
         const val RESTRICTED = "E429001"

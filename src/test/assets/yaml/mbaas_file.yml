@@ -1,0 +1,19 @@
+---
+request:
+    url: /2013-09-01/files/tempFile.txt
+    method: POST
+    body:
+        file:  FILEDATA
+response:
+    status: 201
+    file: valid_save_file.json
+---
+request:
+    url: /2013-09-01/files/tempFileDownload.txt
+    method: GET
+response:
+    status: 200
+    file: valid_get_file.txt
+---
+
+
