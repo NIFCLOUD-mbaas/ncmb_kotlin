@@ -38,6 +38,22 @@ class NCMBSignatureCalTest {
         Assert.assertEquals("PypCIPOo1vASUWe1IUT5DWky/niMGqS7HWwFwKvj7NA=", tmpSignature)
     }
 
+    //Signature test
+    @Test
+    fun testSignatureScriptCal() {
+        val tmpNCMBSignatureCal = NCMBSignatureCal()
+        val url = URL("https://script.mbaas.api.nifcloud.com/2015-09-01/script/testscript.js")
+        val queryParamMap = HashMap<String, String>()
+        val tmpSignature = tmpNCMBSignatureCal.calSignature("GET",
+            url,
+            "2022-03-14T02:44:06.046Z",
+            "6145f91061916580c742f806bab67649d10f45920246ff459404c46f00ff3e56",
+            "1343d198b510a0315db1c03f3aa0e32418b7a743f8e4b47cbff670601345cf75",
+            queryParamMap
+        )
+        Assert.assertEquals("gvTa2jKaWCNwPvDK0vADjLUrFOYK/AeHuKK1u4UuC0U=", tmpSignature)
+    }
+
     //Signature test with query Document Sample
     @Test
     fun testSignatureCalWithQueryDocumentSample() {
