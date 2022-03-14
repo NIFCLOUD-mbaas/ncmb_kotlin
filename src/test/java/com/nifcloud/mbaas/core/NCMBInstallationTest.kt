@@ -21,6 +21,7 @@ import com.google.gson.JsonObject
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
+import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
@@ -73,6 +74,10 @@ class NCMBInstallationTest {
         //post
         val installation = NCMBInstallation()
         installation.deviceToken = "xxxxxxxxxxxxxxxxxxx"
+        val channels = JSONArray()
+        channels.put("Ch1")
+        channels.put("Ch2")
+        installation.channels = channels
         inBackgroundHelper.start()
         installation.saveInBackground(NCMBCallback { e, ncmbObj ->
             inBackgroundHelper["e"] = e
@@ -85,6 +90,8 @@ class NCMBInstallationTest {
         //check
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
         Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.deviceToken)
+        Assert.assertEquals("Ch1", installation.channels?.get(0))
+        Assert.assertEquals("Ch2", installation.channels?.get(1))
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
@@ -96,10 +103,14 @@ class NCMBInstallationTest {
     fun saveInBackground_put() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         Assert.assertNull(NCMBInstallation.currentInstallation.getObjectId())
+        val channels = JSONArray()
+        channels.put("Ch1")
+        channels.put("Ch2")
         //post
         val installation = NCMBInstallation()
         installation.deviceToken = "xxxxxxxxxxxxxxxxxxx"
         installation.put("key", "value1")
+        installation.channels = channels
         inBackgroundHelper.start()
         installation.saveInBackground(NCMBCallback { e, ncmbObj ->
             inBackgroundHelper["e"] = e
@@ -113,6 +124,8 @@ class NCMBInstallationTest {
         Assert.assertEquals("7FrmPTBKSNtVjajm", installation.getObjectId())
         Assert.assertEquals("xxxxxxxxxxxxxxxxxxx", installation.deviceToken)
         Assert.assertEquals("value1", installation.getString("key"))
+        Assert.assertEquals("Ch1", installation.channels?.get(0))
+        Assert.assertEquals("Ch2", installation.channels?.get(1))
         val date: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals((inBackgroundHelper["ncmbObj"] as NCMBObject).getCreateDate(), date)
@@ -129,6 +142,18 @@ class NCMBInstallationTest {
         installation.fetch()
         Assert.assertEquals(installation.getObjectId(), "7FrmPTBKSNtVjajm")
         Assert.assertEquals(installation.get("key"), "value")
+        Assert.assertNotNull(installation)
+    }
+
+    @Test
+    @Throws(NCMBException::class)
+    fun fet_installation_channels() {
+        val installation = NCMBInstallation()
+        installation.setObjectId("7FrmPTBKchannels")
+        installation.fetch()
+        Assert.assertEquals(installation.getObjectId(), "7FrmPTBKchannels")
+        Assert.assertEquals(installation.channels?.get(0), "Ch1")
+        Assert.assertEquals(installation.channels?.get(1), "Ch2")
         Assert.assertNotNull(installation)
     }
 

@@ -18,6 +18,7 @@ package com.nifcloud.mbaas.core
 
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 import java.net.URLEncoder
 
 
@@ -81,8 +82,11 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
-        val response = connection.sendRequest()
-        return response
+        return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
+            connection.sendRequestForUploadFile()
+        }else {
+            connection.sendRequest()
+        }
     }
 
     /**
@@ -139,8 +143,13 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
+        //print("In sendRequestAsync check ConntentType:" + contentType + "|" +NCMBRequest.HEADER_CONTENT_TYPE_FILE )
         if(callback != null && handler != null) {
-            connection.sendRequestAsynchronously(callback, handler)
+            if(contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
+                connection.sendRequestAsynchronouslyForUploadFile(callback, handler)
+            }else {
+                connection.sendRequestAsynchronously(callback, handler)
+            }
         }
         else{
             throw NCMBException(NCMBException.INVALID_FORMAT, "Need to set callback and handler for an inbackground method.")

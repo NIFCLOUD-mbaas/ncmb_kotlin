@@ -105,6 +105,11 @@ class NCMBException : Exception {
         const val MISSING_VALUE = "E400006"
 
         /**
+         * E400008 Invalid Correlation (相関関係でエラー)
+         */
+        const val INVALID_CORRELATION = "E400008"
+
+        /**
          * E401001 Invalid Authentication header (Header不正による認証エラー)
          */
         const val INVALID_AUTH_HEADER = "E401001"
@@ -168,6 +173,11 @@ class NCMBException : Exception {
          * E413001 Too large file size (1ファイルあたりのサイズ上限エラー)
          */
         const val FILE_TOO_LARGE = "E413001"
+
+        /**
+         * E415001 Unsupported media type (非サポートContent Type)
+         */
+        const val UNSUPPORT_MEDIA_TYPE = "E415001"
 
         /**
          * E429001 Usage restrict over (使用制限（APIコール数、PUSH通知数、ストレージ容量）超過)

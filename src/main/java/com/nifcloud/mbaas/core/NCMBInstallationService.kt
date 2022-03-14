@@ -120,11 +120,11 @@ internal class NCMBInstallationService: NCMBObjectService() {
             when (response) {
                 is NCMBResponse.Success -> {
                     try {
-                        writeCurrentInstallation(params, response.data)
+                        writeCurrentInstallation(params, response.data as JSONObject)
                     } catch (e: NCMBException) {
                         throw e
                     }
-                    installationObject.reflectResponse(response.data)
+                    installationObject.reflectResponse(response.data as JSONObject)
                     callback.done(null, installationObject)
                 }
                 is NCMBResponse.Failure -> {
@@ -159,7 +159,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
             when (response) {
                 is NCMBResponse.Success -> {
                     try {
-                        writeCurrentInstallation(params, response.data)
+                        writeCurrentInstallation(params, response.data as JSONObject)
                     } catch (e: NCMBException) {
                         throw e
                     }
@@ -256,7 +256,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         val response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                fetchInstantiation.reflectResponse(response.data)
+                fetchInstantiation.reflectResponse(response.data as JSONObject)
                 return NCMBInstallation(response.data)
             }
             is NCMBResponse.Failure -> {
@@ -282,7 +282,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         val fetchHandler = NCMBHandler { deletecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    fetchInstantiation.reflectResponse(response.data)
+                    fetchInstantiation.reflectResponse(response.data as JSONObject)
                     fetchCallback.done(null, NCMBInstallation(response.data))
                 }
                 is NCMBResponse.Failure -> {
