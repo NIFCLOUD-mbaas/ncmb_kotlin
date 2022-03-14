@@ -178,27 +178,32 @@ internal class NCMBConnection(request: NCMBRequest) {
         val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
         try {
-
+            println("START REQUEST")
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
+                    println("ON RESPONSE ERROR")
                     e.printStackTrace()
                     ncmbResponse = NCMBResponse.Failure(NCMBException(e))
                     responseHandler.doneSolveResponse(callback, ncmbResponse)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
+                    println("ON RESPONSE")
                     //NCMBResponse 処理
                     if (ncmbRequest.isFileGetRequest() || ncmbRequest.isScriptRequest()) {
+                        println("This is file/script")
                         ncmbResponse = NCMBResponseBuilder.buildFileScriptResponse(response)
                     }else {
+                        println("This is NOT file/script")
                         ncmbResponse = NCMBResponseBuilder.build(response)
                     }
                     responseHandler.doneSolveResponse(callback, ncmbResponse)
                 }
-                
+
             })
 
         } catch (e: Exception) {
+            println("ERROR OCCURED")
             e.printStackTrace()
             ncmbResponse = NCMBResponse.Failure(NCMBException(e))
             responseHandler.doneSolveResponse(callback, ncmbResponse)

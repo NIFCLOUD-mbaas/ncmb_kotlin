@@ -67,6 +67,7 @@ internal class NCMBRequest(
 
     // Check if this request is to Script request or not.  URL is .../script/SCRIPTNAME
     fun isScriptRequest() :Boolean {
+        //println("in check script request")
         if (url.startsWith( NCMB.getApiBaseUrl(isScript = true)  + "script/" ))
             return true
         return false
