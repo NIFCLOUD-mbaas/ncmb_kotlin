@@ -80,8 +80,8 @@ internal class NCMBSignatureCal {
         queryParamMap: HashMap<String, String>?
     ): String {
 
-        val apiPath = getPath(url)
-
+        val apiPath = url.path
+        val apiFqdn = url.host
         val parameters = mutableListOf(
             SIGNATURE_METHOD_KEY to SIGNATURE_METHOD_VALUE,
             SIGNATURE_VERSION_KEY to SIGNATURE_VERSION_VALUE,
@@ -110,7 +110,7 @@ internal class NCMBSignatureCal {
         //署名用文字列を生成
         val sign = StringBuilder(256)
         sign.append(method.toUpperCase()).append('\n')
-            .append("mbaas.api.nifcloud.com").append('\n')
+            .append(apiFqdn).append('\n')
             .append(apiPath).append('\n')
             .append(sortedQuery)
 

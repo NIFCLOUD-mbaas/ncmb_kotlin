@@ -172,11 +172,10 @@ internal class NCMBScriptService : NCMBService() {
      */
     fun executeScriptInBackground(
         scriptName: String,
-        method: NCMBScript.MethodType,
+        method: String,
         scriptHeader: HashMap<String, String>?,
         scriptBody: JSONObject?,
         scriptQuery: JSONObject?,
-        baseUrl: String?,
         executeCallback: NCMBCallback
     ) {
         val executeHandler = NCMBHandler { scriptcallback, response ->
@@ -190,18 +189,36 @@ internal class NCMBScriptService : NCMBService() {
                 }
             }
         }
-        val reqParams : RequestParams = getUserParams(userId, fetchCallback, fetchHandler)  //TODO
+        val reqParams : RequestParams = executeScriptParams(
+            scriptName,
+            method,
+            scriptHeader,
+            scriptBody,
+            scriptQuery,
+            executeCallback,
+            executeHandler)
         sendRequestAsync(reqParams, executeCallback, executeHandler)
 
     }
 
-    fun isJSONString(str: String?): Boolean {
-        try {
-            JSONObject(str)
-        } catch (e: JSONException) {
-            return false
-        }
-        return true
+    /*
+    * @param
+    * @param executeCallback callback when process finished
+    * @param executeHandler sdk after-connection tasks
+    * @return parameters in object
+    */
+    protected fun executeScriptParams(scriptName: String,
+                                      method: String,
+                                      scriptHeader: HashMap<String, String>?,
+                                      scriptBody: JSONObject?,
+                                      scriptQuery: JSONObject?,
+                                      executeCallback: NCMBCallback?,
+                                      executeHandler: NCMBHandler?): RequestParams {
+        val url = NCMB.getApiBaseUrl(isScript = true) + mServicePath + "/" + scriptName
+        val method = method
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        return RequestParams(url = url,
+            method = method, contentType = contentType, callback = executeCallback, handler = executeHandler)
     }
 
 
@@ -211,15 +228,6 @@ internal class NCMBScriptService : NCMBService() {
          */
         const val SERVICE_PATH = "script"
 
-        /**
-         * script end point
-         */
-        const val DEFAULT_SCRIPT_DOMAIN_URL = "https://script.mbaas.api.nifcloud.com"
-
-        /**
-         * script API version
-         */
-        const val DEFAULT_SCRIPT_API_VERSION = "2015-09-01"
     }
 
     /**

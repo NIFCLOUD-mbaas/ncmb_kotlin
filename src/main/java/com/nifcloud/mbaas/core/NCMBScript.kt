@@ -8,10 +8,17 @@ import java.util.Map
  */
 class NCMBScript {
 
-    var mMethod: MethodType
+    var mMethodType : MethodType
+    var mMethod: String = ""
+        get() {
+            return (when (mMethodType) {
+                MethodType.DELETE -> NCMBRequest.HTTP_METHOD_DELETE
+                MethodType.GET -> NCMBRequest.HTTP_METHOD_GET
+                MethodType.POST -> NCMBRequest.HTTP_METHOD_POST
+                MethodType.PUT -> NCMBRequest.HTTP_METHOD_PUT
+            })
+        }
     var mScriptName: String
-
-    var mBaseUrl: String =  "script.mbaas.api.nifcloud.com" //SCRIPT URL //TODO
 
     /**
      * HTTP method types
@@ -54,7 +61,7 @@ class NCMBScript {
         scriptHeader: HashMap<String, String>?,
         scriptBody: JSONObject?,
         scriptQuery: JSONObject?,
-        callback: NCMBCallback?
+        callback: NCMBCallback
     ) {
         val scriptService = NCMBScriptService()
         scriptService.executeScriptInBackground(
@@ -63,7 +70,6 @@ class NCMBScript {
             scriptHeader,
             scriptBody,
             scriptQuery,
-            mBaseUrl,
             callback
             )
     }
@@ -84,7 +90,7 @@ class NCMBScript {
      */
     constructor(scriptName: String,method: MethodType){
         mScriptName = scriptName
-        mMethod = method
+        mMethodType = method
     }
 
 }
