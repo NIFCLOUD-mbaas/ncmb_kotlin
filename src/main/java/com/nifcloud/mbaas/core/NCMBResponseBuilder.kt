@@ -71,6 +71,57 @@ internal class NCMBResponseBuilder {
             return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
         }
 
+        fun buildScriptResponse(response: Response): NCMBResponse {
+
+            //通信結果文字列
+            var responseDataJson= JSONObject()
+            var responseError: NCMBException
+
+            /**
+             * API response
+             *
+             * @param responseCode   statusCode
+             * @param responseHeaders responseHeaders
+             * @param responseDataString String
+             */
+            //Connecting success and received response data from Server, start to solve response data to create
+            //通信結果ステータスコード
+            var statusCode = response.code
+            var responseHeader = response.headers
+            var responseDataString = response.body?.string()
+            var responseDataByte = response.body?.bytes()
+            val contentType = response.headers["Content-Type"].toString()
+
+            //Set error
+            if (statusCode != HTTP_STATUS_OK &&
+                statusCode != HTTP_STATUS_CREATED
+            ) {
+                /** mobile backendへのAPIリクエスト結果から取得したエラーコード  */
+                var mbErrorCode = responseDataJson.getString("code")
+                var mbErrorMessage = responseDataJson.getString("error")
+                responseError = NCMBException(mbErrorCode, mbErrorMessage)
+                //Checking invalid sessionToken
+                invalidSessionToken(mbErrorCode)
+                return NCMBResponse.Failure(responseError)
+            }
+
+            if (contentType == "application/json" || contentType == "application/json;charset=UTF-8") {
+                // Set response json data
+                try {
+                    if(!responseDataString.isNullOrEmpty()) {
+                        responseDataJson = JSONObject(responseDataString)
+                        return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
+                    }
+                } catch (e: JSONException) {
+                    responseError = NCMBException(e)
+                    return NCMBResponse.Failure(responseError)
+                }
+            }
+            return NCMBResponse.Success(statusCode, responseHeader, responseDataByte)
+
+        }
+
+
         /**
          * check invalid sessionToken
          * automatic logout when 'E404001' error

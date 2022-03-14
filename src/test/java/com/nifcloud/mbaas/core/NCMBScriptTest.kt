@@ -49,21 +49,21 @@ class NCMBScriptTest {
 
     @Test
     fun script_executeInBackground_success(){
-        var applicationKey =  "3c99589bee9dda8184febdf64cdcfe65f84faf3ec5a2b158e477cea807299b30"
-        var clientKey = "4f77045784c3d667ccf2557cb31e507a1488e37bf0f88ba042610271f4e3f981"
+        var applicationKey =  "APP"
+        var clientKey = "CLI"
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
 
         val header = HashMap<String, String>()
         val body = JSONObject()
         val query = JSONObject()
         val scriptObj = NCMBScript("testscript.js", NCMBScript.MethodType.GET)
-        scriptObj.executeInBackground(header, body , query, NCMBCallback { e, ncmbScript ->
+        scriptObj.executeInBackground(header, body , query, NCMBCallback { e, responseData ->
             if (e != null) {
                 //エラー発生時の処理
                 println("Script error:" + e.message)
             } else {
                 //成功時の処理
-                println("Script execute done")
+                println("Script execute done. Response data: " + responseData as String)
                 //TODO Script result show
             }
         })

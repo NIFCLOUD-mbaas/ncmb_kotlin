@@ -65,6 +65,13 @@ internal class NCMBRequest(
         return this.requestProperties
     }
 
+    // Check if this request is to Script request or not.  URL is .../script/SCRIPTNAME
+    fun isScriptRequest() :Boolean {
+        if (url.startsWith( NCMB.getApiBaseUrl(isScript = true)  + "script/" ))
+            return true
+        return false
+    }
+
     companion object {
         // region Constant
         // HTTP method "GET"
@@ -182,4 +189,6 @@ internal class NCMBRequest(
         val osVersion = Build.VERSION.RELEASE
         requestProperties[HEADER_OS_VERSION] = "android-$osVersion"
     }
+
+
 }

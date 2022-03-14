@@ -26,6 +26,6 @@ import org.json.JSONObject
  *
  */
 internal sealed class NCMBResponse {
-    data class Success(val resCode: Int, val resHeaders: Headers, val data: JSONObject) : NCMBResponse()
+    data class Success(val resCode: Int, val resHeaders: Headers, val data: Any?) : NCMBResponse()
     data class Failure(val resException: NCMBException) : NCMBResponse()
 }

@@ -140,7 +140,12 @@ internal class NCMBConnection(request: NCMBRequest) {
 
             override fun onResponse(call: Call, response: Response) {
                 //NCMBResponse 処理
-                ncmbResponse = NCMBResponseBuilder.build(response)
+                if (ncmbRequest.isScriptRequest()) {
+                    ncmbResponse = NCMBResponseBuilder.buildScriptResponse(response)
+                }else {
+                    ncmbResponse = NCMBResponseBuilder.build(response)
+                }
+                //ncmbResponse = NCMBResponseBuilder.build(response)
                 responseHandler.doneSolveResponse(callback, ncmbResponse)
             }
         })
