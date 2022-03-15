@@ -72,10 +72,9 @@ internal class NCMBResponseBuilder {
             return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
         }
 
+
         //For File and script feature
         fun buildFileScriptResponse(response: Response): NCMBResponse {
-
-            println("Response build for filr/script")
             //通信結果文字列
             //var responseByteArray:ByteArray?
             var responseError: NCMBException

@@ -181,9 +181,7 @@ internal class NCMBScriptService : NCMBService() {
         val executeHandler = NCMBHandler { scriptcallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    println("SUCCESS DONE")
-                    //println("SUCESS DATA:" + response.data)
-                    executeCallback.done(null, responseScript = response.data as ByteArray);
+                    executeCallback.done(null, responseScript = response.data as ByteArray)
                 }
                 is NCMBResponse.Failure -> {
                     executeCallback.done(response.resException)
