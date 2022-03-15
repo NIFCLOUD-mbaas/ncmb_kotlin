@@ -1,9 +1,5 @@
 name: KotlinSDK_Branch_CI
-on:
-  push:
-    branches:
-      - master
-      - develop
+on: [push]
 
 jobs:
   build_and_test:
