@@ -1,13 +1,10 @@
-name: Kotlin
+name: KotlinSDK_Branch_CI
 on:
   push:
     branches:
       - master
       - develop
-  pull_request:
-    branches:
-      - master
-      - develop
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -20,6 +17,42 @@ jobs:
         with:
           distribution: "temurin" 
           java-version: '11'
+      - name: Install git-crypt
+        run: |
+          brew install gnupg
+          gpg --list-keys
+      - name: name: Import public GPG key
+        run: |
+          gpg --keyserver keyserver.ubuntu.com --recv-keys ${{ secrets.SIGNING_GNUPG_KEYID }}
+          gpg --list-keys
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.SIGNING_GNUPG_SECRETKEY }}
+          passphrase: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
+      - name: Test gpg key
+        run: |
+          touch test.txt
+          gpg -ab test.txt
+          gpg --verify test.txt.asc
+      - name: Restore setting values to gradle.properties
+        env:
+          GPG_KEY_ID: ${{ secrets.SIGNING_GNUPG_KEYID }}
+          GPG_HOMEDIR: ${{ secrets.SIGNING_GNUPG_HOMEDIR }}
+          GPG_PASSPHRASE: ${{ secrets.SIGNING_GNUPG_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+        shell: bash
+        run: |
+          echo "signing.gnupg.executable=gpg" >> ./gradle.properties
+          echo "signing.gnupg.useLegacyGpg=true" >> ./gradle.properties
+          echo "signing.gnupg.homeDir=$GPG_HOMEDIR" >> ./gradle.properties
+          echo "signing.gnupg.keyId=$GPG_KEY_ID" >> ./gradle.properties
+          echo "signing.gnupg.password=$GPG_PASSPHRASE" >> ./gradle.properties
+          echo "ossrhUsername=$MAVEN_USERNAME" >> ./gradle.properties
+          echo "ossrhPassword=$MAVEN_PASSWORD" >> ./gradle.properties
+          cat ./gradle.properties
       - name: build and test
         run: ./gradlew build test --continue --info
       - name: Archive Result Files
