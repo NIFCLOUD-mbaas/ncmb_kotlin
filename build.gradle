@@ -1,16 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'org.jetbrains.dokka'
-apply plugin: 'maven-publish'
+apply plugin: 'maven'
 apply plugin: 'signing'
 
 
 buildscript {
 
     ext {
-        dokka_version = "1.6.0"
+        dokka_version = '1.6.0'
         kotlin_version = '1.3.61'
     }
     repositories {
@@ -30,6 +31,9 @@ buildscript {
     }
 }
 
+version = 'x.x.x'
+group = 'com.nifcloud.mbaas'
+
 allprojects {
     repositories {
         google()
@@ -39,15 +43,15 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "30.0.2"
 
     publishLibraryVariants("release","debug")
 
     defaultConfig {
         minSdkVersion 20
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -109,6 +113,7 @@ dependencies {
     def coroutines_version = '1.3.9' //Kotlin coroutines用ライブラリ(async, await)のバージョン
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version" //Kotlin coroutines用ライブラリ(async, await)
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:28.1.0')
@@ -153,8 +158,21 @@ dokkaHtml.configure{
     }
 }
 
+ext.sharedManifest = manifest {
+    attributes(
+            "Implementation-Title": project.name,
+            "Implementation-Version": version,
+            "Implementation-Vendor": project.group,
+            "Bundle-Vendor": project.group
+    )
+}
+
 task sourceJar(type:Jar){
-    archiveClassifier = "sources"
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+    manifest {
+        from sharedManifest
+    }
 }
 
 task javadoc(type: Javadoc) {
@@ -167,30 +185,33 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-artifacts{
-    archives sourceJar
-    archives javadocJar
+artifacts {
+    archives javadocJar, sourcesJar
 }
 
-signing{
+signing {
     useGpgCmd()
-    required { gradle.taskGraph.hasTask("publishing")}
-    sign publishing.publications.mavenJava
+    required { gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
 }
 
-publishing{
-    publication{
-        mavenJava(MavanPublication){
-            from components.java
+uploadArchives{
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-//            artifact 'ncmb_kotlin.jar'
-//            artifact 'javaDocJar'
-//            artifact source: sourceJar, classifier: 'src',extension:'zip'
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
 
-            artifactId = "ncmb_kotlin"
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
 
-            pom {
-                name = 'ncmb_kotlin'
+
+            pom.project {
+                name  'ncmb_kotlin'
+                packaging 'jar'
                 // optionally artifactId can be defined here
                 description = 'NIFCLOUD mobile backend Kotlin SDK'
                 url = 'https://github.com/NIFCLOUD-mbaas/ncmb_kotlin#readme'
@@ -214,16 +235,6 @@ publishing{
                         name = 'NCMB SDK Team'
                     }
                 }
-            }
-        }
-    }
-    repositories {
-        maven {
-            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
             }
         }
     }
