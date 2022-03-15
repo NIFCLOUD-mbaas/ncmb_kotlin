@@ -61,4 +61,20 @@ class NCMBErrorScriptTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertEquals(NCMBException.INTERNAL_SERVER_ERROR, (inBackgroundHelper["e"] as NCMBException).code)
     }
+
+    @Test
+    fun scriptExecuteInBackGround_onlycallback_err500() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val scriptObj = NCMBScript("testScript500.js", NCMBScript.MethodType.GET)
+
+        inBackgroundHelper.start()
+        scriptObj.executeInBackground(callback = NCMBCallback { e, responseData ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["responseData"] = responseData
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertEquals(NCMBException.INTERNAL_SERVER_ERROR, (inBackgroundHelper["e"] as NCMBException).code)
+    }
 }

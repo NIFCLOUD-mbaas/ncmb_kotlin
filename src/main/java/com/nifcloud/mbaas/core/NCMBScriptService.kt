@@ -27,7 +27,7 @@ internal class NCMBScriptService : NCMBService() {
     @Throws(NCMBException::class)
     fun executeScript(
         scriptName: String,
-        method: NCMBScript.MethodType,
+        method: String,
         scriptHeader: HashMap<String, String>?,
         scriptBody: JSONObject?,
         scriptQuery: JSONObject?
@@ -49,9 +49,9 @@ internal class NCMBScriptService : NCMBService() {
     fun executeScriptInBackground(
         scriptName: String,
         method: String,
-        scriptHeader: HashMap<String, String>?,
-        scriptBody: JSONObject?,
-        scriptQuery: JSONObject?,
+        scriptHeader: HashMap<String, String>,
+        scriptBody: JSONObject,
+        scriptQuery: JSONObject,
         executeCallback: NCMBCallback
     ) {
         val executeHandler = NCMBHandler { scriptcallback, response ->
@@ -84,9 +84,9 @@ internal class NCMBScriptService : NCMBService() {
     */
     protected fun executeScriptParams(scriptName: String,
                                       method: String,
-                                      scriptHeader: HashMap<String, String>?,
-                                      scriptBody: JSONObject?,
-                                      scriptQuery: JSONObject?,
+                                      scriptHeader: HashMap<String, String>,
+                                      scriptBody: JSONObject,
+                                      scriptQuery: JSONObject,
                                       executeCallback: NCMBCallback?,
                                       executeHandler: NCMBHandler?): RequestParams {
         val url = NCMB.getApiBaseUrl(isScript = true) + mServicePath + "/" + scriptName

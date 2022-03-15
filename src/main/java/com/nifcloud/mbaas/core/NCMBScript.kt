@@ -37,30 +37,29 @@ class NCMBScript {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun execute(header: Map<String?, String?>?, body: JSONObject?, query: JSONObject?){
-//        val scriptService = NCMBScriptService()
-//        return scriptService.executeScript(
-//            mScriptName,
-//            mMethod,
-//            header,
-//            body,
-//            query,
-//            mBaseUrl
-//        )
+    fun execute(header: HashMap<String, String>?, body: JSONObject?, query: JSONObject?){
+        val scriptService = NCMBScriptService()
+        return scriptService.executeScript(
+            mScriptName,
+            mMethod,
+            header,
+            body,
+            query
+        )
     }
 
     /**
      * Execute the script asynchronously with request parameters
      *
-     * @param header   header data
-     * @param body     content data
-     * @param query    query params
+     * @param header   header data  //Not available yet
+     * @param body     content data //Not available yet
+     * @param query    query params //Not available yet
      * @param callback callback after execute script
      */
     fun executeInBackground(
-        scriptHeader: HashMap<String, String>?,
-        scriptBody: JSONObject?,
-        scriptQuery: JSONObject?,
+        scriptHeader: HashMap<String, String> = HashMap<String, String>(),
+        scriptBody: JSONObject = JSONObject(),
+        scriptQuery: JSONObject = JSONObject(),
         callback: NCMBCallback
     ) {
         val scriptService = NCMBScriptService()

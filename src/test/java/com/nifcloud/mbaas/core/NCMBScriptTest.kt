@@ -72,4 +72,23 @@ class NCMBScriptTest {
         val encodedString = String(responseData, Charsets.UTF_8)
         Assert.assertEquals(encodedString,"this is script result")
     }
+
+    @Test
+    fun script_executeInBackground_onlycallback_success(){
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        inBackgroundHelper.start()
+
+        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
+        scriptObj.executeInBackground(callback = NCMBCallback { e, responseData ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["responseData"] = responseData
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val responseData = inBackgroundHelper["responseData"] as ByteArray
+        val encodedString = String(responseData, Charsets.UTF_8)
+        Assert.assertEquals(encodedString,"this is script result")
+    }
 }
