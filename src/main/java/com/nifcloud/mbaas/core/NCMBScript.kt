@@ -28,6 +28,7 @@ class NCMBScript {
     }
 
     /**
+     * //This method is not available yet, use executeInBackground insteads.
      * Execute the script with request parameters
      *
      * @param header header data
