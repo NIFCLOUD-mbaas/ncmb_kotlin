@@ -26,6 +26,7 @@ internal class NCMBResponseBuilder {
         /** http status for success  */
         const val HTTP_STATUS_OK = 200
         const val HTTP_STATUS_CREATED = 201
+
         fun build(response: Response): NCMBResponse {
 
             //通信結果文字列
@@ -71,19 +72,14 @@ internal class NCMBResponseBuilder {
             return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
         }
 
-        fun buildFileResponse(response: Response): NCMBResponse {
 
+        //For File and script feature
+        fun buildFileScriptResponse(response: Response): NCMBResponse {
             //通信結果文字列
             //var responseByteArray:ByteArray?
             var responseError: NCMBException
-            var responseDataJson= JSONObject()
-            /**
-             * API response
-             *
-             * @param responseCode   statusCode
-             * @param responseHeaders responseHeaders
-             * @param responseDataString String
-             */
+            var responseDataJson = JSONObject()
+
             //Connecting success and received response data from Server, start to solve response data to create
             //通信結果ステータスコード
             var statusCode = response.code
@@ -119,10 +115,8 @@ internal class NCMBResponseBuilder {
                     return NCMBResponse.Failure(responseError)
                 }
             }
-
             var responseByteArray = response.body?.bytes()
             return NCMBResponse.Success(statusCode, responseHeader, responseByteArray)
-
         }
 
         /**

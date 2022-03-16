@@ -65,6 +65,14 @@ internal class NCMBRequest(
         return this.requestProperties
     }
 
+    // Check if this request is to Script request or not.  URL is .../script/SCRIPTNAME
+    fun isScriptRequest() :Boolean {
+        //println("in check script request")
+        if (url.startsWith( NCMB.getApiBaseUrl(isScript = true)  + "script/" ))
+            return true
+        return false
+    }
+
     // Check if this request is to download file (get File) or not. Method GET + URL is .../files/FILENAME
     fun isFileGetRequest() :Boolean {
         if (method == HTTP_METHOD_GET && url.startsWith( NCMB.getApiBaseUrl()  + "files/" ))
@@ -192,4 +200,6 @@ internal class NCMBRequest(
         val osVersion = Build.VERSION.RELEASE
         requestProperties[HEADER_OS_VERSION] = "android-$osVersion"
     }
+
+
 }

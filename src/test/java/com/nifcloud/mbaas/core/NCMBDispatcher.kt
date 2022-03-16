@@ -100,6 +100,15 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                         .setBody(readJsonResponse(responseMap["file"].toString()))
                 }
             }
+            //Script request and response
+            if(requestMap["url"] == "/2015-09-01/script/testScript.js") {
+                if (requestMap["method"] == request.method) {
+                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                        .setHeader("Content-Type", "text/plain")
+                        .setBody(readJsonResponse(responseMap["file"].toString()))
+                }
+            }
+
             if (requestMap["method"] != request.method) {
                 continue
                 //return defaultErrorResponse();

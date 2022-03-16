@@ -106,8 +106,8 @@ internal class NCMBConnection(request: NCMBRequest) {
                 }
                 val response = client.newCall(request).execute()
                 //NCMBResponse 処理
-                if (ncmbRequest.isFileGetRequest()) {
-                    ncmbResponse = NCMBResponseBuilder.buildFileResponse(response)
+                if (ncmbRequest.isFileGetRequest() || ncmbRequest.isScriptRequest()) {
+                    ncmbResponse = NCMBResponseBuilder.buildFileScriptResponse(response)
                 }else {
                     ncmbResponse = NCMBResponseBuilder.build(response)
                 }
@@ -178,7 +178,6 @@ internal class NCMBConnection(request: NCMBRequest) {
         val body = ncmbRequest.params.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
         val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, body)
         try {
-
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
@@ -188,13 +187,14 @@ internal class NCMBConnection(request: NCMBRequest) {
 
                 override fun onResponse(call: Call, response: Response) {
                     //NCMBResponse 処理
-                    if (ncmbRequest.isFileGetRequest()) {
-                        ncmbResponse = NCMBResponseBuilder.buildFileResponse(response)
+                    if (ncmbRequest.isFileGetRequest() || ncmbRequest.isScriptRequest()) {
+                        ncmbResponse = NCMBResponseBuilder.buildFileScriptResponse(response)
                     }else {
                         ncmbResponse = NCMBResponseBuilder.build(response)
                     }
                     responseHandler.doneSolveResponse(callback, ncmbResponse)
                 }
+
             })
 
         } catch (e: Exception) {
@@ -267,7 +267,6 @@ internal class NCMBConnection(request: NCMBRequest) {
             ncmbResponse = NCMBResponse.Failure(NCMBException(e))
             responseHandler.doneSolveResponse(callback, ncmbResponse)
         }
-
     }
 
     /**
