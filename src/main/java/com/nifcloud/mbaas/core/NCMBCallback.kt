@@ -67,7 +67,7 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
     }
 
     /**
-     * This method executes passed callback functions (Mainly search data count functions).
+     * This method executes passed callback functions (Mainly count data functions).
      *
      * @param e NCMBException from NCMB
      * @param countNumber Count data reflect count response data from NCMB
@@ -77,7 +77,7 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
     }
 
     /**
-     * This method executes passed callback functions (Mainly search data count functions, script functions]).
+     * This method executes passed callback functions (Mainly search data functions).
      *
      * @param e NCMBException from NCMB
      * @param responseData Response json object from NCMB
@@ -87,7 +87,7 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
     }
 
     /**
-     * This method executes passed callback functions (Mainly script functions]).
+     * This method executes passed callback functions (Mainly script functions).
      *
      * @param e NCMBException from NCMB
      * @param responseData Response json object from NCMB
