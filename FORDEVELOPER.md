@@ -19,7 +19,7 @@ src/　　本体のソースコード
       java/com/nifcloud/mbaas/core/
          NCMB.kt	SDKの基本情報を定義し、初期化実施するクラス		
          NCMBObject.kt データストア機能を実施するインターフェース部分のクラス（NCMBBaseを継承）
-         NCMBUser.kt, NCMBPush.kt, NCMBInstallation.ktなど   ユーザ管理、プッシュ通知、端末管理など機能を実施するクラス（NCMBOBjectを継承）
+         NCMBUser.kt, NCMBPush.kt, NCMBInstallation.ktなど   ユーザ管理、プッシュ通知、端末管理など機能を実施するクラス（NCMBObjectを継承）
 
          NCMBObjectService.kt　データストア機能を実施する機能部分のクラス（NCMBService継承)
          NCMBUserService.kt, NCMBPushService.kt, NCMBInstallationService ..  ユーザ管理、プッシュ通知、端末管理などの機能を実施する機能部分のクラス（NCMBService継承)
