@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,8 @@ class NCMBTest {
             clientKey)
         Assert.assertEquals(applicationKey, NCMB.getApplicationKey())
         Assert.assertEquals(clientKey, NCMB.getClientKey())
+        Assert.assertEquals(NCMB.getApiBaseUrl(), "https://mbaas.api.nifcloud.com/2013-09-01/")
+        Assert.assertEquals(NCMB.getApiBaseUrl(isScript = true), "https://script.mbaas.api.nifcloud.com/2015-09-01/")
     }
 
     /**
@@ -81,6 +83,32 @@ class NCMBTest {
         Assert.assertEquals(applicationKey, NCMB.getApplicationKey())
         Assert.assertEquals(clientKey, NCMB.getClientKey())
         Assert.assertEquals("$domainUrl$apiVersion/", NCMB.getApiBaseUrl())
+    }
+
+    /**
+     * シンプルなapikeyの初期化テスト
+     */
+    @Test
+    fun Initialize_test_domainurlScript_apiversionScript() {
+        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+        var domainUrl = "https://testdomain.com/"
+        var apiVersion = "2013-09-01"
+        var scriptDomainUrl = "https://scripttestdomain.com/"
+        var scriptApiVersion = "2015-09-01"
+        NCMB.initialize(
+            RuntimeEnvironment.application.getApplicationContext(),
+            applicationKey,
+            clientKey,
+            domainUrl,
+            apiVersion,
+            scriptDomainUrl,
+            scriptApiVersion
+        )
+        Assert.assertEquals(applicationKey, NCMB.getApplicationKey())
+        Assert.assertEquals(clientKey, NCMB.getClientKey())
+        Assert.assertEquals("$domainUrl$apiVersion/", NCMB.getApiBaseUrl())
+        Assert.assertEquals("$scriptDomainUrl$scriptApiVersion/", NCMB.getApiBaseUrl(isScript = true))
     }
 
     /**
@@ -151,4 +179,5 @@ class NCMBTest {
         NCMB.setTimeOut(12345)
         Assert.assertEquals(NCMB.getTimeOut(), 12345)
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -346,7 +346,7 @@ internal class NCMBUserService : NCMBObjectService() {
         when(response) {
             is NCMBResponse.Success -> {
                 if (response.resCode == HTTP_STATUS_SIGNUPED) {
-                    return response.data
+                    return response.data as JSONObject
                 }
                 if (response.resCode == HTTP_STATUS_AUTHORIZED && !oauth) {
                     throw NCMBException(NCMBException.AUTH_FAILURE, "User registration failed")
@@ -380,7 +380,7 @@ internal class NCMBUserService : NCMBObjectService() {
                         "Update user info failed"
                     )
                 }
-                response.data
+                response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -401,7 +401,7 @@ internal class NCMBUserService : NCMBObjectService() {
                 if (response.resCode !== HTTP_STATUS_AUTHORIZED) {
                     throw NCMBException(NCMBException.AUTH_FAILURE, "Login failed")
                 }
-                response.data
+                response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -422,7 +422,7 @@ internal class NCMBUserService : NCMBObjectService() {
                 if (response.resCode !== HTTP_STATUS_AUTHORIZED) {
                     throw NCMBException(NCMBException.AUTH_FAILURE, "Logout failed")
                 }
-                response.data
+                response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -709,7 +709,7 @@ internal class NCMBUserService : NCMBObjectService() {
                 if (response.resCode !== HTTP_STATUS_AUTHORIZED) {
                     throw NCMBException(NCMBException.DATA_NOT_FOUND, "Getting user info failure")
                 }
-                response.data
+                response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -730,7 +730,7 @@ internal class NCMBUserService : NCMBObjectService() {
                 if (response.resCode !== HTTP_STATUS_AUTHORIZED) {
                     throw NCMBException(NCMBException.NOT_EFFICIENT_VALUE, "Delete user failed")
                 }
-                response.data
+                response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException

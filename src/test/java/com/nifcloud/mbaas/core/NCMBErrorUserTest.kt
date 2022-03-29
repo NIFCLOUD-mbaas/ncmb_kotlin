@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,10 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun loginInBackground_invalid_username() {
+        if (NCMBUser().getCurrentUser().getObjectId() != null) {
+            println(NCMBUser().getCurrentUser().getObjectId())
+            NCMBUser().logout()
+        }
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
@@ -99,6 +103,10 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun signUpInBackground_invalid_password() {
+        if (NCMBUser().getCurrentUser().getObjectId() != null) {
+            println(NCMBUser().getCurrentUser().getObjectId())
+            NCMBUser().logout()
+        }
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
@@ -125,6 +133,10 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun signUpInBackground_invalid_null_password() {
+        if (NCMBUser().getCurrentUser().getObjectId() != null) {
+            println(NCMBUser().getCurrentUser().getObjectId())
+            NCMBUser().logout()
+        }
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
@@ -154,6 +166,10 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun logInBackground_invalid_null_password() {
+        if (NCMBUser().getCurrentUser().getObjectId() != null) {
+            println(NCMBUser().getCurrentUser().getObjectId())
+            NCMBUser().logout()
+        }
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e

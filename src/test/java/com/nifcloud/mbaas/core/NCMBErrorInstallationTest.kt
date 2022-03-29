@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,14 @@ class NCMBErrorInstallationTest {
         )
         //Todo background method
     }
+    @Test
+    @Throws(Exception::class)
+    fun save_does_not_use() {
+        //post
+        val installation = NCMBInstallation()
+        val throwable = assertFails { installation.save()}
+        Assert.assertEquals("For NCMBInstallation class this method cannot be used. Please use saveInBackground() instead.", throwable.message)
+    }
 
     @Test
     @Throws(Exception::class)
@@ -75,11 +83,6 @@ class NCMBErrorInstallationTest {
         inBackgroundHelper.await()
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals("registrationId is must not be null.", throwable.message)
-
-//        installation.saveInBackground(callback)
-//        inBackgroundHelper.await()
-//        Assert.assertNull(inBackgroundHelper["e"])
-//        Assert.assertEquals("registrationId is must not be null.", (inBackgroundHelper["e"] as NCMBException).message)
     }
 
     @Test

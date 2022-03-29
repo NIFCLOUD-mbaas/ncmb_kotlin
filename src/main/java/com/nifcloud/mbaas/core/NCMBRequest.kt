@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,21 @@ internal class NCMBRequest(
         return this.requestProperties
     }
 
+    // Check if this request is to Script request or not.  URL is .../script/SCRIPTNAME
+    fun isScriptRequest() :Boolean {
+        //println("in check script request")
+        if (url.startsWith( NCMB.getApiBaseUrl(isScript = true)  + "script/" ))
+            return true
+        return false
+    }
+
+    // Check if this request is to download file (get File) or not. Method GET + URL is .../files/FILENAME
+    fun isFileGetRequest() :Boolean {
+        if (method == HTTP_METHOD_GET && url.startsWith( NCMB.getApiBaseUrl()  + "files/" ))
+            return true
+        return false
+    }
+
     companion object {
         // region Constant
         // HTTP method "GET"
@@ -99,6 +114,9 @@ internal class NCMBRequest(
 
         //JSON形式のコンテントタイプの値
         const val HEADER_CONTENT_TYPE_JSON = "application/json"
+
+        //File形式のコンテントタイプの値
+        const val HEADER_CONTENT_TYPE_FILE = "multipart/form-data"
 
         //SDKVersionのキー
         const val HEADER_SDK_VERSION = "X-NCMB-SDK-Version"
@@ -182,4 +200,6 @@ internal class NCMBRequest(
         val osVersion = Build.VERSION.RELEASE
         requestProperties[HEADER_OS_VERSION] = "android-$osVersion"
     }
+
+
 }

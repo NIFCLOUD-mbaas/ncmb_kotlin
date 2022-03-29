@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,7 @@ internal object NCMBDateFormat {
      */
     fun getIso8601(): SimpleDateFormat {
         val pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-        val locale = Locale.JAPAN
-        val format = SimpleDateFormat(pattern, locale)
+        val format = SimpleDateFormat(pattern)
         format.timeZone = SimpleTimeZone(0, "UTC")
         return format
     }

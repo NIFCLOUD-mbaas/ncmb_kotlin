@@ -1,0 +1,9 @@
+---
+request:
+    url: /2015-09-01/script/testScript.js
+    method: GET
+response:
+    status: 200
+    file: valid_script_response.txt
+---
+

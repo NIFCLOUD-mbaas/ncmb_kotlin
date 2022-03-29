@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,17 @@ class NCMBErrorDispatcher: Dispatcher() {
                         "9XuXzrgyI/B7E8KpXzeGUaAXcdO5h/hlL+4o/GVm/T4="
                     )
                     .setBody(readJsonResponse(responseMap["file"].toString()))
+            }
+            //Form data file upload request and response
+            if(requestMap["url"] == "/2013-09-01/files/tempFileErr413.txt" || requestMap["url"] == "/2013-09-01/files/tempFileErr415.txt") {
+                if (requestMap["method"] != request.method) {
+                    continue
+                }
+                if (requestMap.containsKey("body")) {
+                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                        .setHeader("Content-Type", "application/json")
+                        .setBody(readJsonResponse(responseMap["file"].toString()))
+                }
             }
             if (requestMap["method"] != request.method) {
                 continue

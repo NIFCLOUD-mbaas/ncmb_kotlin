@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,5 +92,11 @@ internal class NCMBQueryConstants {
         const val QUERY_OPERATOR_NINARRAY : String = "ninArray"
         const val QUERY_OPERATOR_ALL : String = "all"
         const val QUERY_OPERATOR_OR : String = "or"
+        const val QUERY_OPERATOR_WITHIN : String = "within"
+        const val QUERY_OPERATOR_BOX : String = "box"
+        const val QUERY_OPERATOR_NEARSPHERE : String = "nearSphere"
+        const val QUERY_OPERATOR_MILES : String = "maxDistanceInMiles"
+        const val QUERY_OPERATOR_KM : String = "maxDistanceInKilometers"
+        const val QUERY_OPERATOR_RAD : String = "maxDistanceInRadians"
     }
 }

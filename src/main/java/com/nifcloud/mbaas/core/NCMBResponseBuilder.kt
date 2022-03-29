@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ internal class NCMBResponseBuilder {
         /** http status for success  */
         const val HTTP_STATUS_OK = 200
         const val HTTP_STATUS_CREATED = 201
+
         fun build(response: Response): NCMBResponse {
 
             //通信結果文字列
@@ -69,6 +70,53 @@ internal class NCMBResponseBuilder {
                 return NCMBResponse.Failure(responseError)
             }
             return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
+        }
+
+
+        //For File and script feature
+        fun buildFileScriptResponse(response: Response): NCMBResponse {
+            //通信結果文字列
+            //var responseByteArray:ByteArray?
+            var responseError: NCMBException
+            var responseDataJson = JSONObject()
+
+            //Connecting success and received response data from Server, start to solve response data to create
+            //通信結果ステータスコード
+            var statusCode = response.code
+            var responseHeader = response.headers
+
+            val contentType = response.headers["Content-Type"].toString()
+            //println("Content type:" + contentType)
+            //println("status Code:"  + statusCode)
+
+            //Error case, json string response show error
+            if (contentType == "application/json" || contentType == "application/json;charset=UTF-8") {
+                var responseDataString = response.body?.string()
+                // Set response json data
+                try {
+                    if(!responseDataString.isNullOrEmpty()) {
+                        responseDataJson = JSONObject(responseDataString)
+                        //Set error
+                        if (statusCode != HTTP_STATUS_OK &&
+                            statusCode != HTTP_STATUS_CREATED
+                        ) {
+                            /** mobile backendへのAPIリクエスト結果から取得したエラーコード  */
+                            var mbErrorCode = responseDataJson.getString("code")
+                            var mbErrorMessage = responseDataJson.getString("error")
+                            responseError = NCMBException(mbErrorCode, mbErrorMessage)
+                            //Checking invalid sessionToken
+                            invalidSessionToken(mbErrorCode)
+                            return NCMBResponse.Failure(responseError)
+                        }
+                        return NCMBResponse.Success(statusCode, responseHeader, responseDataJson)
+                    }
+                } catch (e: JSONException) {
+                    responseError = NCMBException(e)
+                    return NCMBResponse.Failure(responseError)
+                }
+            }
+            var responseByteArray = response.body?.bytes()
+            return NCMBResponse.Success(statusCode, responseHeader, responseByteArray)
         }
 
         /**

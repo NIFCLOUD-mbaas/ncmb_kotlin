@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.nifcloud.mbaas.core
 
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 import java.net.URLEncoder
 
 
@@ -35,21 +36,9 @@ internal open class NCMBService {
      */
     protected var mServicePath: String? = null
 
-//    /**
-//     * Data class for params of request
-//     */
-//    data class RequestParams(
-//        var url: String,
-//        var method: String,
-//        var params: JSONObject = JSONObject(),
-//        var contentType: String,
-//        var query: JSONObject = JSONObject()
-//    )
-
     /**
      * Data class for params of request
      */
-
     data class RequestParams(
         var url: String,
         var method: String,
@@ -58,20 +47,6 @@ internal open class NCMBService {
         var query: JSONObject = JSONObject(),
         var callback: NCMBCallback? = null,
         var handler: NCMBHandler? = null
-    )
-
-    /**
-     * Data class for params of request
-     */
-
-    data class RequestParamsAsync(
-        var url: String,
-        var method: String,
-        var params: JSONObject = JSONObject(),
-        var contentType: String,
-        var query: JSONObject = JSONObject(),
-        var callback: NCMBCallback,
-        var handler: NCMBHandler
     )
 
     /**
@@ -107,8 +82,11 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
-        val response = connection.sendRequest()
-        return response
+        return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
+            connection.sendRequestForUploadFile()
+        }else {
+            connection.sendRequest()
+        }
     }
 
     /**
@@ -143,8 +121,8 @@ internal open class NCMBService {
         params: JSONObject,
         contentType: String,
         query: JSONObject,
-        callback: NCMBCallback,
-        handler: NCMBHandler
+        callback: NCMBCallback?,
+        handler: NCMBHandler?
     ){
         if (NCMB.SESSION_TOKEN == null) {
             NCMB.SESSION_TOKEN = NCMBUser().sessionToken
@@ -165,7 +143,17 @@ internal open class NCMBService {
             timestamp
         )
         val connection = NCMBConnection(request)
-        connection.sendRequestAsynchronously(callback, handler)
+        //print("In sendRequestAsync check ConntentType:" + contentType + "|" +NCMBRequest.HEADER_CONTENT_TYPE_FILE )
+        if(callback != null && handler != null) {
+            if(contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
+                connection.sendRequestAsynchronouslyForUploadFile(callback, handler)
+            }else {
+                connection.sendRequestAsynchronously(callback, handler)
+            }
+        }
+        else{
+            throw NCMBException(NCMBException.INVALID_FORMAT, "Need to set callback and handler for an inbackground method.")
+        }
     }
 
     /**
@@ -192,7 +180,7 @@ internal open class NCMBService {
      *
      * @param params      Request Parameters For Async method
      */
-    fun sendRequestAsync(params: RequestParamsAsync ) {
+    fun sendRequestAsync(params: RequestParams) {
         return this.sendRequestAsync(
             params.url,
             params.method,

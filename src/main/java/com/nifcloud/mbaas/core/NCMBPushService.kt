@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ internal class NCMBPushService : NCMBService() {
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
-                return response.data
+                return response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException
@@ -59,7 +59,7 @@ internal class NCMBPushService : NCMBService() {
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
-                return response.data
+                return response.data as JSONObject
             }
             is NCMBResponse.Failure -> {
                 throw response.resException

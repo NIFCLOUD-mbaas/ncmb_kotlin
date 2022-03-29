@@ -1,3 +1,19 @@
+/*
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -122,7 +138,7 @@ class NCMBQueryTest {
     fun testNCMBObject_DoSearchSync_Equal_OneResult() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         val objects = query.find()
         Assert.assertEquals(
             objects[0].getObjectId(),
@@ -169,7 +185,7 @@ class NCMBQueryTest {
     fun testSkip_Invalid_value_under0() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         val throwable = assertFails { query.skip = -1 }
         Assert.assertEquals("Need to set skip value > 0", throwable.message)
     }
@@ -178,7 +194,7 @@ class NCMBQueryTest {
     fun testSkip_valid_value() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         query.skip = 20
         Assert.assertEquals(20, query.skip)
     }
@@ -188,7 +204,7 @@ class NCMBQueryTest {
     fun testLimit_Invalid_value_under0() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         val throwable = assertFails { query.limit = -100 }
         Assert.assertEquals("Need to set limit value from 1 to 1000", throwable.message)
     }
@@ -198,7 +214,7 @@ class NCMBQueryTest {
     fun testLimit_Invalid_value_over1000() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         val throwable = assertFails { query.limit = 1001 }
         Assert.assertEquals("Need to set limit value from 1 to 1000", throwable.message)
     }
@@ -207,7 +223,7 @@ class NCMBQueryTest {
     fun testLimit_valid_value() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         query.limit = 200
         Assert.assertEquals(200, query.limit)
     }
@@ -217,7 +233,7 @@ class NCMBQueryTest {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassSkip")
         query.skip = 3
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
 
         val objects = query.find()
         Assert.assertEquals(2,objects.count())
@@ -257,7 +273,7 @@ class NCMBQueryTest {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClassCount")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         val callback = NCMBCallback { e, number ->
             inBackgroundHelper["e"] = e
             inBackgroundHelper["number"] = number
@@ -343,7 +359,7 @@ class NCMBQueryTest {
     @Test    
     fun testNCMBObject_DoCount_Equal_Success() {
         val query = NCMBQuery.forObject("TestClassCount")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         val number = query.count()
         Assert.assertEquals(
             50,
@@ -374,7 +390,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_NotEqual_Success() {
         val query = NCMBQuery.forObject("TestClassNotEqual")
-        query.whereNotEqualTo("key", "value");
+        query.whereNotEqualTo("key", "value")
         val objects = query.find()
         Assert.assertEquals(
             2,
@@ -413,7 +429,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_GreaterThan_Success() {
         val query = NCMBQuery.forObject("TestClassGreaterThan")
-        query.whereGreaterThan("key", 2);
+        query.whereGreaterThan("key", 2)
         val objects = query.find()
         Assert.assertEquals(
             2,
@@ -452,7 +468,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_GreaterThanOrEqual_Success() {
         val query = NCMBQuery.forObject("TestClassGreaterThanOrEqual")
-        query.whereGreaterThanOrEqualTo("key", 2);
+        query.whereGreaterThanOrEqualTo("key", 2)
         val objects = query.find()
         Assert.assertEquals(
             2,
@@ -491,7 +507,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_LessThan_Success() {
         val query = NCMBQuery.forObject("TestClassLessThan")
-        query.whereLessThan("key", 100);
+        query.whereLessThan("key", 100)
         val objects = query.find()
         Assert.assertEquals(
             2,
@@ -530,7 +546,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_LessThanOrEqual_Success() {
         val query = NCMBQuery.forObject("TestClassLessThanOrEqual")
-        query.whereLessThanOrEqualTo("key", 100);
+        query.whereLessThanOrEqualTo("key", 100)
         val objects = query.find()
         Assert.assertEquals(
             2,
@@ -578,8 +594,8 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_LessThanOrEqualAndEqual_Success() {
         val query = NCMBQuery.forObject("TestClass")
-        query.whereLessThanOrEqualTo("key", 100);
-        query.whereEqualTo("key", "value");
+        query.whereLessThanOrEqualTo("key", 100)
+        query.whereEqualTo("key", "value")
         val objects = query.find()
         Assert.assertEquals(
             1,
@@ -589,6 +605,155 @@ class NCMBQueryTest {
             objects[0].getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
+    }
+
+    @Test
+    fun testNCMBObject_Or_Success() {
+        val query1 = NCMBQuery.forObject("TestClass")
+        query1.whereLessThan("keyInt", 100)
+        val query2 = NCMBQuery.forObject("TestClass")
+        query2.whereGreaterThan("keyInt", 0)
+        val queries: List<NCMBQuery<NCMBObject>> = listOf(query1, query2)
+        val query = NCMBQuery.forObject("TestClass")
+        query.or(queries)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+    }
+    
+    @Test
+    fun testNCMBObject_Or_1query_Success() {
+        val query1 = NCMBQuery.forObject("TestClass")
+        query1.whereLessThan("keyInt", 100)
+        val queries: List<NCMBQuery<NCMBObject>> = listOf(query1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.or(queries)
+        val objects = query.find()
+        Assert.assertEquals(
+            2,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "8FgKqFlH8dZRDrBJ"
+        )
+        Assert.assertEquals(
+            objects[1].getObjectId(),
+            "eQRqoObEZmtrfgzH"
+        )
+    }
+    
+    @Test
+    fun testNCMBObject_Or_3query_Success() {
+        val query1 = NCMBQuery.forObject("TestClass")
+        query1.whereLessThan("keyInt", 100)
+        val query2 = NCMBQuery.forObject("TestClass")
+        query2.whereGreaterThan("keyInt", 0)
+        val queries: List<NCMBQuery<NCMBObject>> = listOf(query1, query2, query1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.or(queries)
+        val objects = query.find()
+        Assert.assertEquals(
+            0,
+            objects.size
+        )
+    }
+
+    @Test
+    fun testNCMBObject_whereWithinGeoBox_Success() {
+        val southwest = NCMBGeoPoint(10.0, 20.0)
+        val northeast = NCMBGeoPoint(30.0, 40.0)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereWithinGeoBox("geo", southwest, northeast)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereKilometers_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereKilometers("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+           objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereRadians_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereRadians("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphereMiles_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphereMiles("geo", location, 12.0)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
+    }
+
+    @Test
+    fun testNCMBObject_whereNearSphere_Success() {
+        val location = NCMBGeoPoint(10.0, 10.1)
+        val query = NCMBQuery.forObject("TestClass")
+        query.whereNearSphere("geo", location)
+        val objects = query.find()
+        Assert.assertEquals(
+            1,
+            objects.size
+        )
+        Assert.assertEquals(
+            objects[0].getObjectId(),
+            "ftVV0Zwj6ek0zKfM"
+        )
+        Assert.assertEquals(objects[0].getGeo("geo").mlatitude, 12.0, 0.0)
+        Assert.assertEquals(objects[0].getGeo("geo").mlongitude, 34.0, 0.0)
     }
 
     @Test

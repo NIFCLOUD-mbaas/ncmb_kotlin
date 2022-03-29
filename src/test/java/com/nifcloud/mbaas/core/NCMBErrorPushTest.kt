@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.lang.Exception
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -58,10 +61,6 @@ class NCMBErrorPushTest {
         )
         //Todo background method
 
-//        Robolectric.getBackgroundThreadScheduler().pause();
-//        Robolectric.getForegroundThreadScheduler().pause();
-//
-//        callbackFlag = false;
     }
 
     /**
@@ -82,30 +81,60 @@ class NCMBErrorPushTest {
         catch (e:NCMBException){
             Assert.assertEquals(NCMBException.INVALID_FORMAT, e.code)
             Assert.assertEquals("'target' do not set.", e.message)
+        }
+    }
 
+    /**
+     * - 内容：deliveryExpirationTimeに誤った値を設定
+     * - 結果：deliveryExpirationTimeのset時にerrorが出ること
+     */
+    @Test
+    @Throws(Exception::class)
+    fun send_post_invalid_deliveryExpirationTime() {
+        //post
+        val push = NCMBPush()
+        push.title = "title"
+        push.message = "message"
+        push.immediateDeliveryFlag = true
+        push.isSendToAndroid = true
+        try {
+            push.deliveryExpirationTime = "3yay"
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.INVALID_FORMAT, e.code)
+            Assert.assertEquals("deliveryExpirationTime is invalid format. Please set string such as 'XX day' or 'YY hour'.", e.message)
         }
     }
 
     /**
      * - 内容：send(POST)が失敗することを確認する
-     * - 結果：targetの指定がないとのエラーが出ること
+     * - 結果：deliveryTimeとimmediateDeliveryFlagが両方設定されている場合、エラーが出ること
      */
     @Test
     @Throws(Exception::class)
-    fun send_post_false_target() {
+    fun send_post_conflict_deliveryTime_and_immediateDeliveryFlag() {
         //post
+        var date = Date()
         val push = NCMBPush()
-        push.title = "title_update"
-        push.message = "message_update"
+        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        df.timeZone = TimeZone.getTimeZone("Etc/UTC")
+        try {
+            date = df.parse("2030-10-10 10:10:10")
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+        push.deliveryTime = date
+        push.title = "correlation_error"
+        push.message = "correlation_error"
         push.immediateDeliveryFlag = true
-        push.isSendToAndroid = false
+        push.isSendToAndroid = true
+        push.isSendToIOS = true
         try {
             push.save()
         }
         catch (e:NCMBException){
-            Assert.assertEquals(NCMBException.INVALID_FORMAT, e.code)
-            Assert.assertEquals("'target' do not set.", e.message)
-
+            Assert.assertEquals(NCMBException.INVALID_CORRELATION, e.code)
+            Assert.assertEquals("Either deliveryTime or immediateDeliveryFlag.", e.message)
         }
     }
 }

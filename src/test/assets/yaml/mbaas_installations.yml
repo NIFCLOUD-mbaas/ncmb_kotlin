@@ -203,6 +203,13 @@ response:
     file: valid_get_installation_response.json
 ---
 request:
+    url: /2013-09-01/installations/7FrmPTBKchannels
+    method: GET
+response:
+    status: 200
+    file: valid_get_installation_channels_response.json
+---
+request:
     url: /2013-09-01/installations/7FrmPTBKSNtVjajm
     method: DELETE
 response:

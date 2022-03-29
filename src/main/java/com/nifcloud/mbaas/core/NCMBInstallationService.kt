@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,11 +120,11 @@ internal class NCMBInstallationService: NCMBObjectService() {
             when (response) {
                 is NCMBResponse.Success -> {
                     try {
-                        writeCurrentInstallation(params, response.data)
+                        writeCurrentInstallation(params, response.data as JSONObject)
                     } catch (e: NCMBException) {
                         throw e
                     }
-                    installationObject.reflectResponse(response.data)
+                    installationObject.reflectResponse(response.data as JSONObject)
                     callback.done(null, installationObject)
                 }
                 is NCMBResponse.Failure -> {
@@ -159,7 +159,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
             when (response) {
                 is NCMBResponse.Success -> {
                     try {
-                        writeCurrentInstallation(params, response.data)
+                        writeCurrentInstallation(params, response.data as JSONObject)
                     } catch (e: NCMBException) {
                         throw e
                     }
@@ -256,7 +256,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         val response = sendRequest(url, method, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
-                fetchInstantiation.reflectResponse(response.data)
+                fetchInstantiation.reflectResponse(response.data as JSONObject)
                 return NCMBInstallation(response.data)
             }
             is NCMBResponse.Failure -> {
@@ -282,7 +282,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         val fetchHandler = NCMBHandler { deletecallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
-                    fetchInstantiation.reflectResponse(response.data)
+                    fetchInstantiation.reflectResponse(response.data as JSONObject)
                     fetchCallback.done(null, NCMBInstallation(response.data))
                 }
                 is NCMBResponse.Failure -> {
@@ -342,7 +342,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         method: String,
         installationCallback: NCMBCallback,
         installationHandler: NCMBHandler
-    ): RequestParamsAsync {
+    ): RequestParams {
 
         //url set
         val url: String = if (objectId != null) {
@@ -354,7 +354,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         }
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
 
-        return RequestParamsAsync(
+        return RequestParams(
             url = url,
             method = method,
             params = params,

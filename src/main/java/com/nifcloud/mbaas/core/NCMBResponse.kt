@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,6 @@ import org.json.JSONObject
  *
  */
 internal sealed class NCMBResponse {
-    data class Success(val resCode: Int, val resHeaders: Headers, val data: JSONObject) : NCMBResponse()
+    data class Success(val resCode: Int, val resHeaders: Headers, val data: Any?) : NCMBResponse()
     data class Failure(val resException: NCMBException) : NCMBResponse()
 }

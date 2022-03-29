@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,10 +63,7 @@ class NCMBGeoPoint {
     @Throws(NCMBException::class)
     fun put(key: String, value: NCMBGeoPoint) {
         try {
-            val locationJson = JSONObject("{'__type':'GeoPoint'}")
-            locationJson.put("longitude", value.mlongitude)
-            locationJson.put("latitude", value.mlatitude)
-            NCMBBase().mFields.put(key, locationJson)
+            NCMBBase().mFields.put(key, value.convertToJson())
             NCMBBase().mUpdateKeys.add(key)
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_FORMAT, e.message!!)
@@ -83,5 +80,13 @@ class NCMBGeoPoint {
         val position = validate(latitude, longitude)
         mlatitude = position.first
         mlongitude = position.second
+    }
+
+    //convert NCMBGeoPoint to JSONObject
+    internal fun convertToJson():JSONObject {
+        val locationJson = JSONObject("{'__type':'GeoPoint'}")
+        locationJson.put("longitude", this.mlongitude)
+        locationJson.put("latitude", this.mlatitude)
+        return locationJson
     }
 }

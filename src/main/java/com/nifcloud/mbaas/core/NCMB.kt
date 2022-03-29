@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class NCMB {
         /**
          * Version of this SDK
          */
-        const val SDK_VERSION = "1.0.0"
+        const val SDK_VERSION = "1.1.0"
 
         /**
          * Prefix of keys in metadata for NCMB settings
@@ -56,9 +56,18 @@ class NCMB {
         const val DEFAULT_DOMAIN_URL = "https://mbaas.api.nifcloud.com/"
 
         /**
+         * script end point
+         */
+        const val DEFAULT_SCRIPT_DOMAIN_URL = "https://script.mbaas.api.nifcloud.com/"
+
+        /**
          * Default API version
          */
         const val DEFAULT_API_VERSION = "2013-09-01"
+        /**
+         * script API version
+         */
+        const val DEFAULT_SCRIPT_API_VERSION = "2015-09-01"
 
         /**
          * Default API timeout
@@ -93,6 +102,7 @@ class NCMB {
         var APPLICATION_KEY = ""
         var CLIENT_KEY = ""
         var API_BASE_URL = ""
+        var SCRIPT_API_BASE_URL = ""
         private var DOMAINURL = ""
         private var APIVERSION = ""
         var SESSION_TOKEN: String? = null
@@ -113,13 +123,16 @@ class NCMB {
             applicationKey: String,
             clientKey: String,
             domainUrl: String = DEFAULT_DOMAIN_URL,
-            apiVersion: String = DEFAULT_API_VERSION
+            apiVersion: String = DEFAULT_API_VERSION,
+            scriptDomainUrl: String = DEFAULT_SCRIPT_DOMAIN_URL,
+            scriptApiVersion: String = DEFAULT_SCRIPT_API_VERSION
         ){
             APPLICATION_KEY = applicationKey
             CLIENT_KEY = clientKey
             DOMAINURL = domainUrl
             APIVERSION = apiVersion
             API_BASE_URL = "$DOMAINURL$APIVERSION/"
+            SCRIPT_API_BASE_URL = "$scriptDomainUrl$scriptApiVersion/"
             TIMEOUT = DEFAULT_API_TIMEOUT
             CURRENT_CONTEXT = context
         }
@@ -191,8 +204,12 @@ class NCMB {
          *
          * @return API_BASE_URL.
          */
-        fun getApiBaseUrl(): String {
-            return API_BASE_URL
+        fun getApiBaseUrl(isScript:Boolean = false): String {
+            return if(isScript) {
+                SCRIPT_API_BASE_URL
+            } else {
+                API_BASE_URL
+            }
         }
 
         /**

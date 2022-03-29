@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
     }
 
     /**
-     * This method executes passed callback functions (Mainly search data count functions).
+     * This method executes passed callback functions (Mainly count data functions).
      *
      * @param e NCMBException from NCMB
      * @param countNumber Count data reflect count response data from NCMB
@@ -77,13 +77,23 @@ class NCMBCallback(val passCallback: (NCMBException?, Any?) -> Unit) {
     }
 
     /**
-     * This method executes passed callback functions (Mainly search data count functions).
+     * This method executes passed callback functions (Mainly search data functions).
      *
      * @param e NCMBException from NCMB
      * @param responseData Response json object from NCMB
      */
     fun done(e: NCMBException?, responseData: JSONObject) {
         passCallback(e, responseData)
+    }
+
+    /**
+     * This method executes passed callback functions (Mainly script functions).
+     *
+     * @param e NCMBException from NCMB
+     * @param responseData Response json object from NCMB
+     */
+    fun done(e: NCMBException?, responseScript: ByteArray) {
+        passCallback(e, responseScript)
     }
 
 }
