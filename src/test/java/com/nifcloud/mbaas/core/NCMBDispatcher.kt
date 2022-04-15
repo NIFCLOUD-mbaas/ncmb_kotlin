@@ -92,6 +92,16 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                         .setBody(readJsonResponse(responseMap["file"].toString()))
                 }
             }
+            if(requestMap["url"] == "/2013-09-01/files/test.png") {
+                if (requestMap["method"] != request.method) {
+                    continue
+                }
+                if (requestMap.containsKey("body")) {
+                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                        .setHeader("Content-Type", "application/json")
+                        .setBody(readJsonResponse(responseMap["file"].toString()))
+                }
+            }
             //File download request and response
             if(requestMap["url"] == "/2013-09-01/files/tempFileDownload.txt") {
                 if (requestMap["method"] == request.method) {
