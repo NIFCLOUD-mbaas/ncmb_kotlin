@@ -22,6 +22,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
+import java.util.*
 
 
 class NCMBBaseTest {
@@ -73,6 +74,16 @@ class NCMBBaseTest {
         var baseObj = NCMBBase()
         baseObj.put("keyNumberDouble", 1234.33)
         Assert.assertEquals(baseObj.get("keyNumberDouble"), 1234.33)
+    }
+
+    @Test
+    fun put_date_test_direct() {
+        var baseObj = NCMBBase()
+
+        val assertDate: Date = NCMBDateFormat.getIso8601().parse("2022-04-14T10:10:10.000Z")
+        baseObj.put("keyDate", assertDate)
+
+        Assert.assertTrue(assertDate.equals(baseObj.get("keyDate")));
     }
 
     /**
