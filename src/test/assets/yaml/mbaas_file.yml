@@ -9,6 +9,15 @@ response:
     file: valid_save_file.json
 ---
 request:
+    url: /2013-09-01/files/test.png
+    method: POST
+    body:
+        file:  FILEDATA
+response:
+    status: 201
+    file: valid_save_file_png.json
+---
+request:
     url: /2013-09-01/files/tempFileDownload.txt
     method: GET
 response:
