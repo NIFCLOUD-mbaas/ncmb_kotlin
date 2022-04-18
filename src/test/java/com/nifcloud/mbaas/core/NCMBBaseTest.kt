@@ -83,7 +83,7 @@ class NCMBBaseTest {
         val assertDate: Date = NCMBDateFormat.getIso8601().parse("2022-04-14T10:10:10.000Z")
         baseObj.put("keyDate", assertDate)
 
-        Assert.assertTrue(assertDate.equals(baseObj.get("keyDate")));
+        Assert.assertTrue(assertDate.equals(baseObj.getDate("keyDate")));
     }
 
     /**

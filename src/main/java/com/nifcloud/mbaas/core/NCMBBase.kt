@@ -240,16 +240,27 @@ open class NCMBBase(){
             )
         }
         return try {
-            if (mFields.get(key) is JSONObject) {
-                NCMBDateFormat.getIso8601().parse(mFields.getJSONObject(key).getString("iso"))
-            } else {
-                mFields.get(key)
-            }
+            mFields.get(key)
         } catch (e: JSONException) {
             throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
         }
     }
 
+    @Throws(NCMBException::class)
+    fun getDate(key : String): Date? {
+        try {
+            if (!mFields.isNull(key)) {
+                val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
+                val dateJson = mFields.getJSONObject(key)
+                if (dateJson.getString("__type") == "Date" && !dateJson.isNull("iso")) {
+                    return df.parse(dateJson.getString("iso"))
+                }
+            }
+            return null
+        } catch (e: JSONException) {
+            return null
+        }
+    }
 
     /**
      * Check key is in keys
