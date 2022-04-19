@@ -33,6 +33,7 @@
 
 package com.nifcloud.mbaas.core
 
+import android.webkit.MimeTypeMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -137,18 +138,8 @@ internal class NCMBConnection(request: NCMBRequest) {
                 println(headers)
                 println(ncmbRequest.query)
 
-                //Get file from params
-                var fileObj = ncmbRequest.params.get("file") as File
-                val requestBody = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart(
-                        "file", null,
-                        fileObj.asRequestBody()
-                    )
-                    .build()
-
                 val request =
-                    request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
+                    request(ncmbRequest.method, URL(ncmbRequest.url), headers, createFileRequestBody())
                 val client = OkHttpClient().newCall(request)
                 val response = client.execute()
                 ncmbResponse = NCMBResponseBuilder.build(response)
@@ -222,16 +213,7 @@ internal class NCMBConnection(request: NCMBRequest) {
             println(ncmbRequest.url)
             println(headers)
 
-            //Get file from params
-            var fileObj = ncmbRequest.params.get("file") as File
-
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", null,
-                    fileObj.asRequestBody())
-                .build()
-
-            val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
+            val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, createFileRequestBody())
             val client = OkHttpClient().newCall(request)
 
             client.enqueue(object : Callback {
@@ -347,4 +329,29 @@ internal class NCMBConnection(request: NCMBRequest) {
         }
         return headerMap
     }
+
+    private fun createFileRequestBody(): RequestBody {
+        //Get file from params
+        var fileObj = ncmbRequest.params.get("file") as File
+
+        return MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", null,
+                fileObj.asRequestBody(createMimeType(fileObj.name).toMediaTypeOrNull()))
+            .build()
+    }
+
+    private fun createMimeType(fileName: String): String {
+        //fileの拡張子毎のmimeTypeを作成
+        var mimeType: String? = null
+        if (fileName.lastIndexOf(".") != -1) {
+            val extension = fileName.substring(fileName.lastIndexOf(".") + 1)
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        }
+        if (mimeType == null) {
+            mimeType = "application/octet-stream"
+        }
+        return mimeType
+    }
+
 }
