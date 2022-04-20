@@ -22,7 +22,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
-import java.util.*
+import java.util.Date
 
 
 class NCMBBaseTest {
@@ -83,7 +83,10 @@ class NCMBBaseTest {
         val assertDate: Date = NCMBDateFormat.getIso8601().parse("2022-04-14T10:10:10.000Z")
         baseObj.put("keyDate", assertDate)
 
+        val expectedKeyDateJson = JSONObject("{\"__type\":\"Date\",\"iso\":\"2022-04-14T10:10:10.000Z\"}")
         Assert.assertTrue(assertDate.equals(baseObj.getDate("keyDate")));
+        JSONAssert.assertEquals(expectedKeyDateJson, baseObj.mFields.getJSONObject("keyDate"), false)
+        Assert.assertEquals(1, baseObj.mUpdateKeys.size)
     }
 
     /**
