@@ -85,3 +85,16 @@ response:
     status: 200
     file: valid_put_response.json
 ---
+request:
+    url: /2013-09-01/push
+    method: POST
+    body:
+        title: "title_update"
+        message: "message_update"
+        immediateDeliveryFlag: true
+        target: ["android", "ios"]
+        richUrl: "http://www.yahoo.co.jp/"
+response:
+    status: 201
+    file: valid_post_response.json
+---

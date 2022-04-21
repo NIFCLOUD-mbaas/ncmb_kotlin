@@ -147,6 +147,23 @@ class NCMBPushTest {
      * putテスト
      */
     @Test
+    fun test_setSearchCondition() {
+        val token = "xxxxxxxxxxxxxxxxxxx"
+        val push = NCMBPush()
+        val query = NCMBQuery.forInstallation()
+        query.whereEqualTo("deviceToken", token)
+        push.setSearchCondition(query)
+        val TestJSON = JSONObject()
+        TestJSON.put("deviceToken", token)
+        Assert.assertEquals(TestJSON.getString("deviceToken"),
+            push.getSearchCondition()?.getString("deviceToken")
+        )
+    }
+
+    /**
+     * putテスト
+     */
+    @Test
     fun test_deliveryExpirationTime_hour() {
         val push = NCMBPush()
         push.deliveryExpirationTime = "3 hour"
@@ -391,5 +408,32 @@ class NCMBPushTest {
         } catch (e: NCMBException) {
             error = e
         }
+    }
+
+    /**
+     * - 内容：send(POST)が成功することを確認する
+     * - 結果：richUrlを設定してPush登録
+     */
+    @Test
+    @Throws(Exception::class)
+    fun send_post_richUrl() {
+        var error: NCMBException? = null
+        val push = NCMBPush()
+        try {
+            push.title = "title_update"
+            push.message = "message_update"
+            push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.isSendToIOS = true
+            push.richUrl = "http://www.yahoo.co.jp/"
+            push.save()
+        } catch (e: NCMBException) {
+            error = e
+        }
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+        Assert.assertNull(error)
+        Assert.assertEquals("http://www.yahoo.co.jp/", push.mFields.get("richUrl"))
     }
 }
