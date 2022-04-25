@@ -15,6 +15,8 @@
 */
 package com.nifcloud.mbaas.core
 
+import android.content.Context
+import android.content.Intent
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import org.json.JSONArray
 import org.json.JSONException
@@ -240,6 +242,69 @@ class NCMBPush : NCMBObject {
         }
 
     /**
+     * Get richUrl
+     *
+     * @return String richUrl
+     */
+    /**
+     * Set richUrl
+     *
+     * @param value richUrl
+     */
+    var richUrl: String?
+        get() {
+            return try {
+                if (mFields.isNull(RICH_URL)) {
+                    null
+                } else mFields.getString(RICH_URL)
+            } catch (error: JSONException) {
+                throw NCMBException(IllegalArgumentException(error.message))
+            }
+        }
+        set(value) {
+            try {
+                mFields.put(RICH_URL, value)
+                mUpdateKeys.add(RICH_URL)
+            } catch (error: JSONException) {
+                throw NCMBException(IllegalArgumentException(error.message))
+            }
+        }
+
+    /**
+     * Get search condition
+     *
+     * @return JSONObject search condition
+     */
+    fun getSearchCondition(): JSONObject? {
+        return try {
+            if (mFields.isNull(SEARCH_CONDITION)) {
+                null
+            } else mFields.getJSONObject(SEARCH_CONDITION)
+        } catch (error: JSONException) {
+            throw NCMBException(IllegalArgumentException(error.message))
+        }
+    }
+
+    /**
+     * Set search condition
+     *
+     * @param query NCMBQuery for installation search
+     */
+    fun setSearchCondition(query: NCMBQuery<NCMBInstallation>) {
+        try {
+            val whereConditions = query.query
+            var value: JSONObject? = JSONObject()
+            if (whereConditions.has("where")) {
+                value = whereConditions.getJSONObject("where")
+            }
+            mFields.put(SEARCH_CONDITION, value)
+            mUpdateKeys.add(SEARCH_CONDITION)
+        } catch (error: JSONException) {
+            throw NCMBException(IllegalArgumentException(error.message))
+        }
+    }
+
+    /**
      * Get badge increment flag
      *
      * @return Boolean badge increment flag
@@ -362,11 +427,31 @@ class NCMBPush : NCMBObject {
         }
     }
 
+    /**
+     * If it contains the URL in the payload data, it will display the webview
+     *
+     * @param context context
+     * @param intent  URL
+     */
+    fun richPushHandler(context: Context?, intent: Intent?) {
+        if (intent == null) {
+            return
+        }
+        // URLチェック
+        val url = intent.getStringExtra("com.nifcloud.mbaas.RichUrl") ?: return
+        // URLのバリデーションチェック
+        if (!url.matches(MATCH_URL_REGEX)) {
+            return
+        }
 
+        // ダイアログ表示
+        val dialog = NCMBRichPush(context, url)
+        dialog.show()
+    }
 
     companion object {
-        private const val MATCH_URL_REGEX =
-            "^(https?)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)$"
+        private val MATCH_URL_REGEX =
+            "^(https?)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)$".toRegex()
         val ignoreKeys = Arrays.asList(
             "objectId", "deliveryTime", "target",
             "searchCondition", "message", "userSettingValue",
@@ -382,5 +467,7 @@ class NCMBPush : NCMBObject {
         const val MESSAGE = "message"
         const val TITLE = "title"
         const val IMMEDIATE_DELIVERY_FLAG = "immediateDeliveryFlag"
+        const val RICH_URL = "richUrl"
+        const val SEARCH_CONDITION = "searchCondition"
     }
 }
