@@ -235,7 +235,7 @@ class NCMBAcl {
     }
 
     /**
-     * Remove permission for user
+     * Remove permission for user (after set at local OR fetch from server)
      * @param userId user id
      * @return success to remove permission
      */
@@ -249,7 +249,7 @@ class NCMBAcl {
     }
 
     /**
-     * Remove permisson for role
+     * Remove permisson for role (after set at local OR fetch from server)
      * @param roleName role name
      * @return success to remove permission
      */

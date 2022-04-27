@@ -354,6 +354,11 @@ class NCMBAclTest {
         // remove permission
         acl.removeUserPermission(userId)
         Assert.assertFalse(acl.isEmpty)
+        JSONAssert.assertEquals(
+            acl.toJson(),
+            JSONObject("{'acluser2':{'read':true,'write':true}}"),
+            false
+        )
         acl.removeUserPermission(userId2)
         Assert.assertTrue(acl.isEmpty)
     }
@@ -388,6 +393,11 @@ class NCMBAclTest {
         Assert.assertTrue(acl.getRoleWriteAccess(roleName2))
         // remove permission
         acl.removeRolePermission(roleName)
+        JSONAssert.assertEquals(
+            acl.toJson(),
+            JSONObject("{'role:aclrole2':{'read':true,'write':true}}"),
+            false
+        )
         Assert.assertFalse(acl.isEmpty)
         acl.removeRolePermission(roleName2)
         Assert.assertTrue(acl.isEmpty)
