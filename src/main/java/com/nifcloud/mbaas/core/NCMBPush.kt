@@ -428,7 +428,7 @@ class NCMBPush : NCMBObject {
     }
 
     /**
-     * If it contains the URL in the payload data, it will display the webview
+     * Do  display the webview when an URL is containted in the payload data
      *
      * @param context context
      * @param intent  URL
