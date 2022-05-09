@@ -147,6 +147,30 @@ class NCMBPushTest {
      * putテスト
      */
     @Test
+    fun test_setSearchCondition() {
+        val token = "xxxxxxxxxxxxxxxxxxx"
+        val push = NCMBPush()
+        val query = NCMBQuery.forInstallation()
+        query.whereEqualTo("deviceToken", token)
+        query.whereContainedIn("key1", arrayListOf("value1", "value2"))
+        query.whereGreaterThan("key2", 10)
+        push.setSearchCondition(query)
+        Assert.assertTrue(push.mUpdateKeys.contains("searchCondition"))
+        Assert.assertEquals(token, push.getSearchCondition()?.getString("deviceToken"))
+        Assert.assertEquals(
+            JSONObject("{\"\$in\":[\"value1\",\"value2\"]}").toString(),
+            push.getSearchCondition()?.getJSONObject("key1").toString()
+        )
+        Assert.assertEquals(
+            JSONObject("{\"\$gt\":10}").toString(),
+            push.getSearchCondition()?.getJSONObject("key2").toString()
+        )
+    }
+
+    /**
+     * putテスト
+     */
+    @Test
     fun test_deliveryExpirationTime_hour() {
         val push = NCMBPush()
         push.deliveryExpirationTime = "3 hour"
@@ -391,5 +415,71 @@ class NCMBPushTest {
         } catch (e: NCMBException) {
             error = e
         }
+    }
+
+    /**
+     * - 内容：send(POST)が成功することを確認する
+     * - 結果：setSearchConditionを設定してPush登録
+     */
+    @Test
+    @Throws(Exception::class)
+    fun send_post_setSearchCondition() {
+        var error: NCMBException? = null
+        val push = NCMBPush()
+        val token = "xxxxxxxxxxxxxxxxxxx"
+        val query = NCMBQuery.forInstallation()
+        try {
+            query.whereEqualTo("deviceToken", token)
+            push.setSearchCondition(query)
+            push.title = "title_update"
+            push.message = "message_update"
+            push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.isSendToIOS = true
+            push.richUrl = "http://www.yahoo.co.jp/"
+            Assert.assertTrue(push.mUpdateKeys.contains("searchCondition"))
+            Assert.assertTrue(push.mUpdateKeys.contains("immediateDeliveryFlag"))
+            Assert.assertTrue(push.mUpdateKeys.contains("richUrl"))
+            push.save()
+        } catch (e: NCMBException) {
+            error = e
+        }
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+        Assert.assertNull(error)
+        Assert.assertEquals("http://www.yahoo.co.jp/", push.mFields.get("richUrl"))
+        Assert.assertEquals(true, push.mFields.getBoolean("immediateDeliveryFlag"))
+        Assert.assertEquals(token, push.getSearchCondition()?.getString("deviceToken"))
+    }
+
+    /**
+     * - 内容：send(POST)が成功することを確認する
+     * - 結果：richUrlを設定してPush登録
+     */
+    @Test
+    @Throws(Exception::class)
+    fun send_post_richUrl() {
+        var error: NCMBException? = null
+        val push = NCMBPush()
+        try {
+            push.title = "title_update"
+            push.message = "message_update"
+            push.immediateDeliveryFlag = true
+            push.isSendToAndroid = true
+            push.isSendToIOS = true
+            push.richUrl = "http://www.yahoo.co.jp/"
+            Assert.assertTrue(push.mUpdateKeys.contains("immediateDeliveryFlag"))
+            Assert.assertTrue(push.mUpdateKeys.contains("richUrl"))
+            push.save()
+        } catch (e: NCMBException) {
+            error = e
+        }
+        val TestJSON = JSONObject()
+        TestJSON.put("target",JSONArray(arrayListOf("android", "ios")))
+        Assert.assertEquals(TestJSON.get("target"), push.mFields.get("target"))
+        Assert.assertNull(error)
+        Assert.assertEquals("http://www.yahoo.co.jp/", push.mFields.get("richUrl"))
+        Assert.assertEquals(true, push.mFields.getBoolean("immediateDeliveryFlag"))
     }
 }
