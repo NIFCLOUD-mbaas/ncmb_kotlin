@@ -16,6 +16,7 @@
 
 package com.nifcloud.mbaas.core
 
+import android.app.DownloadManager
 import android.os.AsyncTask
 import org.json.JSONException
 import org.json.JSONObject
@@ -44,11 +45,30 @@ internal class NCMBScriptService : NCMBService() {
     fun executeScript(
         scriptName: String,
         method: String,
-        scriptHeader: HashMap<String, String>?,
-        scriptBody: JSONObject?,
-        scriptQuery: JSONObject?
-    ) {
-       //TODO
+        scriptHeader: HashMap<String, String>,
+        scriptBody: JSONObject,
+        scriptQuery: JSONObject
+    ) : ByteArray? {
+        val reqParams = executeScriptParams(
+            scriptName,
+            method,
+            scriptHeader,
+            scriptBody,
+            scriptQuery,
+            null,
+            null
+        )
+        val response = sendRequest(reqParams)
+        var responseScript : ByteArray? = null
+        when (response) {
+            is NCMBResponse.Success -> {
+                responseScript = response.data as ByteArray
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+        return responseScript
     }
 
     /**
