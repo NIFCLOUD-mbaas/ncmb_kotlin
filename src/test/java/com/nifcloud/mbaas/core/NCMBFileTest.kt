@@ -33,6 +33,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import org.skyscreamer.jsonassert.JSONAssert
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -145,6 +146,30 @@ class NCMBFileTest {
         val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
         Assert.assertNotNull((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate())
         Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate(),date)
+    }
+
+    @Test
+    fun setNoFileSave_success() {
+        val fileObj = NCMBFile("tempFileUpdate.txt")
+        try {
+            fileObj.save()
+        }catch(e:NCMBException){
+            Assert.assertEquals(e.message,"A file need to be set to upload.")
+        }
+    }
+
+    @Test
+    fun fileSaveWithSetACL_success() {
+        val acl = NCMBAcl()
+        val fileObj = NCMBFile("tempFile.txt")
+        fileObj.fileData = tmpFile
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = false
+        fileObj.setAcl(acl)
+        fileObj.save()
+        val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
+        Assert.assertEquals(fileObj.getCreateDate(), date)
+        JSONAssert.assertEquals(fileObj.getAcl().toJson(), acl.toJson(), false)
     }
 
     @Test
