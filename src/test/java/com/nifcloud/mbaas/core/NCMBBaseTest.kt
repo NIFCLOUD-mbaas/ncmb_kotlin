@@ -142,4 +142,16 @@ class NCMBBaseTest {
         Assert.assertEquals("YamadaTarou", baseObj.mFields.get("userName"))
         Assert.assertEquals("xxxxxxxxxx", baseObj.mFields.get("sessionToken"))
     }
+
+    /**
+     * setAclテスト
+     */
+    @Test
+    fun setAcl_test() {
+        var baseObj = NCMBBase()
+        val acl = NCMBAcl()
+        acl.publicReadAccess = true
+        baseObj.setAcl(acl)
+        JSONAssert.assertEquals(baseObj.getAcl().toJson(), acl.toJson(), true)
+    }
 }
