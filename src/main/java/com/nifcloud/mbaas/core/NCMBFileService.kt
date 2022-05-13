@@ -63,7 +63,7 @@ internal class NCMBFileService : NCMBObjectService(){
     }
 
     /**
-     * Save file object
+     * Update file acl
      *
      * @param params file parameters
      * @return JSONObject
@@ -71,6 +71,54 @@ internal class NCMBFileService : NCMBObjectService(){
      */
     @Throws(NCMBException::class)
     fun saveFile(fileObject: NCMBFile){
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST,
+            NCMBRequest.HEADER_CONTENT_TYPE_FILE, null, null)
+        val response = sendRequest(request)
+        when (response) {
+            is NCMBResponse.Success -> {
+                fileObject.reflectResponse(response.data as JSONObject)
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+    }
+
+    /**
+     * update file acl in background
+     *
+     * @param fileObject File object
+     * @param callback   JSONCallback
+     */
+    fun updateFileInBackground(
+        fileObject: NCMBFile,
+        callback: NCMBCallback
+    ) {
+        val fileHandler = NCMBHandler { fileCallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    fileObject.reflectResponse(response.data as JSONObject)
+                    callback.done(null, fileObject)
+                }
+                is NCMBResponse.Failure -> {
+                    callback.done(response.resException)
+                }
+            }
+        }
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,JSONObject(), NCMBRequest.HTTP_METHOD_POST,
+            NCMBRequest.HEADER_CONTENT_TYPE_FILE, callback, fileHandler)
+        sendRequestAsync(request)
+    }
+
+    /**
+     * Save file object
+     *
+     * @param params file parameters
+     * @return JSONObject
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun updateFile(fileObject: NCMBFile){
         val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST,
             NCMBRequest.HEADER_CONTENT_TYPE_FILE, null, null)
         val response = sendRequest(request)

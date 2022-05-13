@@ -149,16 +149,6 @@ class NCMBFileTest {
     }
 
     @Test
-    fun setNoFileSave_success() {
-        val fileObj = NCMBFile("tempFileUpdate.txt")
-        try {
-            fileObj.save()
-        }catch(e:NCMBException){
-            Assert.assertEquals(e.message,"A file need to be set to upload.")
-        }
-    }
-
-    @Test
     fun fileSaveWithSetACL_success() {
         val acl = NCMBAcl()
         val fileObj = NCMBFile("tempFile.txt")
@@ -167,6 +157,21 @@ class NCMBFileTest {
         acl.publicReadAccess = false
         fileObj.setAcl(acl)
         fileObj.save()
+        val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
+        Assert.assertEquals(fileObj.getCreateDate(), date)
+        JSONAssert.assertEquals(fileObj.getAcl().toJson(), acl.toJson(), false)
+    }
+
+
+
+    @Test
+    fun fileUpdateACL_success() {
+        val acl = NCMBAcl()
+        val fileObj = NCMBFile("tempFile.txt")
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = false
+        fileObj.setAcl(acl)
+        fileObj.update()
         val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
         Assert.assertEquals(fileObj.getCreateDate(), date)
         JSONAssert.assertEquals(fileObj.getAcl().toJson(), acl.toJson(), false)

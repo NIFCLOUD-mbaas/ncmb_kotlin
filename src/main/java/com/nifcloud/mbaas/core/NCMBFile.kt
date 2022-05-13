@@ -152,6 +152,47 @@ class NCMBFile: NCMBObject {
     }
 
     /**
+     * Update File ACL
+     * (This function is for ACL information only. To update file data, use save function instead.)
+     *
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun update(){
+        if (fileData != null) {
+            throw  NCMBException(NCMBException.GENERIC_ERROR, "Please do not set file data to update. Use save function instead.")
+        }
+        //connect
+        val fileService = NCMBFileService()
+        //new create
+        fileService.updateFile(this)
+        mUpdateKeys.clear()
+    }
+
+    /**
+     * Update File ACL in Background
+     * (This function is for ACL information only. To update file data, use save function instead.)
+     *
+     * @param callback Save Callback
+     *
+     * @throws NCMBException exception from NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun updateInBackground(saveCallback: NCMBCallback) {
+        if (fileData != null) {
+            throw  NCMBException(NCMBException.GENERIC_ERROR, "Please do not set file data to update. Use save function instead.")
+        }
+        //connect
+        val fileService = NCMBFileService()
+        //new create
+        fileService.updateFileInBackground(
+            this,
+            saveCallback
+        )
+    }
+
+
+    /**
      * Fetch file object in Background
      *
      * @param callback Save Callback
