@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
@@ -162,18 +163,41 @@ class NCMBFileTest {
         JSONAssert.assertEquals(fileObj.getAcl().toJson(), acl.toJson(), false)
     }
 
+    @Test
+    fun fileUpdateInBackGround_success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val fileObj = NCMBFile("tempFile.txt")
+        val acl = NCMBAcl()
+        acl.publicWriteAccess = false
+        acl.publicReadAccess = true
+        fileObj.setAcl(acl)
+        inBackgroundHelper.start()
+        // ファイルストアへの登録を実施
+        fileObj.updateInBackground(NCMBCallback { e, ncmbFile ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbFile"] = ncmbFile
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val date: Date = NCMBDateFormat.getIso8601().parse("2014-06-04T11:28:30.348Z")!!
+        Assert.assertNotNull((inBackgroundHelper["ncmbFile"] as NCMBFile).getUpdateDate())
+        Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getUpdateDate(),date)
+        JSONAssert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getAcl().toJson(), acl.toJson(), false)
+    }
 
 
     @Test
     fun fileUpdateACL_success() {
         val acl = NCMBAcl()
         val fileObj = NCMBFile("tempFile.txt")
-        acl.publicWriteAccess = true
-        acl.publicReadAccess = false
+        acl.publicWriteAccess = false
+        acl.publicReadAccess = true
         fileObj.setAcl(acl)
         fileObj.update()
-        val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
-        Assert.assertEquals(fileObj.getCreateDate(), date)
+        val date: Date = NCMBDateFormat.getIso8601().parse("2014-06-04T11:28:30.348Z")!!
+        Assert.assertEquals(fileObj.getUpdateDate(), date)
         JSONAssert.assertEquals(fileObj.getAcl().toJson(), acl.toJson(), false)
     }
 

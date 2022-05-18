@@ -24,5 +24,12 @@ response:
     status: 200
     file: valid_get_file.txt
 ---
-
+request:
+    url: /2013-09-01/files/tempFile.txt
+    method: PUT
+    body:
+        acl:  {"*":{"read":true}}
+response:
+    status: 200
+    file: valid_put_response.json
 
