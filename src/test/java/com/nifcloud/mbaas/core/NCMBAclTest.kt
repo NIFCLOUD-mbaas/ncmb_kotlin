@@ -109,18 +109,20 @@ class NCMBAclTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun add_ACL_to_single_user() {
-        val userId = "acluser"
+        val userId = "acluserId"
         val acl = NCMBAcl()
         acl.setUserReadAccess(userId, true)
         Assert.assertTrue(acl.getUserReadAccess(userId))
         Assert.assertFalse(acl.getUserWriteAccess(userId))
-        JSONAssert.assertEquals(JSONObject("{'acluser':{'read':true}}"), acl.toJson(), false)
+        JSONAssert.assertEquals(JSONObject("{'acluserId':{'read':true}}"), acl.toJson(), false)
+        JSONAssert.assertEquals(JSONObject("{'read':true}"), acl.getUserAccess("acluserId").toJson(), false)
 
         val acl2 = NCMBAcl()
         acl2.setUserWriteAccess(userId, true)
         Assert.assertFalse(acl2.getUserReadAccess(userId))
         Assert.assertTrue(acl2.getUserWriteAccess(userId))
-        JSONAssert.assertEquals(JSONObject("{'acluser':{'write':true}}"), acl2.toJson(), false)
+        JSONAssert.assertEquals(JSONObject("{'acluserId':{'write':true}}"), acl2.toJson(), false)
+        JSONAssert.assertEquals(JSONObject("{'write':true}"), acl2.getUserAccess("acluserId").toJson(), false)
 
         val acl3 = NCMBAcl()
         acl3.setUserReadAccess(userId, true)
@@ -128,10 +130,12 @@ class NCMBAclTest {
         Assert.assertTrue(acl3.getUserReadAccess(userId))
         Assert.assertTrue(acl3.getUserWriteAccess(userId))
         JSONAssert.assertEquals(
-            JSONObject("{'acluser':{'read':true, 'write':true}}"),
+            JSONObject("{'acluserId':{'read':true, 'write':true}}"),
             acl3.toJson(),
             false
         )
+        JSONAssert.assertEquals(JSONObject("{'read':true, 'write':true}"), acl3.getUserAccess("acluserId").toJson(), false)
+
     }
 
     /**
@@ -147,12 +151,14 @@ class NCMBAclTest {
         Assert.assertTrue(acl.getRoleReadAccess(roleName))
         Assert.assertFalse(acl.getRoleWriteAccess(roleName))
         JSONAssert.assertEquals(JSONObject("{'role:aclrole':{'read':true}}"), acl.toJson(), false)
+        JSONAssert.assertEquals(JSONObject("{'read':true}"), acl.getRoleAccess("aclrole").toJson(), false)
 
         val acl2 = NCMBAcl()
         acl2.setRoleWriteAccess(roleName, true)
         Assert.assertFalse(acl2.getRoleReadAccess(roleName))
         Assert.assertTrue(acl2.getRoleWriteAccess(roleName))
         JSONAssert.assertEquals(JSONObject("{'role:aclrole':{'write':true}}"), acl2.toJson(), false)
+        JSONAssert.assertEquals(JSONObject("{'write':true}"), acl2.getRoleAccess("aclrole").toJson(), false)
 
         val acl3 = NCMBAcl()
         acl3.setRoleReadAccess(roleName, true)
@@ -164,6 +170,8 @@ class NCMBAclTest {
             acl3.toJson(),
             false
         )
+        JSONAssert.assertEquals(JSONObject("{'read':true, 'write':true}"), acl3.getRoleAccess("aclrole").toJson(), false)
+
     }
 
     /**
@@ -354,6 +362,11 @@ class NCMBAclTest {
         // remove permission
         acl.removeUserPermission(userId)
         Assert.assertFalse(acl.isEmpty)
+        JSONAssert.assertEquals(
+            acl.toJson(),
+            JSONObject("{'acluser2':{'read':true,'write':true}}"),
+            false
+        )
         acl.removeUserPermission(userId2)
         Assert.assertTrue(acl.isEmpty)
     }
@@ -388,6 +401,11 @@ class NCMBAclTest {
         Assert.assertTrue(acl.getRoleWriteAccess(roleName2))
         // remove permission
         acl.removeRolePermission(roleName)
+        JSONAssert.assertEquals(
+            acl.toJson(),
+            JSONObject("{'role:aclrole2':{'read':true,'write':true}}"),
+            false
+        )
         Assert.assertFalse(acl.isEmpty)
         acl.removeRolePermission(roleName2)
         Assert.assertTrue(acl.isEmpty)
