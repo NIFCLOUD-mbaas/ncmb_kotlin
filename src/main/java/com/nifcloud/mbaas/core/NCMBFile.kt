@@ -73,6 +73,21 @@ class NCMBFile: NCMBObject {
     }
 
     /**
+     * Constructor with JSONObject
+     * @param className class name for data store
+     */
+    constructor(params: JSONObject) : super("files")  {
+        try {
+            copyFrom(params)
+        } catch (e: JSONException) {
+            throw IllegalArgumentException(e.message)
+        }
+        this.mIgnoreKeys = mutableListOf(
+            "acl", "createDate", "updateDate"
+        )
+    }
+
+    /**
      * File name
      */
     var fileName: String
@@ -90,6 +105,9 @@ class NCMBFile: NCMBObject {
         set(value) {
             fileNameToSetURL = value
         }
+
+    var fileSize: Long = 0
+    var mimeType: String = ""
 
     /**
      * File Object
@@ -226,5 +244,7 @@ class NCMBFile: NCMBObject {
             this.fileDownloadByte = data
         }
     }
+
+
 
 }
