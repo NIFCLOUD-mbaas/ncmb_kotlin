@@ -371,3 +371,19 @@ response:
     status: 200
     file: valid_count_response.json
 ---
+request:
+    url: /2013-09-01/files
+    method: GET
+response:
+    status: 200
+    file: valid_search_file_response.json
+---
+request:
+    url: /2013-09-01/files
+    method: GET
+    query:
+        where: '{"fileName":"testFile"}'
+response:
+    status: 200
+    file: valid_search_file_one_response.json
+---

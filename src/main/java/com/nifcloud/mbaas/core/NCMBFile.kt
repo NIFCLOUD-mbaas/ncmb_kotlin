@@ -44,8 +44,12 @@ class NCMBFile: NCMBObject {
     )
 
     companion object {
+        const val FILE_CLASS_NAME = "files"
         const val FILE_DATA = "file"
         const val FILE_ACL = "acl"
+        const val FILE_NAME = "fileName"
+        const val FILE_MIMETYPE = "mimeType"
+        const val FILE_SIZE = "fileSize"
     }
 
     /**
@@ -77,7 +81,11 @@ class NCMBFile: NCMBObject {
      * @param className class name for data store
      */
     constructor(params: JSONObject) : super("files")  {
+        println("Start to create result NCMBFile")
         try {
+            if (params.has("fileName")) this.fileName = params.get("fileName") as String
+            if (params.has("mimeType")) this.mimeType = params.get("mimeType") as String
+            if (params.has("fileSize")) this.fileSize = params.get("fileSize") as Int
             copyFrom(params)
         } catch (e: JSONException) {
             throw IllegalArgumentException(e.message)
@@ -106,7 +114,7 @@ class NCMBFile: NCMBObject {
             fileNameToSetURL = value
         }
 
-    var fileSize: Long = 0
+    var fileSize: Int = 0
     var mimeType: String = ""
 
     /**

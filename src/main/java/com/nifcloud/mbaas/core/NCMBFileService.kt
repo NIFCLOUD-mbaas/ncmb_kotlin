@@ -146,7 +146,6 @@ internal class NCMBFileService : NCMBObjectService(){
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
-                //println("SUCCESS" + response.data)
                 fileObject.reflectResponseFileData(response.data as ByteArray)
             }
             is NCMBResponse.Failure -> {
@@ -236,7 +235,7 @@ internal class NCMBFileService : NCMBObjectService(){
             val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
             val array: MutableList<NCMBFile> = ArrayList()
             for (i in 0 until results.length()) {
-                val tmpObj = NCMBFile(results.getJSONObject(i)) //TODO mimeType, fileSize ADD, JSON create obj
+                val tmpObj = NCMBFile(results.getJSONObject(i))
                 array.add(tmpObj)
             }
             array
