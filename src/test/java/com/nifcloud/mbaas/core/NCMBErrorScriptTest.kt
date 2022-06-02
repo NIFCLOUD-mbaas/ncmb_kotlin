@@ -66,11 +66,12 @@ class NCMBErrorScriptTest {
         val query = JSONObject()
         val scriptObj = NCMBScript("errorTestScript.js", NCMBScript.MethodType.GET)
 
+        var response : ByteArray? = null
         try {
-            val response = scriptObj.execute(header, body, query)
-            Assert.assertNotNull(response)
+            response = scriptObj.execute(header, body, query)
         }
         catch(e : NCMBException){
+            Assert.assertNull(response)
             Assert.assertEquals(e.message, "errorTestScript.js not found")
         }
     }
