@@ -896,4 +896,44 @@ class NCMBQueryTest {
             files[0].getUpdateDate(),updateDateTest
         )
     }
+
+    @Test
+    fun test_NCMBFile_find_success() {
+        val query = NCMBQuery.forFile()
+        val acl = NCMBAcl()
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = true
+        val files = query.find()
+        Assert.assertEquals(
+            2,
+            files.size
+        )
+        Assert.assertEquals(
+            files[0].fileName,
+            "testFile"
+        )
+        Assert.assertEquals(
+            files[0].fileSize,
+            65
+        )
+        Assert.assertEquals(
+            files[1].fileName,
+            "ttl_mb.png"
+        )
+        Assert.assertEquals(
+            files[1].fileSize,
+            6325
+        )
+    }
+
+    @Test
+    fun test_NCMBFile_count_success() {
+       val query = NCMBQuery.forFile()
+        val number = query.count()
+        Assert.assertEquals(
+            50,
+            number
+        )
+    }
+
 }
