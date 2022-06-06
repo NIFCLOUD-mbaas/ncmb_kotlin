@@ -180,8 +180,12 @@ class NCMBErrorUserTest {
         val user = NCMBUser()
         user.userName = "duplicateUser"
         inBackgroundHelper.start()
-        val throwable = assertFails { user.loginInBackground(callback) }
-        Assert.assertEquals("No value for password", throwable.message)
+        try {
+            user.loginInBackground(callback)
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
+        }
         inBackgroundHelper.await()
         Assert.assertFalse(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
