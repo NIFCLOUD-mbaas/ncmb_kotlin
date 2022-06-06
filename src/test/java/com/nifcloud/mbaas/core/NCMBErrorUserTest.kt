@@ -100,29 +100,29 @@ class NCMBErrorUserTest {
      *
      * - 結果：CurrentUserが変更されない
      */
-    @Test
-    @Throws(java.lang.Exception::class)
-    fun signUpInBackground_invalid_password() {
-        if (NCMBUser().getCurrentUser().getObjectId() != null) {
-            println(NCMBUser().getCurrentUser().getObjectId())
-            NCMBUser().logout()
-        }
-        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-        val callback = NCMBCallback { e, ncmbUser ->
-            inBackgroundHelper["e"] = e
-            inBackgroundHelper["ncmbUser"] = ncmbUser
-            inBackgroundHelper.release() // ブロックをリリース
-        }
-        val user = NCMBUser()
-        user.userName = "duplicateUser"
-        user.password = "Password"
-        inBackgroundHelper.start()
-        user.signUpInBackground(callback)
-        inBackgroundHelper.await()
-        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
-        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
-        Assert.assertEquals(NCMBException.DUPLICATE_VALUE, (inBackgroundHelper["e"] as NCMBException).code)
-    }
+//    @Test
+//    @Throws(java.lang.Exception::class)
+//    fun signUpInBackground_invalid_password() {
+//        if (NCMBUser().getCurrentUser().getObjectId() != null) {
+//            println(NCMBUser().getCurrentUser().getObjectId())
+//            NCMBUser().logout()
+//        }
+//        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+//        val callback = NCMBCallback { e, ncmbUser ->
+//            inBackgroundHelper["e"] = e
+//            inBackgroundHelper["ncmbUser"] = ncmbUser
+//            inBackgroundHelper.release() // ブロックをリリース
+//        }
+//        val user = NCMBUser()
+//        user.userName = "duplicateUser"
+//        user.password = "Password"
+//        inBackgroundHelper.start()
+//        user.signUpInBackground(callback)
+//        inBackgroundHelper.await()
+//        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+//        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+//        Assert.assertEquals(NCMBException.DUPLICATE_VALUE, (inBackgroundHelper["e"] as NCMBException).code)
+//    }
 
     /**
      * - 内容：password　がnullの時 signUpInBackground 後の CurrentUserの情報を確認する。
