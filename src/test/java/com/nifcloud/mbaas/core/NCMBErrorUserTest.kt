@@ -163,32 +163,32 @@ class NCMBErrorUserTest {
      *
      * - 結果：CurrentUserが変更されない
      */
-//    @Test
-//    @Throws(java.lang.Exception::class)
-//    fun logInBackground_invalid_null_password() {
-//        if (NCMBUser().getCurrentUser().getObjectId() != null) {
-//            println(NCMBUser().getCurrentUser().getObjectId())
-//            NCMBUser().logout()
-//        }
-//        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
-//        val callback = NCMBCallback { e, ncmbUser ->
-//            inBackgroundHelper["e"] = e
-//            inBackgroundHelper["ncmbUser"] = ncmbUser
-//            inBackgroundHelper.release() // ブロックをリリース
-//        }
-//        val user = NCMBUser()
-//        user.userName = "duplicateUser"
-//        inBackgroundHelper.start()
-//        try {
-//            user.loginInBackground(callback)
-//        }
-//        catch (e:NCMBException){
-//            Assert.assertEquals(NCMBException.REQUIRED, e.code)
-//        }
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun logInBackground_invalid_null_password() {
+        if (NCMBUser().getCurrentUser().getObjectId() != null) {
+            println(NCMBUser().getCurrentUser().getObjectId())
+            NCMBUser().logout()
+        }
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val callback = NCMBCallback { e, ncmbUser ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        val user = NCMBUser()
+        user.userName = "duplicateUser"
+        inBackgroundHelper.start()
+        try {
+            user.loginInBackground(callback)
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
+        }
 //        inBackgroundHelper.await()
 //        Assert.assertFalse(inBackgroundHelper.isCalledRelease())
 //        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
-//    }
+    }
 
     @Test
     fun logout_failure_connect_error() {
