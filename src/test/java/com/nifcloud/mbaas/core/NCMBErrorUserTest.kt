@@ -150,7 +150,7 @@ class NCMBErrorUserTest {
             user.signUpInBackground(callback)
         }
         catch (e:NCMBException){
-            Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
         }
         inBackgroundHelper.await()
         Assert.assertFalse(inBackgroundHelper.isCalledRelease())
@@ -183,7 +183,7 @@ class NCMBErrorUserTest {
             user.loginInBackground(callback)
         }
         catch (e:NCMBException){
-            Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
         }
         inBackgroundHelper.await()
         Assert.assertFalse(inBackgroundHelper.isCalledRelease())
