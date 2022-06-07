@@ -171,26 +171,26 @@ class NCMBErrorUserTest {
 //            println(NCMBUser().getCurrentUser().getObjectId())
 //            NCMBUser().logout()
 //        }
-        //val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
-//            inBackgroundHelper["e"] = e
-//            inBackgroundHelper["ncmbUser"] = ncmbUser
-//            inBackgroundHelper.release() // ブロックをリリース
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbUser"] = ncmbUser
+            inBackgroundHelper.release() // ブロックをリリース
         }
         val user = NCMBUser()
         user.userName = "duplicateUser"
         //inBackgroundHelper.start()
-//        try {
-//            user.loginInBackground(callback)
-//        }
-//        catch (e:NCMBException){
-//            Assert.assertEquals(NCMBException.REQUIRED, e.code)
-//        }
+        try {
+            user.loginInBackground(callback)
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
+        }
         val throwable = assertFails { user.loginInBackground(callback) }
         Assert.assertEquals("username or password not set", throwable.message)
-//        inBackgroundHelper.await()
-//        Assert.assertFalse(inBackgroundHelper.isCalledRelease())
-//        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+        inBackgroundHelper.await()
+        Assert.assertFalse(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
     }
 
     @Test
