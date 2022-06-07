@@ -95,7 +95,7 @@ open class NCMBUser: NCMBObject {
          * @return String user name
          */
         get() {
-            return getUserInfo(NCMBUser.USERNAME)
+            return getUserInfo(USERNAME)
         }
         /**
          * set user name
@@ -103,7 +103,7 @@ open class NCMBUser: NCMBObject {
          * @param userName user name string
          */
         set(userName) {
-            setUserInfo(NCMBUser.USERNAME, userName)
+            setUserInfo(USERNAME, userName)
         }
 
     /**
@@ -111,7 +111,7 @@ open class NCMBUser: NCMBObject {
      */
     var password: String
         get() {
-            return getUserInfo(NCMBUser.PASSWORD)
+            return getUserInfo(PASSWORD)
         }
         /**
          * set password
@@ -119,7 +119,7 @@ open class NCMBUser: NCMBObject {
          * @param password password string
          */
         set(password) {
-            setUserInfo(NCMBUser.PASSWORD, password)
+            setUserInfo(PASSWORD, password)
         }
 
 
@@ -133,8 +133,8 @@ open class NCMBUser: NCMBObject {
          * @return sessionToken
          */
         get() {
-            return if (getCurrentUser().getString(NCMBUser.SESSIONTOKEN) != null) {
-                getCurrentUser().getString(NCMBUser.SESSIONTOKEN)
+            return if (getCurrentUser().getString(SESSIONTOKEN) != null) {
+                getCurrentUser().getString(SESSIONTOKEN)
             } else {
                 null
             }
@@ -145,7 +145,7 @@ open class NCMBUser: NCMBObject {
          * @param sessionToken String sessionToken
          */
         set(sessionToken) {
-            setUserInfo(NCMBUser.SESSIONTOKEN, sessionToken)
+            setUserInfo(SESSIONTOKEN, sessionToken)
         }
 
 
@@ -159,7 +159,7 @@ open class NCMBUser: NCMBObject {
          * @return String mail address
          */
         get() {
-            return getUserInfo(NCMBUser.MAILADDRESS)
+            return getUserInfo(MAILADDRESS)
         }
         /**
          * Set mail address
@@ -167,7 +167,7 @@ open class NCMBUser: NCMBObject {
          * @param mailAddress String mail address
          */
         set(mailAddress) {
-            setUserInfo(NCMBUser.MAILADDRESS, mailAddress)
+            setUserInfo(MAILADDRESS, mailAddress)
         }
 
     private fun checkExist(userKey: String): Boolean {
@@ -201,7 +201,7 @@ open class NCMBUser: NCMBObject {
         val userService = NCMBUserService()
         val params = JSONObject()
         try {
-            if(!checkExist(NCMBUser.USERNAME) || !checkExist(NCMBUser.PASSWORD)){
+            if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
                 throw NCMBException(NCMBException.REQUIRED, "username or password not set")
             }
             for(key in mFields.keys()){
@@ -242,7 +242,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun login(): NCMBUser {
         val userService = NCMBUserService()
-        if(!checkExist(NCMBUser.USERNAME) || !checkExist(NCMBUser.USERNAME)){
+        if(!checkExist(USERNAME) || !checkExist(USERNAME)){
             throw NCMBException(NCMBException.REQUIRED, "username or password not set")
         }
         return userService.loginByName(userName, password)
@@ -408,7 +408,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     fun loginInBackground(loginCallback: NCMBCallback) {
         val userService = NCMBUserService()
-        if(!checkExist(NCMBUser.USERNAME) || !checkExist(NCMBUser.PASSWORD)){
+        if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
             throw NCMBException(NCMBException.REQUIRED, "username or password not set")
         }
         userService.loginByNameInBackground(userName, password, loginCallback)
@@ -440,7 +440,7 @@ open class NCMBUser: NCMBObject {
         val params = JSONObject()
         var user = NCMBUser()
         try {
-            if(!checkExist(NCMBUser.USERNAME) || !checkExist(NCMBUser.PASSWORD)){
+            if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
                 throw NCMBException(NCMBException.REQUIRED, "username or password not set")
             }
             for(key in mFields.keys()){
@@ -489,7 +489,7 @@ open class NCMBUser: NCMBObject {
         val userService = NCMBUserService()
         val params = JSONObject()
         try {
-            if(!checkExist(NCMBUser.USERNAME) || !checkExist(NCMBUser.PASSWORD)){
+            if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
                 throw NCMBException(NCMBException.REQUIRED, "username or password not set")
             }
             for(key in mFields.keys()){

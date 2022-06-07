@@ -167,10 +167,10 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun logInBackground_invalid_null_password() {
-        if (NCMBUser().getCurrentUser().getObjectId() != null) {
-            println(NCMBUser().getCurrentUser().getObjectId())
-            NCMBUser().logout()
-        }
+//        if (NCMBUser().getCurrentUser().getObjectId() != null) {
+//            println(NCMBUser().getCurrentUser().getObjectId())
+//            NCMBUser().logout()
+//        }
         //val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
 //            inBackgroundHelper["e"] = e
