@@ -593,4 +593,26 @@ open class NCMBUser: NCMBObject {
         userService.logoutUserInBackground(this, logoutCallback)
     }
 
+    /**
+     * clear CachedCurrentUser if exist
+     *
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun clearCachedCurrentUser() {
+        if (getCurrentUser().getObjectId() != null) {
+            //delete file
+            try {
+                val file = NCMBLocalFile.create(NCMBUser().USER_FILENAME)
+                NCMBLocalFile.deleteFile(file)
+            }catch (ex:Exception){
+                throw NCMBException(ex)
+            }
+            //discarded from the static
+            NCMBUser.currentuser = null
+            NCMB.SESSION_TOKEN = null
+            NCMB.USER_ID = null
+        }
+    }
+
 }
