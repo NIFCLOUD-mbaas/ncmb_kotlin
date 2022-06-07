@@ -32,7 +32,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import kotlin.test.assertFails
 
 
 /**
@@ -167,15 +166,13 @@ class NCMBErrorUserTest {
         }
         val user = NCMBUser()
         user.userName = "duplicateUser"
-        //inBackgroundHelper.start()
+        inBackgroundHelper.start()
         try {
             user.loginInBackground(callback)
         }
         catch (e:NCMBException){
             Assert.assertEquals(NCMBException.REQUIRED, e.code)
         }
-        val throwable = assertFails { user.loginInBackground(callback) }
-        Assert.assertEquals("username or password not set", throwable.message)
         inBackgroundHelper.await()
         Assert.assertFalse(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
