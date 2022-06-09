@@ -332,13 +332,25 @@ internal class NCMBConnection(request: NCMBRequest) {
 
     private fun createFileRequestBody(): RequestBody {
         //Get file from params
-        var fileObj = ncmbRequest.params.get("file") as File
-
-        return MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("file", null,
-                fileObj.asRequestBody(createMimeType(fileObj.name).toMediaTypeOrNull()))
-            .build()
+        if(ncmbRequest.params.has("file")) {
+            val fileObj = ncmbRequest.params.get("file") as File
+            if(ncmbRequest.params.has("acl")) {
+                val fileAcl = ncmbRequest.params.get("acl") as JSONObject
+                return MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", null,
+                        fileObj.asRequestBody(createMimeType(fileObj.name).toMediaTypeOrNull()))
+                    .addFormDataPart("acl",fileAcl.toString())
+                    .build()
+            }
+            return MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", null,
+                    fileObj.asRequestBody(createMimeType(fileObj.name).toMediaTypeOrNull()))
+                .build()
+        } else {
+            throw NCMBException(NCMBException.GENERIC_ERROR, "A file need to be set to upload.")
+        }
     }
 
     private fun createMimeType(fileName: String): String {

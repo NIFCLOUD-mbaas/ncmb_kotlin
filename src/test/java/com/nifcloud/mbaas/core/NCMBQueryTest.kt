@@ -28,7 +28,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import org.skyscreamer.jsonassert.JSONAssert
 import java.lang.Exception
+import java.util.*
 import kotlin.test.assertFails
 
 //Android環境のベースにテスト実装するため
@@ -851,6 +853,82 @@ class NCMBQueryTest {
     @Test
     fun test_NCMBInstallation_count_success() {
         val query = NCMBQuery.forInstallation()
+        val number = query.count()
+        Assert.assertEquals(
+            50,
+            number
+        )
+    }
+
+    @Test
+    fun test_NCMBFile_find_whereEqualTo_success() {
+        val query = NCMBQuery.forFile()
+        query.whereEqualTo("fileName", "testFile")
+        val acl = NCMBAcl()
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = true
+        val files = query.find()
+        Assert.assertEquals(
+            1,
+            files.size
+        )
+        Assert.assertEquals(
+            files[0].fileName,
+            "testFile"
+        )
+        Assert.assertEquals(
+            files[0].fileSize,
+            65
+        )
+        Assert.assertEquals(
+            files[0].mimeType,
+            "text/plane"
+        )
+        JSONAssert.assertEquals(
+            files[0].getAcl().toJson(),acl.toJson(), false
+        )
+        val createDateTest: Date = NCMBDateFormat.getIso8601().parse("2013-09-24T00:44:49.245Z")!!
+        Assert.assertEquals(
+            files[0].getCreateDate(),createDateTest
+        )
+        val updateDateTest: Date = NCMBDateFormat.getIso8601().parse("2013-09-24T00:44:49.245Z")!!
+        Assert.assertEquals(
+            files[0].getUpdateDate(),updateDateTest
+        )
+    }
+
+    @Test
+    fun test_NCMBFile_find_success() {
+        val query = NCMBQuery.forFile()
+        val acl = NCMBAcl()
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = true
+        val files = query.find()
+        Assert.assertEquals(
+            2,
+            files.size
+        )
+        Assert.assertEquals(
+            files[0].fileName,
+            "testFile"
+        )
+        Assert.assertEquals(
+            files[0].fileSize,
+            65
+        )
+        Assert.assertEquals(
+            files[1].fileName,
+            "ttl_mb.png"
+        )
+        Assert.assertEquals(
+            files[1].fileSize,
+            6325
+        )
+    }
+
+    @Test
+    fun test_NCMBFile_count_success() {
+       val query = NCMBQuery.forFile()
         val number = query.count()
         Assert.assertEquals(
             50,
