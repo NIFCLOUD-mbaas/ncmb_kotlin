@@ -135,7 +135,7 @@ class NCMBAcl {
      * @throws JSONException exception from JSONObject
      */
     @Throws(JSONException::class)
-    fun parse(input: JSONObject) {
+    internal fun parse(input: JSONObject) {
         for (id in input.keys()) {
             val json = input.getJSONObject(id)
             val permission = Permission(json)
@@ -148,12 +148,12 @@ class NCMBAcl {
         }
     }
 
-    fun checkRoleName(id: String):Boolean{
+    internal fun checkRoleName(id: String):Boolean{
         return id.startsWith(PREFIX_ROLE)
     }
 
     @Throws(Exception::class)
-    fun roleNameFromId(id: String): String {
+    internal fun roleNameFromId(id: String): String {
         var roleName = id.substring(PREFIX_ROLE.length)
         return roleName
     }
@@ -164,7 +164,7 @@ class NCMBAcl {
      * @throws JSONException exception from JSONException
      */
     @Throws(JSONException::class)
-    fun toJson(): JSONObject {
+    internal fun toJson(): JSONObject {
         var result = JSONObject()
         for ((userKey, value) in userAcl) {
             result.put(userKey, value.toJson())
@@ -235,7 +235,7 @@ class NCMBAcl {
     }
 
     /**
-     * Remove permission for user
+     * Remove permission for user (after set at local OR fetch from server)
      * @param userId user id
      * @return success to remove permission
      */
@@ -249,7 +249,7 @@ class NCMBAcl {
     }
 
     /**
-     * Remove permisson for role
+     * Remove permisson for role (after set at local OR fetch from server)
      * @param roleName role name
      * @return success to remove permission
      */
