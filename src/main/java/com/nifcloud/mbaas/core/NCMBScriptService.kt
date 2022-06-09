@@ -16,7 +16,6 @@
 
 package com.nifcloud.mbaas.core
 
-import android.app.DownloadManager
 import android.os.AsyncTask
 import org.json.JSONException
 import org.json.JSONObject
