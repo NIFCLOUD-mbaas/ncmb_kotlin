@@ -54,14 +54,18 @@ class NCMBScript {
      * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
      */
     @Throws(NCMBException::class)
-    fun execute(header: HashMap<String, String>?, body: JSONObject?, query: JSONObject?){
+    fun execute(
+        scriptHeader: HashMap<String, String> = HashMap<String, String>(),
+        scriptBody: JSONObject = JSONObject(),
+        scriptQuery: JSONObject = JSONObject()
+    ) : ByteArray? {
         val scriptService = NCMBScriptService()
         return scriptService.executeScript(
             mScriptName,
             mMethod,
-            header,
-            body,
-            query
+            scriptHeader,
+            scriptBody,
+            scriptQuery
         )
     }
 

@@ -60,6 +60,23 @@ class NCMBErrorScriptTest {
     }
 
     @Test
+    fun script_execute_fail(){
+        val header = HashMap<String, String>()
+        val body = JSONObject()
+        val query = JSONObject()
+        val scriptObj = NCMBScript("errorTestScript.js", NCMBScript.MethodType.GET)
+
+        var response : ByteArray? = null
+        try {
+            response = scriptObj.execute(header, body, query)
+        }
+        catch(e : NCMBException){
+            Assert.assertNull(response)
+            Assert.assertEquals(e.message, "errorTestScript.js not found")
+        }
+    }
+
+    @Test
     fun scriptExecuteInBackGround_err500() {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val header = HashMap<String, String>()

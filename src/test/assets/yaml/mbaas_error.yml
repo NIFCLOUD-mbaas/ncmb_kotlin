@@ -190,3 +190,10 @@ response:
     status: 500
     file: E500001_error_response.json
 ---
+request:
+    url: /2015-09-01/script/errorTestScript.js
+    method: GET
+response:
+    status: 404
+    file: valid_get_script_notFound_response.json
+---
