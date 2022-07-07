@@ -82,6 +82,59 @@ class NCMBScriptTest {
     }
 
     @Test
+    fun script_execute_with_header_success(){
+        var applicationKey = "496ddac254e0fdf4dbc8ed8a0ebf46bceb521d482654a4dd518f1aa92b7a0739"
+        var clientKey = "a0516f45041b35de5a47c71a17614d02d3d8638a7790223b9447b607a57a3a47"
+        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
+        val header = HashMap<String, String>()
+        val body = JSONObject()
+        val query = JSONObject()
+        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
+
+        //ファイルストアへの登録を実施
+        header["key"] = "value"
+        val response = scriptObj.execute(header, body, query)
+        Assert.assertNotNull(response)
+        if(response != null) {
+            val encodedString = String(response, Charsets.UTF_8)
+//            Assert.assertEquals(encodedString, "this is script result")
+            println(encodedString)
+        }
+    }
+
+    @Test
+    fun script_execute_with_body_success(){
+        val header = HashMap<String, String>()
+        val body = JSONObject("{name:tarou}")
+        val query = JSONObject()
+        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.POST)
+
+        //ファイルストアへの登録を実施
+        val response = scriptObj.execute(header, body, query)
+        Assert.assertNotNull(response)
+        if(response != null) {
+            val encodedString = String(response, Charsets.UTF_8)
+            Assert.assertEquals(encodedString, "hello,tarou")
+        }
+    }
+
+    @Test
+    fun script_execute_with_query_success(){
+        val header = HashMap<String, String>()
+        val body = JSONObject()
+        val query = JSONObject("{name:tarou}")
+        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
+
+        //ファイルストアへの登録を実施
+        val response = scriptObj.execute(header, body, query)
+        Assert.assertNotNull(response)
+        if(response != null) {
+            val encodedString = String(response, Charsets.UTF_8)
+            Assert.assertEquals(encodedString, "hello,tarou")
+        }
+    }
+
+    @Test
     fun script_executeInBackground_success(){
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         inBackgroundHelper.start()

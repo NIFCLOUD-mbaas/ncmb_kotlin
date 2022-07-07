@@ -42,6 +42,7 @@ internal open class NCMBService {
     data class RequestParams(
         var url: String,
         var method: String,
+        var scriptHeader: HashMap<String, String> = HashMap<String, String>(),
         var params: JSONObject = JSONObject(),
         var contentType: String,
         var query: JSONObject = JSONObject(),
@@ -62,6 +63,7 @@ internal open class NCMBService {
     fun sendRequest(
         url: String,
         method: String,
+        scriptHeader: HashMap<String, String> = HashMap<String, String>(),
         params: JSONObject,
         contentType: String,
         query: JSONObject
@@ -73,6 +75,7 @@ internal open class NCMBService {
         val request = NCMBRequest(
             url,
             method,
+            scriptHeader,
             params,
             contentType,
             query,
@@ -84,7 +87,7 @@ internal open class NCMBService {
         val connection = NCMBConnection(request)
         return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
             connection.sendRequestForUploadFile()
-        }else {
+        } else {
             connection.sendRequest()
         }
     }
@@ -98,11 +101,46 @@ internal open class NCMBService {
         return this.sendRequest(
             params.url,
             params.method,
+            params.scriptHeader,
             params.params,
             params.contentType,
             params.query
         )
     }
+
+//    fun sendRequest(
+//        url: String,
+//        method: String,
+//        header: HashMap<String, String>,
+//        params: JSONObject,
+//        contentType: String,
+//        query: JSONObject,
+//        callback: NCMBCallback?,
+//        handler: NCMBHandler?
+//    ): NCMBResponse {
+//        val sessionToken: String? = NCMB.getSessionToken()
+//        val applicationKey: String = NCMB.getApplicationKey()
+//        val clientKey: String = NCMB.getClientKey()
+//        val timestamp = ""
+//        val request = NCMBRequest(
+//            url,
+//            method,
+//            header,
+//            params,
+//            contentType,
+//            query,
+//            sessionToken,
+//            applicationKey,
+//            clientKey,
+//            timestamp
+//        )
+//        val connection = NCMBConnection(request)
+//        if (callback != null && handler != null) {
+//            connection.sendRequest()
+//        } else {
+//            throw NCMBException(NCMBException.INVALID_FORMAT, "Need to set callback and handler for an inbackground method.")
+//        }
+//    }
 
     /**
      * Send request in asynchronously
@@ -118,6 +156,7 @@ internal open class NCMBService {
     fun sendRequestAsync(
         url: String,
         method: String,
+        scriptHeader: HashMap<String, String> = HashMap<String, String>(),
         params: JSONObject,
         contentType: String,
         query: JSONObject,
@@ -134,6 +173,7 @@ internal open class NCMBService {
         val request = NCMBRequest(
             url,
             method,
+            scriptHeader,
             params,
             contentType,
             query,
@@ -167,6 +207,7 @@ internal open class NCMBService {
         return this.sendRequestAsync(
             params.url,
             params.method,
+            params.scriptHeader,
             params.params,
             params.contentType,
             params.query,
@@ -184,6 +225,7 @@ internal open class NCMBService {
         return this.sendRequestAsync(
             params.url,
             params.method,
+            params.scriptHeader,
             params.params,
             params.contentType,
             params.query,
