@@ -83,8 +83,8 @@ class NCMBScriptTest {
 
     @Test
     fun script_execute_with_header_success(){
-        var applicationKey = "496ddac254e0fdf4dbc8ed8a0ebf46bceb521d482654a4dd518f1aa92b7a0739"
-        var clientKey = "a0516f45041b35de5a47c71a17614d02d3d8638a7790223b9447b607a57a3a47"
+        var applicationKey = "AppKey"
+        var clientKey = "CliKey"
         NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
         val header = HashMap<String, String>()
         val body = JSONObject()
