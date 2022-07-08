@@ -94,6 +94,18 @@ class NCMBObjectTest {
         Assert.assertEquals(obj.get("keyNumberDouble"), 1234.33)
     }
 
+    /**
+     * put Arrayテスト
+     */
+    @Test
+    fun put_array_int_test_direct() {
+        val obj = NCMBBase()
+        var testArray = intArrayOf(1,2,3)
+        obj.put("keyArray", testArray)
+        Assert.assertEquals(obj.get("keyArray"), testArray)
+        //Assert.assertEquals(obj.mUpdateKeys, testArray)
+    }
+
     @Test
     @Throws(NCMBException::class)
     fun save_object_with_post_data_save_success() {

@@ -76,6 +76,17 @@ class NCMBBaseTest {
         Assert.assertEquals(baseObj.get("keyNumberDouble"), 1234.33)
     }
 
+    /**
+     * put Array テスト
+     */
+    @Test
+    fun put_array_of_int_test() {
+        var baseObj = NCMBBase()
+        var testArray = intArrayOf(1,2,3)
+        baseObj.put("keyArray", testArray)
+        Assert.assertEquals(baseObj.get("keyArray"), testArray)
+    }
+
     @Test
     fun put_date_test_direct() {
         var baseObj = NCMBBase()
