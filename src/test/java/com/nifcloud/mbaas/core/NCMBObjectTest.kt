@@ -20,19 +20,16 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
+import org.json.JSONArray
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowLooper
-import java.lang.AssertionError
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -99,11 +96,45 @@ class NCMBObjectTest {
      */
     @Test
     fun put_array_int_test_direct() {
-        val obj = NCMBBase()
-        var testArray = intArrayOf(1,2,3)
+        val obj = NCMBObject("testClass")
+        val testArray = JSONArray()
+        testArray.put(1)
+        testArray.put(2)
+
+        val testArray2 = JSONArray()
+        testArray2.put(1)
+        testArray2.put(2)
         obj.put("keyArray", testArray)
-        Assert.assertEquals(obj.get("keyArray"), testArray)
-        //Assert.assertEquals(obj.mUpdateKeys, testArray)
+        Assert.assertEquals(obj.get("keyArray"), testArray2)
+        Assert.assertEquals(obj.mFields.get("keyArray"), testArray2)
+    }
+
+    /**
+     * put Arrayテスト
+     */
+    @Test
+    fun put_array_string_post_save_success() {
+        val obj = NCMBObject("TestClass")
+        val testArray = JSONArray()
+        testArray.put("test1")
+        testArray.put("test2")
+        obj.put("keyArray", testArray)
+        obj.save()
+        Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
+    }
+
+    /**
+     * put Arrayテスト
+     */
+    @Test
+    fun put_array_int_post_save_success() {
+        val obj = NCMBObject("TestClass")
+        val testArray = JSONArray()
+        testArray.put(1)
+        testArray.put(2)
+        obj.put("keyArray", testArray)
+        obj.save()
+        Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
     }
 
     @Test

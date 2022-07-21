@@ -17,6 +17,7 @@
 package com.nifcloud.mbaas.core
 
 import okhttp3.mockwebserver.MockWebServer
+import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
@@ -81,10 +82,17 @@ class NCMBBaseTest {
      */
     @Test
     fun put_array_of_int_test() {
-        var baseObj = NCMBBase()
-        var testArray = intArrayOf(1,2,3)
-        baseObj.put("keyArray", testArray)
-        Assert.assertEquals(baseObj.get("keyArray"), testArray)
+        val obj = NCMBBase()
+        val testArray = JSONArray()
+        testArray.put(1)
+        testArray.put(2)
+
+        val testArray2 = JSONArray()
+        testArray2.put(1)
+        testArray2.put(2)
+        obj.put("keyArray", testArray)
+        Assert.assertEquals(obj.get("keyArray"), testArray2)
+        Assert.assertEquals(obj.mFields.get("keyArray"), testArray2)
     }
 
     @Test
