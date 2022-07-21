@@ -12,6 +12,24 @@ request:
     url: /2013-09-01/classes/TestClass
     method: POST
     body:
+        keyArray: [1,2]
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
+        keyArray: ["test1","test2"]
+response:
+    status: 201
+    file: valid_post_response.json
+---
+request:
+    url: /2013-09-01/classes/TestClass
+    method: POST
+    body:
         key: value
         acl: {"*":{"read":true,"write":true}}
 response:
