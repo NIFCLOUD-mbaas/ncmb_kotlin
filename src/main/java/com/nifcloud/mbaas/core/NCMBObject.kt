@@ -28,6 +28,9 @@ import org.json.JSONObject
 
 open class NCMBObject : NCMBBase {
     protected var mClassName: String = ""
+    override var mIgnoreKeys = listOf(
+        "createDate", "updateDate"
+    )
 
     /**
      * Constructor with class name
@@ -37,7 +40,6 @@ open class NCMBObject : NCMBBase {
         mClassName = className
         mFields = JSONObject()
         mUpdateKeys = HashSet()
-        mIgnoreKeys = ArrayList()
     }
 
     /**
@@ -51,9 +53,6 @@ open class NCMBObject : NCMBBase {
             throw IllegalArgumentException(e.message)
         }
         this.mClassName = className
-        this.mIgnoreKeys = mutableListOf(
-            "acl", "createDate", "updateDate"
-        )
     }
 
     /**
