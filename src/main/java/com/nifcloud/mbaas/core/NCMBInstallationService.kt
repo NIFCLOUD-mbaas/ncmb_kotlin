@@ -188,10 +188,11 @@ internal class NCMBInstallationService: NCMBObjectService() {
         try {
             val url = NCMB.getApiBaseUrl() + this.mServicePath + "/" + objectId
             val method = NCMBRequest.HTTP_METHOD_DELETE
+//            val scriptHeader = HashMap<String, String>()
             val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
             val params = RequestParams(url = url, method = method, contentType = contentType).params
             val query =  RequestParams(url = url, method = method, contentType = contentType).query
-            val response = sendRequest(url, method, params, contentType, query)
+            val response = sendRequest(url, method, null, params, contentType, query)
             when (response) {
                 is NCMBResponse.Success -> {
                     clearCurrentInstallation()
@@ -231,7 +232,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
                     }
                 }
             }
-            sendRequestAsync(url, method, params, contentType, query, deleteCallback, deleteHandler)
+            sendRequestAsync(url, method, null, params, contentType, query, deleteCallback, deleteHandler)
         } catch (error: NCMBException) {
             //currentInstallation auto delete
             checkDataNotFound(objectId, error.code)
@@ -253,7 +254,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         val params = RequestParams(url = url, method = method, contentType = contentType).params
         val query =  RequestParams(url = url, method = method, contentType = contentType).query
-        val response = sendRequest(url, method, params, contentType, query)
+        val response = sendRequest(url, method, null, params, contentType, query)
         when (response) {
             is NCMBResponse.Success -> {
                 fetchInstantiation.reflectResponse(response.data as JSONObject)
@@ -290,7 +291,7 @@ internal class NCMBInstallationService: NCMBObjectService() {
                 }
             }
         }
-        sendRequestAsync(url, method, params, contentType, query, fetchCallback, fetchHandler)
+        sendRequestAsync(url, method, null, params, contentType, query, fetchCallback, fetchHandler)
     }
 
     // endregion

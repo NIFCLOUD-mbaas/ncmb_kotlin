@@ -126,9 +126,6 @@ internal class NCMBScriptService : NCMBService() {
                                       executeHandler: NCMBHandler?): RequestParams {
         val url = NCMB.getApiBaseUrl(isScript = true) + mServicePath + "/" + scriptName
         val method = method
-        if (scriptHeader != null && scriptHeader.isNotEmpty()){
-            //ヘッダー設定
-        }
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         return RequestParams(url = url,
             method = method, scriptHeader = scriptHeader, params = scriptBody, contentType = contentType, query = scriptQuery, callback = executeCallback, handler = executeHandler)

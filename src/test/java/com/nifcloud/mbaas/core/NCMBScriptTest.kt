@@ -83,9 +83,6 @@ class NCMBScriptTest {
 
     @Test
     fun script_execute_with_header_success(){
-        var applicationKey = "AppKey"
-        var clientKey = "CliKey"
-        NCMB.initialize(RuntimeEnvironment.application.getApplicationContext(),applicationKey, clientKey)
         val header = HashMap<String, String>()
         val body = JSONObject()
         val query = JSONObject()
@@ -97,8 +94,7 @@ class NCMBScriptTest {
         Assert.assertNotNull(response)
         if(response != null) {
             val encodedString = String(response, Charsets.UTF_8)
-//            Assert.assertEquals(encodedString, "this is script result")
-            println(encodedString)
+            Assert.assertEquals(encodedString, "this is script result")
         }
     }
 
