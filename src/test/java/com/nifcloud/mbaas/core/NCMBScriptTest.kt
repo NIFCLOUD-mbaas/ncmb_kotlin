@@ -98,37 +98,37 @@ class NCMBScriptTest {
         }
     }
 
-    @Test
-    fun script_execute_with_body_success(){
-        val header = HashMap<String, String>()
-        val body = JSONObject("{name:tarou}")
-        val query = JSONObject()
-        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.POST)
+//    @Test
+//    fun script_execute_with_body_success(){
+//        val header = HashMap<String, String>()
+//        val body = JSONObject("{name:tarou}")
+//        val query = JSONObject()
+//        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.POST)
+//
+//        //ファイルストアへの登録を実施
+//        val response = scriptObj.execute(header, body, query)
+//        Assert.assertNotNull(response)
+//        if(response != null) {
+//            val encodedString = String(response, Charsets.UTF_8)
+//            Assert.assertEquals(encodedString, "hello,tarou")
+//        }
+//    }
 
-        //ファイルストアへの登録を実施
-        val response = scriptObj.execute(header, body, query)
-        Assert.assertNotNull(response)
-        if(response != null) {
-            val encodedString = String(response, Charsets.UTF_8)
-            Assert.assertEquals(encodedString, "hello,tarou")
-        }
-    }
-
-    @Test
-    fun script_execute_with_query_success(){
-        val header = HashMap<String, String>()
-        val body = JSONObject()
-        val query = JSONObject("{name:tarou}")
-        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
-
-        //ファイルストアへの登録を実施
-        val response = scriptObj.execute(header, body, query)
-        Assert.assertNotNull(response)
-        if(response != null) {
-            val encodedString = String(response, Charsets.UTF_8)
-            Assert.assertEquals(encodedString, "hello,tarou")
-        }
-    }
+//    @Test
+//    fun script_execute_with_query_success(){
+//        val header = HashMap<String, String>()
+//        val body = JSONObject()
+//        val query = JSONObject("{name:tarou}")
+//        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
+//
+//        //ファイルストアへの登録を実施
+//        val response = scriptObj.execute(header, body, query)
+//        Assert.assertNotNull(response)
+//        if(response != null) {
+//            val encodedString = String(response, Charsets.UTF_8)
+//            Assert.assertEquals(encodedString, "hello,tarou")
+//        }
+//    }
 
     @Test
     fun script_executeInBackground_success(){
