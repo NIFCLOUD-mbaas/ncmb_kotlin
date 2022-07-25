@@ -68,130 +68,137 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             if (pathAndQuery?.size!! > 1) {
                 query = pathAndQuery?.get(1)
             }
-            if (requestMap!!["url"] != path) {
-                continue
-                //return defaultErrorResponse();
-            }
-            if (requestMap["url"] == "/2013-09-01/classes/ResponseSignatureTest") {
-                return MockResponse().setResponseCode(responseMap!!["status"] as Int)
-                    .setHeader("Content-Type", "application/json")
-                    .setHeader(
-                        "X-NCMB-Response-Signature",
-                        "9XuXzrgyI/B7E8KpXzeGUaAXcdO5h/hlL+4o/GVm/T4="
-                    )
-                    .setBody(readJsonResponse(responseMap["file"].toString()))
-            }
-            //Form data file upload request and response
-            if(requestMap["url"] == "/2013-09-01/files/tempFile.txt") {
-                if (requestMap["method"] != request.method) {
-                    continue
-                }
-                if (requestMap.containsKey("body")) {
-                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
-                        .setHeader("Content-Type", "application/json")
-                        .setBody(readJsonResponse(responseMap["file"].toString()))
-                }
-            }
-            if(requestMap["url"] == "/2013-09-01/files/test.png") {
-                if (requestMap["method"] != request.method) {
-                    continue
-                }
-                if (requestMap.containsKey("body")) {
-                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
-                        .setHeader("Content-Type", "application/json")
-                        .setBody(readJsonResponse(responseMap["file"].toString()))
-                }
-            }
-            //File download request and response
-            if(requestMap["url"] == "/2013-09-01/files/tempFileDownload.txt") {
-                if (requestMap["method"] == request.method) {
-                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
-                        .setHeader("Content-Type", "text/plain")
-                        .setBody(readJsonResponse(responseMap["file"].toString()))
-                }
-            }
-            //Script request and response
-            if(requestMap["url"] == "/2015-09-01/script/testScript.js") {
-                if (requestMap["method"] == request.method) {
-                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
-                        .setHeader("Content-Type", "text/plain")
-                        .setBody(readJsonResponse(responseMap["file"].toString()))
-                }
-            }
 
-            if (requestMap["method"] != request.method) {
-                continue
-                //return defaultErrorResponse();
-            }
-            if (query != null) {
-                if (requestMap.containsKey("query")) {
-                    val mockQuery = requestMap["query"]
-                    val mockQueryStr: String = Gson().toJson(mockQuery)
-                    if (checkRequestQuery(mockQueryStr, query) == true) {
+            if(requestMap != null) {
+                if (requestMap!!["url"] != path) {
+                    continue
+                    //return defaultErrorResponse();
+                }
+                if (requestMap["url"] == "/2013-09-01/classes/ResponseSignatureTest") {
+                    return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                        .setHeader("Content-Type", "application/json")
+                        .setHeader(
+                            "X-NCMB-Response-Signature",
+                            "9XuXzrgyI/B7E8KpXzeGUaAXcdO5h/hlL+4o/GVm/T4="
+                        )
+                        .setBody(readJsonResponse(responseMap["file"].toString()))
+                }
+                //Form data file upload request and response
+                if(requestMap["url"] == "/2013-09-01/files/tempFile.txt") {
+                    if (requestMap["method"] != request.method) {
+                        continue
+                    }
+                    if (requestMap.containsKey("body")) {
                         return MockResponse().setResponseCode(responseMap!!["status"] as Int)
                             .setHeader("Content-Type", "application/json")
                             .setBody(readJsonResponse(responseMap["file"].toString()))
                     }
-                    else {
+                }
+                if(requestMap["url"] == "/2013-09-01/files/test.png") {
+                    if (requestMap["method"] != request.method) {
                         continue
                     }
-                } else {
-                    continue
-                }
-            }
-            if (requestMap.containsKey("body")) {
-                return try {
-                    if (requestBody == null) {
-                        requestBody = request.body.readString(
-                            request.bodySize,
-                            Charset.forName("UTF-8")
-                        )
-                    }
-                    val mockBody = requestMap["body"]
-                    val gson: Gson = GsonBuilder().serializeNulls().create()
-                    val mockBodyStr: String = gson.toJson(mockBody)
-                    //println("mock:$mockBodyStr")
-                    //println("req:$requestBody")
-                    if (requestBody?.let { checkRequestBody(mockBodyStr, it) }!!) {
-                        //Responseをreturn
-                        MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                    if (requestMap.containsKey("body")) {
+                        return MockResponse().setResponseCode(responseMap!!["status"] as Int)
                             .setHeader("Content-Type", "application/json")
                             .setBody(readJsonResponse(responseMap["file"].toString()))
-                    } else {
-                        continue
                     }
-                } catch (e: IOException) {
-                    defaultErrorResponse()
                 }
-            }
-            if (requestMap.containsKey("header")) {
-                val requestHeaders: Headers = request.headers
-                val gson: Gson = GsonBuilder().serializeNulls().create()
-                val mock: String = gson.toJson(requestMap["header"])
-                try {
-                    val mockHeaders =
-                        JSONObject(requestMap["header"].toString())
-                    //println("mockHeader:" + mockHeaders);
-                    //println("reqHeader:" + requestHeaders);
-                    val keys: Iterator<*> = mockHeaders.keys()
-                    while (keys.hasNext()) {
-                        val key = keys.next() as String
-                        if (requestHeaders.get(key) != null && requestHeaders.get(key)
-                                .equals(mockHeaders.getString(key))
-                        ) {
+                //File download request and response
+                if(requestMap["url"] == "/2013-09-01/files/tempFileDownload.txt") {
+                    if (requestMap["method"] == request.method) {
+                        return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                            .setHeader("Content-Type", "text/plain")
+                            .setBody(readJsonResponse(responseMap["file"].toString()))
+                    }
+                }
+                //Script request and response
+                if(requestMap["url"] == "/2015-09-01/script/testScript.js") {
+                    if (requestMap["method"] == request.method) {
+                        return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                            .setHeader("Content-Type", "text/plain")
+                            .setBody(readJsonResponse(responseMap["file"].toString()))
+                    }
+                }
+
+                if (requestMap["method"] != request.method) {
+                    continue
+                    //return defaultErrorResponse();
+                }
+                if (query != null) {
+                    if (requestMap.containsKey("query")) {
+                        val mockQuery = requestMap["query"]
+                        val mockQueryStr: String = Gson().toJson(mockQuery)
+                        if (checkRequestQuery(mockQueryStr, query) == true) {
                             return MockResponse().setResponseCode(responseMap!!["status"] as Int)
                                 .setHeader("Content-Type", "application/json")
                                 .setBody(readJsonResponse(responseMap["file"].toString()))
                         }
+                        else {
+                            continue
+                        }
+                    } else {
+                        continue
                     }
-                } catch (e: JSONException) {
-                    return defaultErrorResponse()
                 }
-                continue
+                if (requestMap.containsKey("body")) {
+                    return try {
+                        if (requestBody == null) {
+                            requestBody = request.body.readString(
+                                request.bodySize,
+                                Charset.forName("UTF-8")
+                            )
+                        }
+                        val mockBody = requestMap["body"]
+                        val gson: Gson = GsonBuilder().serializeNulls().create()
+                        val mockBodyStr: String = gson.toJson(mockBody)
+                        //println("mock:$mockBodyStr")
+                        //println("req:$requestBody")
+                        if (requestBody?.let { checkRequestBody(mockBodyStr, it) }!!) {
+                            //Responseをreturn
+                            MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                                .setHeader("Content-Type", "application/json")
+                                .setBody(readJsonResponse(responseMap["file"].toString()))
+                        } else {
+                            continue
+                        }
+                    } catch (e: IOException) {
+                        defaultErrorResponse()
+                    }
+                }
+                if (requestMap.containsKey("header")) {
+                    val requestHeaders: Headers = request.headers
+                    val gson: Gson = GsonBuilder().serializeNulls().create()
+                    val mock: String = gson.toJson(requestMap["header"])
+                    try {
+                        val mockHeaders =
+                            JSONObject(requestMap["header"].toString())
+                        //println("mockHeader:" + mockHeaders);
+                        //println("reqHeader:" + requestHeaders);
+                        val keys: Iterator<*> = mockHeaders.keys()
+                        while (keys.hasNext()) {
+                            val key = keys.next() as String
+                            if (requestHeaders.get(key) != null && requestHeaders.get(key)
+                                    .equals(mockHeaders.getString(key))
+                            ) {
+                                return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                                    .setHeader("Content-Type", "application/json")
+                                    .setBody(readJsonResponse(responseMap["file"].toString()))
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        return defaultErrorResponse()
+                    }
+                    continue
+                }
             }
-            return MockResponse().setResponseCode(responseMap!!["status"] as Int)
-                .setHeader("Content-Type", "application/json")
-                .setBody(readJsonResponse(responseMap["file"].toString()))
+
+            if(responseMap != null) {
+                return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                    .setHeader("Content-Type", "application/json")
+                    .setBody(readJsonResponse(responseMap["file"].toString()))
+            }
+
         }
         return defaultErrorResponse()
     }
