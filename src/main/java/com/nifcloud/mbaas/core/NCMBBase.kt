@@ -298,9 +298,9 @@ open class NCMBBase(){
     @Throws(JSONException::class)
     internal open fun copyFrom(from: JSONObject) {
         for(key in from.keys()){
-            if (isIgnoreKey(key)) {
-                continue
-            }
+//            if (isIgnoreKey(key)) {
+//                continue
+//            }
             this.keys.add(key)
             mFields.put(key, from[key])
             localData.put(key, from[key])

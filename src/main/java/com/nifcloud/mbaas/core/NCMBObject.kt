@@ -28,8 +28,8 @@ import org.json.JSONObject
 
 open class NCMBObject : NCMBBase {
     protected var mClassName: String = ""
-    override var mIgnoreKeys = listOf(
-        "createDate", "updateDate"
+    override var mIgnoreKeys = listOf(  //update, create data, this data will be not to be sent to data
+        "createDate", "updateDate", "objectId"
     )
 
     /**
