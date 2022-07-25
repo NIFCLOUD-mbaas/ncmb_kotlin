@@ -34,6 +34,7 @@ import org.robolectric.shadows.ShadowLooper
 import java.lang.AssertionError
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.test.assertFails
 
 
 /**
@@ -65,6 +66,16 @@ class NCMBObjectTest {
     }
 
     /**
+     * set ObjectId テスト
+     */
+    @Test
+    fun set_objectId_test() {
+        val obj = NCMBObject("TestClass")
+        obj.setObjectId("testObjectID")
+        Assert.assertEquals(obj.getObjectId(), "testObjectID")
+    }
+
+    /**
      * putテスト
      */
     @Test
@@ -72,6 +83,21 @@ class NCMBObjectTest {
         val obj = NCMBObject("TestClass")
         obj.put("keyString", "stringValue")
         Assert.assertEquals(obj.get("keyString"), "stringValue")
+    }
+
+    /**
+     * put ignorekey テスト
+     */
+    @Test
+    fun put_ignoreKey_test() {
+        val obj = NCMBObject("TestClass")
+        val throwable_ignore1 = assertFails {  obj.put("objectId", "stringValue") }
+        Assert.assertEquals("Can't put data to same name with special key.", throwable_ignore1.message)
+        val throwable_ignore2 = assertFails {  obj.put("createDate", "TestCreateDate") }
+        Assert.assertEquals("Can't put data to same name with special key.", throwable_ignore2.message)
+        val throwable_ignore3 = assertFails {  obj.put("updateDate", "TestUpdateDate") }
+        Assert.assertEquals("Can't put data to same name with special key.", throwable_ignore3.message)
+
     }
 
     /**
@@ -286,6 +312,23 @@ class NCMBObjectTest {
     }
 
     @Test
+    fun fetchobject_then_update_success() {
+        val obj = NCMBObject("TestClass")
+        // objectIdプロパティを設定
+        obj.setObjectId("7FrmPTBKSNtVjajm")
+        obj.fetch()
+        val createDateTestData: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
+        Assert.assertEquals(obj.getUpdateDate(), createDateTestData)
+        val updateDateTestData: Date = getIso8601().parse("2014-06-03T11:28:30.348Z")!!
+        Assert.assertEquals(obj.getCreateDate(), updateDateTestData)
+        obj.put("updateKey", "updateValue")
+        obj.save()
+        Assert.assertEquals(obj.get("updateKey"),"updateValue")
+        val date: Date = getIso8601().parse("2014-06-04T11:28:30.348Z")!!
+        Assert.assertEquals(obj.getUpdateDate(),date)
+    }
+
+    @Test
     @Throws(NCMBException::class)
     fun delete_object_with_data_success() {
         val sut = NCMBObject("TestClass")
@@ -297,6 +340,8 @@ class NCMBObjectTest {
             Assert.fail("exception raised:" + e.message)
         }
     }
+
+
 
     //Todo delete Tests
 //    @Test
@@ -395,4 +440,17 @@ class NCMBObjectTest {
 //        Assert.assertEquals(inBackgroundHelper["e"]!!,"Need to set objectID before delete")
 //        //Assert.assertNull(obj)
 //    }
+
+    /*
+* isIgnoreテスト
+*/
+    @Test
+    fun isIgnore_true_test() {
+        var testObj = NCMBObject("TestClass")
+        Assert.assertEquals(testObj.isIgnoreKey("createDate"), true)
+        Assert.assertEquals(testObj.isIgnoreKey("updateDate"), true)
+        Assert.assertEquals(testObj.isIgnoreKey("objectId"), true)
+    }
+
+
 }

@@ -478,8 +478,7 @@ class NCMBInstallation : NCMBObject {
          * push device
          */
         val ignoreKeys = Arrays.asList(
-            "objectId", "applicationName", "appVersion", "badge", "channels", "deviceToken",
-            "deviceType", "sdkVersion", "timeZone", "createDate", "updateDate", "acl", "pushType"
+            "objectId", "updateDate", "acl"
         )
 
         /**

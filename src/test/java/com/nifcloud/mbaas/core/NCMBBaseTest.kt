@@ -45,6 +45,7 @@ class NCMBBaseTest {
         Assert.assertEquals(baseObj.get("keyString"), "stringValue")
     }
 
+
     /**
      * putテスト
      */
