@@ -5,31 +5,4 @@ request:
 response:
     status: 200
     file: valid_script_response.txt
----
-request:
-    url: /2015-09-01/script/testScript.js
-    method: GET
-    header:
-      {"key":"value"}
-response:
-    status: 200
-    file: valid_script_response.txt
----
-request:
-    url: /2015-09-01/script/testScript.js
-    method: POST
-    body:
-      {"name":"tarou"}
-response:
-    status: 200
-    file: valid_script_query_response.txt
----
-request:
-    url: /2015-09-01/script/testScript.js
-    method: GET
-    query:
-      {"name":"tarou"}
-response:
-    status: 200
-    file: valid_script_query_response.txt
 

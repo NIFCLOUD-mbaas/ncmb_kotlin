@@ -160,6 +160,7 @@ internal class NCMBConnection(request: NCMBRequest) {
         val client = OkHttpClient()
 
         println("Request Info (Async):")
+        println("scriptHeader: " + ncmbRequest.scriptHeader.toString())
         println("params: " + ncmbRequest.params.toString())
         println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
