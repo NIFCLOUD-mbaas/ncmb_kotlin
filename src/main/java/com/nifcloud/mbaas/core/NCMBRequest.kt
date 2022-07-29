@@ -37,6 +37,7 @@ import kotlin.collections.HashMap
 internal class NCMBRequest(
     var url: String,
     var method: String,
+    var scriptHeader: HashMap<String, String>? = null,
     var params: JSONObject = JSONObject(),
     var contentType: String = HEADER_CONTENT_TYPE_JSON,
     var query: JSONObject = JSONObject(),

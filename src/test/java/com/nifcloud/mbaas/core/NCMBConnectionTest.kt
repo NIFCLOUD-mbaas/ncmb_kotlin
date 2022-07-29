@@ -66,6 +66,7 @@ class NCMBConnectionTest {
         json.put("key", "value")
         val tmpRequest = NCMBRequest(url,
             "POST",
+            null,
             json,
             "application/json",
             JSONObject(),

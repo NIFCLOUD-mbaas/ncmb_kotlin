@@ -128,9 +128,8 @@ internal class NCMBScriptService : NCMBService() {
         val method = method
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         return RequestParams(url = url,
-            method = method, contentType = contentType, callback = executeCallback, handler = executeHandler)
+            method = method, scriptHeader = scriptHeader, params = scriptBody, contentType = contentType, query = scriptQuery, callback = executeCallback, handler = executeHandler)
     }
-
 
     companion object {
         /**

@@ -39,17 +39,14 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.Headers.Companion.toHeaders
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.IOException
-import java.net.URL
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
+import java.io.IOException
+import java.net.URL
 
 
 /**
@@ -94,6 +91,7 @@ internal class NCMBConnection(request: NCMBRequest) {
                 val client = OkHttpClient()
 
                 println("Request Info (Sync):")
+                println("scriptHeader: " + ncmbRequest.scriptHeader.toString())
                 println("params: " + ncmbRequest.params.toString())
                 println("querys: " + ncmbRequest.query.toString())
                 println(ncmbRequest.url)
@@ -162,6 +160,7 @@ internal class NCMBConnection(request: NCMBRequest) {
         val client = OkHttpClient()
 
         println("Request Info (Async):")
+        println("scriptHeader: " + ncmbRequest.scriptHeader.toString())
         println("params: " + ncmbRequest.params.toString())
         println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
@@ -266,6 +265,9 @@ internal class NCMBConnection(request: NCMBRequest) {
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_SDK_VERSION)
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_OS_VERSION)
+        if (!ncmbRequest.scriptHeader.isNullOrEmpty()) {
+            headerMap = headerMapSetForScript(headerMap, ncmbRequest.scriptHeader!!)
+        }
         return headerMap.toHeaders()
     }
 
@@ -326,6 +328,16 @@ internal class NCMBConnection(request: NCMBRequest) {
         val h_info = ncmbRequest.getRequestProperty(headerInfo)
         if (h_info != null) {
             headerMap.put(headerInfo, h_info)
+        }
+        return headerMap
+    }
+
+    fun headerMapSetForScript(headerMap: HashMap<String, String>, headerInfo: HashMap<String, String>): HashMap<String, String>{
+        for (key : String in headerInfo.keys){
+            val value = headerInfo.get(key)
+            if(value != null) {
+                headerMap.put(key, value)
+            }
         }
         return headerMap
     }
