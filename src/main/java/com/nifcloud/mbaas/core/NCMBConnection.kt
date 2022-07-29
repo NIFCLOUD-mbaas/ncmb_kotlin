@@ -265,7 +265,7 @@ internal class NCMBConnection(request: NCMBRequest) {
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_SDK_VERSION)
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_OS_VERSION)
-        if (ncmbRequest.scriptHeader != null) {
+        if (!ncmbRequest.scriptHeader.isNullOrEmpty()) {
             headerMap = headerMapSetForScript(headerMap, ncmbRequest.scriptHeader!!)
         }
         return headerMap.toHeaders()
