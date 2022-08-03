@@ -46,7 +46,7 @@ open class NCMBBase(){
             return field
         }
         internal set
-    protected var mIgnoreKeys= listOf<String>()
+    protected open var mIgnoreKeys= listOf<String>()
     var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
@@ -283,10 +283,10 @@ open class NCMBBase(){
      * @return ignore list contains given key or not
      */
     internal fun isIgnoreKey(key: String?): Boolean {
-        if (this.mIgnoreKeys.size > 0) {
-            return false
-        } else {
+        if (this.mIgnoreKeys.size > 0) {  //mIgnoreKeys設定がある場合
             return mIgnoreKeys.contains(key)
+        } else {
+            return false
         }
     }
 
@@ -298,9 +298,6 @@ open class NCMBBase(){
     @Throws(JSONException::class)
     internal open fun copyFrom(from: JSONObject) {
         for(key in from.keys()){
-            if (isIgnoreKey(key)) {
-                continue
-            }
             this.keys.add(key)
             mFields.put(key, from[key])
             localData.put(key, from[key])

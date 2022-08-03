@@ -43,10 +43,7 @@ open class NCMBUser: NCMBObject {
     var otherFields: JSONObject = JSONObject()
 
     val ignoreKeys: List<String> = mutableListOf(
-        "objectId", "userName", "password",
-        "mailAddress", "mailAddressConfirm",
-        "acl", "authData",
-        "createDate", "updateDate"
+        "objectId", "createDate", "updateDate"
     )
 
     /**

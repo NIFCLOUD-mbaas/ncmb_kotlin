@@ -453,14 +453,7 @@ class NCMBPush : NCMBObject {
         private val MATCH_URL_REGEX =
             "^(https?)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)$".toRegex()
         val ignoreKeys = Arrays.asList(
-            "objectId", "deliveryTime", "target",
-            "searchCondition", "message", "userSettingValue",
-            "deliveryExpirationDate", "deliveryExpirationTime", "deliveryPlanNumber",
-            "deliveryNumber", "status", "error",
-            "action", "badgeIncrementFlag", "sound",
-            "contentAvailable", "title", "dialog",
-            "richUrl", "badgeSetting", "category",
-            "acl", "createDate", "updateDate"
+            "objectId","createDate", "updateDate"
         )
 
         const val TARGET = "target"
