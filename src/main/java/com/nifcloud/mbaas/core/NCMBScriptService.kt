@@ -44,11 +44,30 @@ internal class NCMBScriptService : NCMBService() {
     fun executeScript(
         scriptName: String,
         method: String,
-        scriptHeader: HashMap<String, String>?,
-        scriptBody: JSONObject?,
-        scriptQuery: JSONObject?
-    ) {
-       //TODO
+        scriptHeader: HashMap<String, String>,
+        scriptBody: JSONObject,
+        scriptQuery: JSONObject
+    ) : ByteArray? {
+        val reqParams = executeScriptParams(
+            scriptName,
+            method,
+            scriptHeader,
+            scriptBody,
+            scriptQuery,
+            null,
+            null
+        )
+        val response = sendRequest(reqParams)
+        var responseScript : ByteArray? = null
+        when (response) {
+            is NCMBResponse.Success -> {
+                responseScript = response.data as ByteArray
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+        return responseScript
     }
 
     /**
@@ -109,9 +128,8 @@ internal class NCMBScriptService : NCMBService() {
         val method = method
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         return RequestParams(url = url,
-            method = method, contentType = contentType, callback = executeCallback, handler = executeHandler)
+            method = method, scriptHeader = scriptHeader, params = scriptBody, contentType = contentType, query = scriptQuery, callback = executeCallback, handler = executeHandler)
     }
-
 
     companion object {
         /**

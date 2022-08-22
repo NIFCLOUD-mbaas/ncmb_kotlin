@@ -29,6 +29,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import org.skyscreamer.jsonassert.JSONAssert
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -153,5 +154,51 @@ class NCMBErrorFileTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(fileObj.fileDownloadByte)
         Assert.assertEquals(NCMBException.DATA_NOT_FOUND, (inBackgroundHelper["e"] as NCMBException).code)
+    }
+
+    @Test
+    fun setNoFileSave_failed() {
+        val fileObj = NCMBFile("tempFileUpdate.txt")
+        try {
+            fileObj.save()
+        }catch(e:NCMBException){
+            Assert.assertEquals(e.message,"A file need to be set to upload.")
+        }
+    }
+
+    @Test
+    fun fileUpdateSetFile_failed() {
+        val acl = NCMBAcl()
+        val fileObj = NCMBFile("tempFile.txt")
+        fileObj.fileData = tmpFile
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = false
+        fileObj.setAcl(acl)
+        try {
+            fileObj.update()
+        }catch(e:NCMBException){
+            Assert.assertEquals(e.message,"Please do not set file data to update. Use save function instead.")
+        }
+    }
+
+    @Test
+    fun fileUpdateInBackgroundSetFile_failed() {
+        val acl = NCMBAcl()
+        val fileObj = NCMBFile("tempFile.txt")
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        inBackgroundHelper.start()
+        fileObj.fileData = tmpFile
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = false
+        fileObj.setAcl(acl)
+        try {
+            fileObj.updateInBackground(NCMBCallback { e, ncmbFile ->
+                inBackgroundHelper["e"] = e
+                inBackgroundHelper["ncmbFile"] = ncmbFile
+                inBackgroundHelper.release() // ブロックをリリース
+            })
+        }catch(e:NCMBException){
+            Assert.assertEquals(e.message,"Please do not set file data to update. Use save function instead.")
+        }
     }
 }

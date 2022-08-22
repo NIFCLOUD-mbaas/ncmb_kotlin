@@ -63,7 +63,7 @@ internal class NCMBFileService : NCMBObjectService(){
     }
 
     /**
-     * Save file object
+     * Update file acl
      *
      * @param params file parameters
      * @return JSONObject
@@ -73,6 +73,54 @@ internal class NCMBFileService : NCMBObjectService(){
     fun saveFile(fileObject: NCMBFile){
         val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_POST,
             NCMBRequest.HEADER_CONTENT_TYPE_FILE, null, null)
+        val response = sendRequest(request)
+        when (response) {
+            is NCMBResponse.Success -> {
+                fileObject.reflectResponse(response.data as JSONObject)
+            }
+            is NCMBResponse.Failure -> {
+                throw response.resException
+            }
+        }
+    }
+
+    /**
+     * update file acl in background
+     *
+     * @param fileObject File object
+     * @param callback   JSONCallback
+     */
+    fun updateFileInBackground(
+        fileObject: NCMBFile,
+        callback: NCMBCallback
+    ) {
+        val fileHandler = NCMBHandler { fileCallback, response ->
+            when (response) {
+                is NCMBResponse.Success -> {
+                    fileObject.reflectResponse(response.data as JSONObject)
+                    callback.done(null, fileObject)
+                }
+                is NCMBResponse.Failure -> {
+                    callback.done(response.resException)
+                }
+            }
+        }
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields,JSONObject(), NCMBRequest.HTTP_METHOD_PUT,
+            NCMBRequest.HEADER_CONTENT_TYPE_JSON, callback, fileHandler)
+        sendRequestAsync(request)
+    }
+
+    /**
+     * Save file object
+     *
+     * @param params file parameters
+     * @return JSONObject
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun updateFile(fileObject: NCMBFile){
+        val request = createRequestParamsFile(fileObject.fileName, fileObject.mFields, JSONObject(), NCMBRequest.HTTP_METHOD_PUT,
+            NCMBRequest.HEADER_CONTENT_TYPE_JSON, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -98,7 +146,6 @@ internal class NCMBFileService : NCMBObjectService(){
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
-                //println("SUCCESS" + response.data)
                 fileObject.reflectResponseFileData(response.data as ByteArray)
             }
             is NCMBResponse.Failure -> {
@@ -161,6 +208,59 @@ internal class NCMBFileService : NCMBObjectService(){
             callback = callback,
             handler = handler
         )
+    }
+
+    /**
+     * Setup params to do find request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    override fun findObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        return RequestParams(url = url, method = method, contentType = contentType, query=query)
+    }
+
+    @Throws(NCMBException::class)
+    override fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBFile> {
+        return try {
+            val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
+            val array: MutableList<NCMBFile> = ArrayList()
+            for (i in 0 until results.length()) {
+                val tmpObj = NCMBFile(results.getJSONObject(i))
+                array.add(tmpObj)
+            }
+            array
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+        }
+    }
+
+    /**
+     * Setup params to do count request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    override fun countObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        return RequestParams(url = url, method = method, contentType = contentType, query = query)
     }
 
 

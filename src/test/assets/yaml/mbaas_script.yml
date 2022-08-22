@@ -5,5 +5,4 @@ request:
 response:
     status: 200
     file: valid_script_response.txt
----
 

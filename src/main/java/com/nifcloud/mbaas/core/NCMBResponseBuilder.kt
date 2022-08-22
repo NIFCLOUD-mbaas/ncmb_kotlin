@@ -75,6 +75,7 @@ internal class NCMBResponseBuilder {
 
         //For File and script feature
         fun buildFileScriptResponse(response: Response): NCMBResponse {
+
             //通信結果文字列
             //var responseByteArray:ByteArray?
             var responseError: NCMBException

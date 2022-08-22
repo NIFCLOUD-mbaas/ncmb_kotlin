@@ -17,11 +17,13 @@
 package com.nifcloud.mbaas.core
 
 import okhttp3.mockwebserver.MockWebServer
+import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
+import java.util.Date
 
 
 class NCMBBaseTest {
@@ -43,6 +45,7 @@ class NCMBBaseTest {
         baseObj.put("keyString", "stringValue")
         Assert.assertEquals(baseObj.get("keyString"), "stringValue")
     }
+
 
     /**
      * putテスト
@@ -73,6 +76,37 @@ class NCMBBaseTest {
         var baseObj = NCMBBase()
         baseObj.put("keyNumberDouble", 1234.33)
         Assert.assertEquals(baseObj.get("keyNumberDouble"), 1234.33)
+    }
+
+    /**
+     * put Array テスト
+     */
+    @Test
+    fun put_array_of_int_test() {
+        val obj = NCMBBase()
+        val testArray = JSONArray()
+        testArray.put(1)
+        testArray.put(2)
+
+        val testArray2 = JSONArray()
+        testArray2.put(1)
+        testArray2.put(2)
+        obj.put("keyArray", testArray)
+        Assert.assertEquals(obj.get("keyArray"), testArray2)
+        Assert.assertEquals(obj.mFields.get("keyArray"), testArray2)
+    }
+
+    @Test
+    fun put_date_test_direct() {
+        var baseObj = NCMBBase()
+
+        val assertDate: Date = NCMBDateFormat.getIso8601().parse("2022-04-14T10:10:10.000Z")
+        baseObj.put("keyDate", assertDate)
+
+        val expectedKeyDateJson = JSONObject("{\"__type\":\"Date\",\"iso\":\"2022-04-14T10:10:10.000Z\"}")
+        Assert.assertTrue(assertDate.equals(baseObj.getDate("keyDate")));
+        JSONAssert.assertEquals(expectedKeyDateJson, baseObj.mFields.getJSONObject("keyDate"), false)
+        Assert.assertEquals(1, baseObj.mUpdateKeys.size)
     }
 
     /**
@@ -127,5 +161,17 @@ class NCMBBaseTest {
         Assert.assertEquals("xxxxx", baseObj.mFields.get("objectId"))
         Assert.assertEquals("YamadaTarou", baseObj.mFields.get("userName"))
         Assert.assertEquals("xxxxxxxxxx", baseObj.mFields.get("sessionToken"))
+    }
+
+    /**
+     * setAclテスト
+     */
+    @Test
+    fun setAcl_test() {
+        var baseObj = NCMBBase()
+        val acl = NCMBAcl()
+        acl.publicReadAccess = true
+        baseObj.setAcl(acl)
+        JSONAssert.assertEquals(baseObj.getAcl().toJson(), acl.toJson(), true)
     }
 }

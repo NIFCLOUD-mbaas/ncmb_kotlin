@@ -16,6 +16,11 @@
 
 package com.nifcloud.mbaas.core
 
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
@@ -23,12 +28,13 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import org.junit.rules.TemporaryFolder
+import org.skyscreamer.jsonassert.JSONAssert
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -51,6 +57,7 @@ class NCMBFileTest {
     @get:Rule
     var tmpFolder = TemporaryFolder()
     lateinit var tmpFile: File
+    lateinit var tmpImgFile: File
 
     @Before
     fun setup() {
@@ -72,6 +79,16 @@ class NCMBFileTest {
             tmpFile = tmpFolder.newFile("tempFile.txt")
             // Write something to it.
             tmpFile.appendText("hello world")
+
+            // Create a png file
+            tmpImgFile = tmpFolder.newFile("test.png")
+            val bitmap = BitmapFactory.decodeFile(tmpImgFile.getAbsolutePath())
+            var canvas = Canvas(bitmap)
+            val paint = Paint()
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(10F);
+            canvas.drawText("test", 1F, 1F, paint)
+            canvas.save()
 
         } catch (ioe: IOException) {
             System.err.println(
@@ -133,12 +150,96 @@ class NCMBFileTest {
     }
 
     @Test
+    fun fileSaveWithSetACL_success() {
+        val acl = NCMBAcl()
+        val fileObj = NCMBFile("tempFile.txt")
+        fileObj.fileData = tmpFile
+        acl.publicWriteAccess = true
+        acl.publicReadAccess = false
+        fileObj.setAcl(acl)
+        fileObj.save()
+        val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
+        Assert.assertEquals(fileObj.getCreateDate(), date)
+        JSONAssert.assertEquals(fileObj.getAcl().toJson(), acl.toJson(), false)
+    }
+
+    @Test
+    fun fileUpdateInBackGround_success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val fileObj = NCMBFile("tempFile.txt")
+        val acl = NCMBAcl()
+        acl.publicWriteAccess = false
+        acl.publicReadAccess = true
+        fileObj.setAcl(acl)
+        inBackgroundHelper.start()
+        // ファイルストアへの登録を実施
+        fileObj.updateInBackground(NCMBCallback { e, ncmbFile ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbFile"] = ncmbFile
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val date: Date = NCMBDateFormat.getIso8601().parse("2014-06-04T11:28:30.348Z")!!
+        Assert.assertNotNull((inBackgroundHelper["ncmbFile"] as NCMBFile).getUpdateDate())
+        Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getUpdateDate(),date)
+        JSONAssert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getAcl().toJson(), acl.toJson(), false)
+    }
+
+
+    @Test
+    fun fileUpdateACL_success() {
+        val acl = NCMBAcl()
+        val fileObj = NCMBFile("tempFile.txt")
+        acl.publicWriteAccess = false
+        acl.publicReadAccess = true
+        fileObj.setAcl(acl)
+        fileObj.update()
+        val date: Date = NCMBDateFormat.getIso8601().parse("2014-06-04T11:28:30.348Z")!!
+        Assert.assertEquals(fileObj.getUpdateDate(), date)
+        JSONAssert.assertEquals(fileObj.getAcl().toJson(), acl.toJson(), false)
+    }
+
+    @Test
+    fun filePNGSaveInBackGround_success() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        val fileObj = NCMBFile("test.png")
+        fileObj.fileData = tmpImgFile
+        inBackgroundHelper.start()
+        // ファイルストアへの登録を実施
+        fileObj.saveInBackground(NCMBCallback { e, ncmbFile ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["ncmbFile"] = ncmbFile
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).fileName,"test.png")
+        val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
+        Assert.assertNotNull((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate())
+        Assert.assertEquals((inBackgroundHelper["ncmbFile"] as NCMBFile).getCreateDate(),date)
+    }
+
+    @Test
     fun fileSave_success() {
         val fileObj = NCMBFile("tempFile.txt")
         Assert.assertNull(fileObj.getCreateDate())
         fileObj.fileData = tmpFile
         // ファイルストアへの登録を実施
         fileObj.save()
+        val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
+        Assert.assertEquals(fileObj.getCreateDate(), date)
+    }
+
+    @Test
+    fun filePNGSave_success() {
+        val fileObj = NCMBFile("test.png")
+        Assert.assertNull(fileObj.getCreateDate())
+        fileObj.fileData = tmpImgFile
+        fileObj.save()
+
         val date: Date = NCMBDateFormat.getIso8601().parse("2022-02-03T11:28:30.348Z")!!
         Assert.assertEquals(fileObj.getCreateDate(), date)
     }

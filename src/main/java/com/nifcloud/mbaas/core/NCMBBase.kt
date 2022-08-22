@@ -46,7 +46,7 @@ open class NCMBBase(){
             return field
         }
         internal set
-    protected var mIgnoreKeys= listOf<String>()
+    protected open var mIgnoreKeys= listOf<String>()
     var keys = HashSet<String>()
 
     @Throws(NCMBException::class)
@@ -204,13 +204,18 @@ open class NCMBBase(){
             )
         }
         try {
-            if(value is NCMBGeoPoint){
+            if (value is NCMBGeoPoint) {
                 val locationJson = JSONObject("{'__type':'GeoPoint'}")
                 locationJson.put("longitude", value.mlongitude)
                 locationJson.put("latitude", value.mlatitude)
                 mFields.put(key, locationJson)
+            } else if (value is Date) {
+                val dateJson = JSONObject()
+                dateJson.put("iso", NCMBDateFormat.getIso8601().format(value))
+                dateJson.put("__type", "Date")
+                mFields.put(key, dateJson)
             }
-            else{
+            else {
                 mFields.put(key, value)
             }
             mUpdateKeys.add(key)
@@ -241,6 +246,21 @@ open class NCMBBase(){
         }
     }
 
+    @Throws(NCMBException::class)
+    fun getDate(key : String): Date? {
+        try {
+            if (!mFields.isNull(key)) {
+                val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
+                val dateJson = mFields.getJSONObject(key)
+                if (dateJson.getString("__type") == "Date" && !dateJson.isNull("iso")) {
+                    return df.parse(dateJson.getString("iso"))
+                }
+            }
+            return null
+        } catch (e: JSONException) {
+            return null
+        }
+    }
 
     /**
      * Check key is in keys
@@ -263,10 +283,10 @@ open class NCMBBase(){
      * @return ignore list contains given key or not
      */
     internal fun isIgnoreKey(key: String?): Boolean {
-        if (this.mIgnoreKeys.size > 0) {
-            return false
-        } else {
+        if (this.mIgnoreKeys.size > 0) {  //mIgnoreKeys設定がある場合
             return mIgnoreKeys.contains(key)
+        } else {
+            return false
         }
     }
 
@@ -278,9 +298,6 @@ open class NCMBBase(){
     @Throws(JSONException::class)
     internal open fun copyFrom(from: JSONObject) {
         for(key in from.keys()){
-            if (isIgnoreKey(key)) {
-                continue
-            }
             this.keys.add(key)
             mFields.put(key, from[key])
             localData.put(key, from[key])

@@ -33,22 +33,20 @@
 
 package com.nifcloud.mbaas.core
 
+import android.webkit.MimeTypeMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.Headers.Companion.toHeaders
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.IOException
-import java.net.URL
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
+import java.io.IOException
+import java.net.URL
 
 
 /**
@@ -93,6 +91,7 @@ internal class NCMBConnection(request: NCMBRequest) {
                 val client = OkHttpClient()
 
                 println("Request Info (Sync):")
+                println("scriptHeader: " + ncmbRequest.scriptHeader.toString())
                 println("params: " + ncmbRequest.params.toString())
                 println("querys: " + ncmbRequest.query.toString())
                 println(ncmbRequest.url)
@@ -137,18 +136,8 @@ internal class NCMBConnection(request: NCMBRequest) {
                 println(headers)
                 println(ncmbRequest.query)
 
-                //Get file from params
-                var fileObj = ncmbRequest.params.get("file") as File
-                val requestBody = MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart(
-                        "file", null,
-                        fileObj.asRequestBody()
-                    )
-                    .build()
-
                 val request =
-                    request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
+                    request(ncmbRequest.method, URL(ncmbRequest.url), headers, createFileRequestBody())
                 val client = OkHttpClient().newCall(request)
                 val response = client.execute()
                 ncmbResponse = NCMBResponseBuilder.build(response)
@@ -171,6 +160,7 @@ internal class NCMBConnection(request: NCMBRequest) {
         val client = OkHttpClient()
 
         println("Request Info (Async):")
+        println("scriptHeader: " + ncmbRequest.scriptHeader.toString())
         println("params: " + ncmbRequest.params.toString())
         println("querys: " + ncmbRequest.query.toString())
         println(ncmbRequest.url)
@@ -222,16 +212,7 @@ internal class NCMBConnection(request: NCMBRequest) {
             println(ncmbRequest.url)
             println(headers)
 
-            //Get file from params
-            var fileObj = ncmbRequest.params.get("file") as File
-
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("file", null,
-                    fileObj.asRequestBody())
-                .build()
-
-            val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, requestBody)
+            val request = request(ncmbRequest.method, URL(ncmbRequest.url), headers, createFileRequestBody())
             val client = OkHttpClient().newCall(request)
 
             client.enqueue(object : Callback {
@@ -284,6 +265,9 @@ internal class NCMBConnection(request: NCMBRequest) {
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_SDK_VERSION)
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
         headerMap = headerMapSet(headerMap, NCMBRequest.HEADER_OS_VERSION)
+        if (!ncmbRequest.scriptHeader.isNullOrEmpty()) {
+            headerMap = headerMapSetForScript(headerMap, ncmbRequest.scriptHeader!!)
+        }
         return headerMap.toHeaders()
     }
 
@@ -347,4 +331,51 @@ internal class NCMBConnection(request: NCMBRequest) {
         }
         return headerMap
     }
+
+    fun headerMapSetForScript(headerMap: HashMap<String, String>, headerInfo: HashMap<String, String>): HashMap<String, String>{
+        for (key : String in headerInfo.keys){
+            val value = headerInfo.get(key)
+            if(value != null) {
+                headerMap.put(key, value)
+            }
+        }
+        return headerMap
+    }
+
+    private fun createFileRequestBody(): RequestBody {
+        //Get file from params
+        if(ncmbRequest.params.has("file")) {
+            val fileObj = ncmbRequest.params.get("file") as File
+            if(ncmbRequest.params.has("acl")) {
+                val fileAcl = ncmbRequest.params.get("acl") as JSONObject
+                return MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("file", null,
+                        fileObj.asRequestBody(createMimeType(fileObj.name).toMediaTypeOrNull()))
+                    .addFormDataPart("acl",fileAcl.toString())
+                    .build()
+            }
+            return MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("file", null,
+                    fileObj.asRequestBody(createMimeType(fileObj.name).toMediaTypeOrNull()))
+                .build()
+        } else {
+            throw NCMBException(NCMBException.GENERIC_ERROR, "A file need to be set to upload.")
+        }
+    }
+
+    private fun createMimeType(fileName: String): String {
+        //fileの拡張子毎のmimeTypeを作成
+        var mimeType: String? = null
+        if (fileName.lastIndexOf(".") != -1) {
+            val extension = fileName.substring(fileName.lastIndexOf(".") + 1)
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        }
+        if (mimeType == null) {
+            mimeType = "application/octet-stream"
+        }
+        return mimeType
+    }
+
 }

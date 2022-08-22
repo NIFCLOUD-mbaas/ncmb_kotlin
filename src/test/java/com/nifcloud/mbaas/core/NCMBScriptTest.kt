@@ -66,6 +66,39 @@ class NCMBScriptTest {
     }
 
     @Test
+    fun script_execute_success(){
+        val header = HashMap<String, String>()
+        val body = JSONObject()
+        val query = JSONObject()
+        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
+
+        //ファイルストアへの登録を実施
+        val response = scriptObj.execute(header, body, query)
+        Assert.assertNotNull(response)
+        if(response != null) {
+            val encodedString = String(response, Charsets.UTF_8)
+            Assert.assertEquals(encodedString, "this is script result")
+        }
+    }
+
+    @Test
+    fun script_execute_with_header_success(){
+        val header = HashMap<String, String>()
+        val body = JSONObject()
+        val query = JSONObject()
+        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
+
+        //ファイルストアへの登録を実施
+        header["key"] = "value"
+        val response = scriptObj.execute(header, body, query)
+        Assert.assertNotNull(response)
+        if(response != null) {
+            val encodedString = String(response, Charsets.UTF_8)
+            Assert.assertEquals(encodedString, "this is script result")
+        }
+    }
+
+    @Test
     fun script_executeInBackground_success(){
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         inBackgroundHelper.start()
@@ -76,6 +109,31 @@ class NCMBScriptTest {
         val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
 
         // ファイルストアへの登録を実施
+        scriptObj.executeInBackground(header, body , query, NCMBCallback { e, responseData ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["responseData"] = responseData
+            inBackgroundHelper.release() // ブロックをリリース
+        })
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        val responseData = inBackgroundHelper["responseData"] as ByteArray
+        val encodedString = String(responseData, Charsets.UTF_8)
+        Assert.assertEquals(encodedString,"this is script result")
+    }
+
+    @Test
+    fun script_executeInBackground_with_header_success(){
+        val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
+        inBackgroundHelper.start()
+
+        val header = HashMap<String, String>()
+        val body = JSONObject()
+        val query = JSONObject()
+        val scriptObj = NCMBScript("testScript.js", NCMBScript.MethodType.GET)
+
+        // ファイルストアへの登録を実施
+        header["key"] = "value"
         scriptObj.executeInBackground(header, body , query, NCMBCallback { e, responseData ->
             inBackgroundHelper["e"] = e
             inBackgroundHelper["responseData"] = responseData

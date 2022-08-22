@@ -43,10 +43,7 @@ open class NCMBUser: NCMBObject {
     var otherFields: JSONObject = JSONObject()
 
     val ignoreKeys: List<String> = mutableListOf(
-        "objectId", "userName", "password",
-        "mailAddress", "mailAddressConfirm",
-        "acl", "authData",
-        "createDate", "updateDate"
+        "objectId", "createDate", "updateDate"
     )
 
     /**
@@ -55,6 +52,18 @@ open class NCMBUser: NCMBObject {
      */
     constructor() : super("user") {
         mIgnoreKeys = ignoreKeys
+    }
+
+    companion object {
+        /**
+         * current user
+         */
+        var currentuser: NCMBUser? = null
+
+        const val USERNAME = "userName"
+        const val PASSWORD = "password"
+        const val SESSIONTOKEN = "sessionToken"
+        const val MAILADDRESS = "mailAddress"
     }
 
     /**
@@ -83,7 +92,7 @@ open class NCMBUser: NCMBObject {
          * @return String user name
          */
         get() {
-            return getUserInfo("userName")
+            return getUserInfo(USERNAME)
         }
         /**
          * set user name
@@ -91,7 +100,7 @@ open class NCMBUser: NCMBObject {
          * @param userName user name string
          */
         set(userName) {
-            setUserInfo("userName", userName)
+            setUserInfo(USERNAME, userName)
         }
 
     /**
@@ -99,7 +108,7 @@ open class NCMBUser: NCMBObject {
      */
     var password: String
         get() {
-            return getUserInfo("password")
+            return getUserInfo(PASSWORD)
         }
         /**
          * set password
@@ -107,7 +116,7 @@ open class NCMBUser: NCMBObject {
          * @param password password string
          */
         set(password) {
-            setUserInfo("password", password)
+            setUserInfo(PASSWORD, password)
         }
 
 
@@ -121,8 +130,8 @@ open class NCMBUser: NCMBObject {
          * @return sessionToken
          */
         get() {
-            return if (getCurrentUser().getString("sessionToken") != null) {
-                getCurrentUser().getString("sessionToken")
+            return if (getCurrentUser().getString(SESSIONTOKEN) != null) {
+                getCurrentUser().getString(SESSIONTOKEN)
             } else {
                 null
             }
@@ -133,7 +142,7 @@ open class NCMBUser: NCMBObject {
          * @param sessionToken String sessionToken
          */
         set(sessionToken) {
-            setUserInfo("sessionToken", sessionToken)
+            setUserInfo(SESSIONTOKEN, sessionToken)
         }
 
 
@@ -147,7 +156,7 @@ open class NCMBUser: NCMBObject {
          * @return String mail address
          */
         get() {
-            return getUserInfo("mailAddress")
+            return getUserInfo(MAILADDRESS)
         }
         /**
          * Set mail address
@@ -155,8 +164,12 @@ open class NCMBUser: NCMBObject {
          * @param mailAddress String mail address
          */
         set(mailAddress) {
-            setUserInfo("mailAddress", mailAddress)
+            setUserInfo(MAILADDRESS, mailAddress)
         }
+
+    private fun checkExist(userKey: String): Boolean {
+        return mFields.has(userKey)
+    }
 
     private fun getUserInfo(userKey: String): String {
         try {
@@ -185,7 +198,7 @@ open class NCMBUser: NCMBObject {
         val userService = NCMBUserService()
         val params = JSONObject()
         try {
-            if(userName == null || password == null){
+            if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
                 throw NCMBException(NCMBException.REQUIRED, "username or password not set")
             }
             for(key in mFields.keys()){
@@ -226,7 +239,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun login(): NCMBUser {
         val userService = NCMBUserService()
-        if(userName == null || password == null){
+        if(!checkExist(USERNAME) || !checkExist(USERNAME)){
             throw NCMBException(NCMBException.REQUIRED, "username or password not set")
         }
         return userService.loginByName(userName, password)
@@ -392,7 +405,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     fun loginInBackground(loginCallback: NCMBCallback) {
         val userService = NCMBUserService()
-        if(userName == null || password == null){
+        if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
             throw NCMBException(NCMBException.REQUIRED, "username or password not set")
         }
         userService.loginByNameInBackground(userName, password, loginCallback)
@@ -424,7 +437,7 @@ open class NCMBUser: NCMBObject {
         val params = JSONObject()
         var user = NCMBUser()
         try {
-            if(userName == null || password == null){
+            if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
                 throw NCMBException(NCMBException.REQUIRED, "username or password not set")
             }
             for(key in mFields.keys()){
@@ -473,7 +486,7 @@ open class NCMBUser: NCMBObject {
         val userService = NCMBUserService()
         val params = JSONObject()
         try {
-            if(userName == null || password == null){
+            if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
                 throw NCMBException(NCMBException.REQUIRED, "username or password not set")
             }
             for(key in mFields.keys()){
@@ -577,10 +590,26 @@ open class NCMBUser: NCMBObject {
         userService.logoutUserInBackground(this, logoutCallback)
     }
 
-    companion object {
-	      /**
-         * current user
-         */
-        var currentuser: NCMBUser? = null
+    /**
+     * clear CachedCurrentUser if exist
+     *
+     * @throws NCMBException exception sdk internal or NIFCLOUD mobile backend
+     */
+    @Throws(NCMBException::class)
+    fun clearCachedCurrentUser() {
+        if (getCurrentUser().getObjectId() != null) {
+            //delete file
+            try {
+                val file = NCMBLocalFile.create(NCMBUser().USER_FILENAME)
+                NCMBLocalFile.deleteFile(file)
+            }catch (ex:Exception){
+                throw NCMBException(ex)
+            }
+            //discarded from the static
+            NCMBUser.currentuser = null
+            NCMB.SESSION_TOKEN = null
+            NCMB.USER_ID = null
+        }
     }
+
 }

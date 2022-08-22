@@ -32,6 +32,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import kotlin.test.assertFails
 
 
 /**
@@ -76,10 +77,7 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun loginInBackground_invalid_username() {
-        if (NCMBUser().getCurrentUser().getObjectId() != null) {
-            println(NCMBUser().getCurrentUser().getObjectId())
-            NCMBUser().logout()
-        }
+        NCMBUser().clearCachedCurrentUser()
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
@@ -103,10 +101,7 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun signUpInBackground_invalid_password() {
-        if (NCMBUser().getCurrentUser().getObjectId() != null) {
-            println(NCMBUser().getCurrentUser().getObjectId())
-            NCMBUser().logout()
-        }
+        NCMBUser().clearCachedCurrentUser()
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
@@ -133,10 +128,7 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun signUpInBackground_invalid_null_password() {
-        if (NCMBUser().getCurrentUser().getObjectId() != null) {
-            println(NCMBUser().getCurrentUser().getObjectId())
-            NCMBUser().logout()
-        }
+        NCMBUser().clearCachedCurrentUser()
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
@@ -150,7 +142,7 @@ class NCMBErrorUserTest {
             user.signUpInBackground(callback)
         }
         catch (e:NCMBException){
-            Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
         }
         inBackgroundHelper.await()
         Assert.assertFalse(inBackgroundHelper.isCalledRelease())
@@ -166,10 +158,7 @@ class NCMBErrorUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun logInBackground_invalid_null_password() {
-        if (NCMBUser().getCurrentUser().getObjectId() != null) {
-            println(NCMBUser().getCurrentUser().getObjectId())
-            NCMBUser().logout()
-        }
+        NCMBUser().clearCachedCurrentUser()
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         val callback = NCMBCallback { e, ncmbUser ->
             inBackgroundHelper["e"] = e
@@ -183,7 +172,7 @@ class NCMBErrorUserTest {
             user.loginInBackground(callback)
         }
         catch (e:NCMBException){
-            Assert.assertEquals(NCMBException.INVALID_JSON, e.code)
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
         }
         inBackgroundHelper.await()
         Assert.assertFalse(inBackgroundHelper.isCalledRelease())
@@ -205,15 +194,4 @@ class NCMBErrorUserTest {
         Assert.assertNull(NCMB.USER_ID)
     }
 
-    //    @Test
-//    @Throws(NCMBException::class)
-//    fun delete_object_with_data_success_failure() {
-//        val sut = NCMBObject("TestClass")
-//        try {
-//            sut.setObjectId("nonExistId")
-//            val obj = sut.delete()
-//        } catch (e: NCMBException) {
-//            Assert.assertEquals(NCMBException.DATA_NOT_FOUND, e.code)
-//        }
-//    }
 }

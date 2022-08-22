@@ -42,6 +42,7 @@ internal open class NCMBService {
     data class RequestParams(
         var url: String,
         var method: String,
+        var scriptHeader: HashMap<String, String> = HashMap<String, String>(),
         var params: JSONObject = JSONObject(),
         var contentType: String,
         var query: JSONObject = JSONObject(),
@@ -62,6 +63,7 @@ internal open class NCMBService {
     fun sendRequest(
         url: String,
         method: String,
+        scriptHeader: HashMap<String, String>? = null,
         params: JSONObject,
         contentType: String,
         query: JSONObject
@@ -73,6 +75,7 @@ internal open class NCMBService {
         val request = NCMBRequest(
             url,
             method,
+            scriptHeader,
             params,
             contentType,
             query,
@@ -84,7 +87,7 @@ internal open class NCMBService {
         val connection = NCMBConnection(request)
         return if (contentType == NCMBRequest.HEADER_CONTENT_TYPE_FILE) {
             connection.sendRequestForUploadFile()
-        }else {
+        } else {
             connection.sendRequest()
         }
     }
@@ -98,6 +101,7 @@ internal open class NCMBService {
         return this.sendRequest(
             params.url,
             params.method,
+            params.scriptHeader,
             params.params,
             params.contentType,
             params.query
@@ -118,6 +122,7 @@ internal open class NCMBService {
     fun sendRequestAsync(
         url: String,
         method: String,
+        scriptHeader: HashMap<String, String>? = null,
         params: JSONObject,
         contentType: String,
         query: JSONObject,
@@ -134,6 +139,7 @@ internal open class NCMBService {
         val request = NCMBRequest(
             url,
             method,
+            scriptHeader,
             params,
             contentType,
             query,
@@ -167,6 +173,7 @@ internal open class NCMBService {
         return this.sendRequestAsync(
             params.url,
             params.method,
+            params.scriptHeader,
             params.params,
             params.contentType,
             params.query,
@@ -184,6 +191,7 @@ internal open class NCMBService {
         return this.sendRequestAsync(
             params.url,
             params.method,
+            params.scriptHeader,
             params.params,
             params.contentType,
             params.query,
