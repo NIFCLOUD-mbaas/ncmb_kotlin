@@ -180,6 +180,21 @@ class NCMBErrorUserTest {
     }
 
     @Test
+    @Throws(java.lang.Exception::class)
+    fun login_invalid_null_password() {
+        NCMBUser().clearCachedCurrentUser()
+        val user = NCMBUser()
+        user.userName = "duplicateUser"
+        try {
+            user.login()
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
+        }
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+    }
+
+    @Test
     fun logout_failure_connect_error() {
         NCMB.SESSION_TOKEN = "testToken"
         NCMB.USER_ID = "TestId"

@@ -239,7 +239,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun login(): NCMBUser {
         val userService = NCMBUserService()
-        if(!checkExist(USERNAME) || !checkExist(USERNAME)){
+        if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
             throw NCMBException(NCMBException.REQUIRED, "username or password not set")
         }
         return userService.loginByName(userName, password)
