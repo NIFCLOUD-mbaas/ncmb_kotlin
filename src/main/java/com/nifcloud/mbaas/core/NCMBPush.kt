@@ -21,7 +21,6 @@ import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.IllegalArgumentException
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -447,6 +446,23 @@ class NCMBPush : NCMBObject {
         // ダイアログ表示
         val dialog = NCMBRichPush(context, url)
         dialog.show()
+    }
+
+    // endregion
+
+    /**
+     * Open push registration in background
+     *
+     * @param intent ActivityIntent
+     */
+    fun trackAppOpened(intent: Intent?) {
+        if (intent == null) {
+            return
+        }
+        val pushId = intent.getStringExtra("com.nifcloud.mbaas.PushId") ?: return
+        val pushService = NCMBPushService()
+        val callback = NCMBCallback{e, response ->}
+        pushService.sendPushReceiptStatusInBackground(pushId, callback)
     }
 
     companion object {

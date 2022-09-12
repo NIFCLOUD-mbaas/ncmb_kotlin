@@ -18,6 +18,7 @@ package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
+import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.json.JSONArray
 import org.json.JSONException
@@ -481,5 +482,23 @@ class NCMBPushTest {
         Assert.assertNull(error)
         Assert.assertEquals("http://www.yahoo.co.jp/", push.mFields.get("richUrl"))
         Assert.assertEquals(true, push.mFields.getBoolean("immediateDeliveryFlag"))
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun sendPushReceiptStatusBackground() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper()
+        val pushService = NCMBPushService()
+        inBackgroundHelper.start()
+        val callback = NCMBCallback{e, response ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper["response"] = response
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        pushService.sendPushReceiptStatusInBackground("7FrmPTBKSNtVjajm", callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(inBackgroundHelper["e"])
+        Assert.assertEquals((inBackgroundHelper["response"] as JSONObject).getString("updateDate"), "2014-06-04T11:28:30.348Z")
     }
 }
