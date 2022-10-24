@@ -17,8 +17,12 @@
 このSDKを利用する前に、ニフクラ mobile backendのアカウントを作成する必要があります。 ニフクラ mobile backendのサービスサイトからアカウント登録を行ってください。
 
 # 動作環境
-本SDKは、Android 8.x ～ 12.x, Android Studio Arctic Fox | 2020.3.1 Patch 2~ にて動作確認を行っております。
-(※2022年8月時点)
+
+本SDKは、以下の環境にて動作確認を行っております。
+- Android 8.x ～ 13.x
+- API levels 26 ～ 33
+- Android Studio 2020.3.1 Patch 2 ～ 2021.3.1
+(※2022年10月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
