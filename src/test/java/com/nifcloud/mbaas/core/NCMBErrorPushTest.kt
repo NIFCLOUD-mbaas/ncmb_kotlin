@@ -17,6 +17,7 @@
 package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
@@ -136,5 +137,24 @@ class NCMBErrorPushTest {
             Assert.assertEquals(NCMBException.INVALID_CORRELATION, e.code)
             Assert.assertEquals("Either deliveryTime or immediateDeliveryFlag.", e.message)
         }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun sendPushReceiptStatusInBackground_null_pushid() {
+        val inBackgroundHelper = NCMBInBackgroundTestHelper()
+        val pushService = NCMBPushService()
+        inBackgroundHelper.start()
+        val callback = NCMBCallback{e, response ->
+            inBackgroundHelper["e"] = e
+            inBackgroundHelper.release() // ブロックをリリース
+        }
+        pushService.sendPushReceiptStatusInBackground(null, callback)
+        inBackgroundHelper.await()
+        Assert.assertTrue(inBackgroundHelper.isCalledRelease())
+        val e = inBackgroundHelper["e"] as NCMBException
+        Assert.assertEquals(NCMBException.REQUIRED, e.code)
+        Assert.assertEquals("pushId is must not be null.", e.message)
+
     }
 }

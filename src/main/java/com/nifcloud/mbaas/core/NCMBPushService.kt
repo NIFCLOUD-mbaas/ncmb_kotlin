@@ -68,6 +68,52 @@ internal class NCMBPushService : NCMBService() {
     }
 
     /**
+     * Open push registration in background
+     *
+     * @param pushId   open push object id
+     * @param callback NCMBCallback
+     */
+    @Throws(NCMBException::class)
+    fun sendPushReceiptStatusInBackground(pushId: String?, callback: NCMBCallback) {
+        try {
+            //null check
+            if (pushId == null) {
+                throw NCMBException(NCMBException.REQUIRED, "pushId is must not be null.")
+            }
+            val params: JSONObject = try {
+                JSONObject("{deviceType:android}")
+            } catch (e: JSONException) {
+                throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+            }
+
+            //connect
+            val paramsRequest = createRequestParams(
+                "$pushId/openNumber",
+                params,
+                null,
+                NCMBRequest.HTTP_METHOD_POST
+            )
+            val pushReceiptStatusHandler = NCMBHandler { callback, response ->
+                when (response) {
+                    is NCMBResponse.Success -> {
+                        try {
+                            callback.done(null, response.data as JSONObject)
+                        } catch (e: NCMBException) {
+                            throw e
+                        }
+                    }
+                    is NCMBResponse.Failure -> {
+                        callback.done(response.resException)
+                    }
+                }
+            }
+            sendRequestAsync(paramsRequest, callback, pushReceiptStatusHandler)
+        } catch (error: NCMBException) {
+            callback.done(error)
+        }
+    }
+
+    /**
      * Setup params to installation
      *
      * @param installationId installation id
