@@ -12,7 +12,7 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Kotlin
         uses: fwilhe2/setup-kotlin@main
       - name: Setup JDK 11
@@ -26,4 +26,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build_test_report
-          path: /home/runner/work/ncmb_kotlin/ncmb_kotlin/build/reports/tests/testDebugUnitTest 
+          path: /home/runner/work/ncmb_kotlin/ncmb_kotlin/build/reports/tests/testDebugUnitTest
+      - name: make NCMB.jar
+        run: .gradlew clean makeJar
+      - name: upload NCMB.jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: NCMB.jar
+          path: ./release/NCMB.jar
+
