@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build_test_report
-          path: /home/runner/work/ncmb_kotlin/ncmb_kotlin/build/reports/tests/testDebugUnitTest
+          path: /Users/runner/work/ncmb_kotlin/ncmb_kotlin/build/reports/tests/testDebugUnitTest
       - name: make NCMB.jar
         run: ./gradlew clean makeJar
       - name: upload NCMB.jar
