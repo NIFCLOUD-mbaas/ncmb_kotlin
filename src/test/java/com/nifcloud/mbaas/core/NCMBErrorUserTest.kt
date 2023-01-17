@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2023 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -176,6 +176,21 @@ class NCMBErrorUserTest {
         }
         inBackgroundHelper.await()
         Assert.assertFalse(inBackgroundHelper.isCalledRelease())
+        Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
+    }
+
+    @Test
+    @Throws(java.lang.Exception::class)
+    fun login_invalid_null_password() {
+        NCMBUser().clearCachedCurrentUser()
+        val user = NCMBUser()
+        user.userName = "duplicateUser"
+        try {
+            user.login()
+        }
+        catch (e:NCMBException){
+            Assert.assertEquals(NCMBException.REQUIRED, e.code)
+        }
         Assert.assertNull(NCMBUser().getCurrentUser().getObjectId())
     }
 

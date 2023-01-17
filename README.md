@@ -17,8 +17,12 @@
 このSDKを利用する前に、ニフクラ mobile backendのアカウントを作成する必要があります。 ニフクラ mobile backendのサービスサイトからアカウント登録を行ってください。
 
 # 動作環境
-本SDKは、Android 8.x ～ 12.x, Android Studio Arctic Fox | 2020.3.1 Patch 2~ にて動作確認を行っております。
-(※2022年8月時点)
+
+本SDKは、以下の環境にて動作確認を行っております。
+- Android 8.x ～ 13.x
+- API levels 26 ～ 33
+- Android Studio 2020.3.1 Patch 2 ～ 2021.3.1
+(※2023年1月時点)
 
 ## テクニカルサポート窓口対応バージョン
 
@@ -27,7 +31,7 @@
 ※なお、mobile backend にて大規模な改修が行われた際は、1年半以内のSDKであっても対応出来ない場合がございます。<br>
 その際は[informationブログ](https://mbaas.nifcloud.com/info/)にてお知らせいたします。予めご了承ください。
 
-- v1.0.0 ～ (※2022年8月時点)
+- v1.0.0 ～ (※2023年1月時点)
 
 # インストール
 Android Studioでプロジェクトを開き、以下の手順でSDKをインストールしてください。

@@ -112,3 +112,10 @@ response:
     status: 201
     file: valid_post_response.json
 ---
+request:
+    url: /2013-09-01/push/7FrmPTBKSNtVjajm/openNumber
+    method: POST
+response:
+    status: 200
+    file: valid_post_trackAppOpened_response.json
+---

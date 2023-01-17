@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2023 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -239,7 +239,7 @@ open class NCMBUser: NCMBObject {
     @Throws(NCMBException::class)
     open fun login(): NCMBUser {
         val userService = NCMBUserService()
-        if(!checkExist(USERNAME) || !checkExist(USERNAME)){
+        if(!checkExist(USERNAME) || !checkExist(PASSWORD)){
             throw NCMBException(NCMBException.REQUIRED, "username or password not set")
         }
         return userService.loginByName(userName, password)

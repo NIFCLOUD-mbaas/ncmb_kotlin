@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
+ * Copyright 2017-2023 FUJITSU CLOUD TECHNOLOGIES LIMITED All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class NCMB {
         /**
          * Version of this SDK
          */
-        const val SDK_VERSION = "1.2.0"
+        const val SDK_VERSION = "1.3.0"
 
         /**
          * Prefix of keys in metadata for NCMB settings
