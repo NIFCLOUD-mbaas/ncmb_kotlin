@@ -61,7 +61,7 @@ dependencies {
 ActivityのonCreateメソッド内に以下を記載します。
 
 ```kotlin
-NCMB.initialize(this.getApplicationContext(),"YOUR_APPLICATION_KEY","YOUR_CLIENT_KEY");
+NCMB.initialize(this.applicationContext,"YOUR_APPLICATION_KEY","YOUR_CLIENT_KEY");
 ```
 
 * 利用する機能に合わせて使用するライブラリのimport
