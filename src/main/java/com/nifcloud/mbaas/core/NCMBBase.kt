@@ -121,6 +121,65 @@ open class NCMBBase(){
         }
     }
 
+//    fun getDate(key: String, value: Date? = null): Date?{
+//        return try{
+//            val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
+//            df.parse(mFields.getString(key))
+//        } catch (e: JSONException){
+//            return value
+//        } catch (e: ParseException) {
+//            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
+//        }
+//    }
+
+    fun getInt(key: String, value: Int? = null): Int?{
+        return try{
+            mFields.get(key) as Int
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    fun getDouble(key: String, value: Double? = null): Double?{
+        return try{
+            mFields.get(key) as Double
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    fun getFloat(key: String, value: Float? = null): Float?{
+        return try{
+            mFields.get(key) as Float
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    fun getBoolean(key: String, value: Boolean? = null): Boolean?{
+        return try{
+            mFields.get(key) as Boolean
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    fun getJson(key: String, value: JSONObject? = null): JSONObject?{
+        return try{
+            mFields.get(key) as JSONObject
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    fun getArray(key: String, value: JSONArray? = null): JSONArray?{
+        return try{
+            mFields.get(key) as JSONArray
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
     /**
      * get NCMBGeoPoint value from given key
      *

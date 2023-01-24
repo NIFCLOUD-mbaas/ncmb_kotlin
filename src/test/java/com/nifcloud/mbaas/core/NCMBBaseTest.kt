@@ -43,9 +43,8 @@ class NCMBBaseTest {
     fun put_string_test() {
         var baseObj = NCMBBase()
         baseObj.put("keyString", "stringValue")
-        Assert.assertEquals(baseObj.get("keyString"), "stringValue")
+        Assert.assertEquals(baseObj.getString("keyString"), "stringValue")
     }
-
 
     /**
      * putテスト
@@ -55,7 +54,7 @@ class NCMBBaseTest {
         var baseObj = NCMBBase()
         val setNumberValue: Int = 12
         baseObj.put("keyNumberInt", setNumberValue)
-        Assert.assertEquals(baseObj.get("keyNumberInt"), setNumberValue)
+        Assert.assertEquals(baseObj.getInt("keyNumberInt"), setNumberValue)
     }
 
     /**
@@ -65,7 +64,7 @@ class NCMBBaseTest {
     fun put_int_test_direct() {
         var baseObj = NCMBBase()
         baseObj.put("keyNumberInt", 1234)
-        Assert.assertEquals(baseObj.get("keyNumberInt"), 1234)
+        Assert.assertEquals(baseObj.getInt("keyNumberInt"), 1234)
     }
 
     /**
@@ -75,8 +74,31 @@ class NCMBBaseTest {
     fun put_double_test_direct() {
         var baseObj = NCMBBase()
         baseObj.put("keyNumberDouble", 1234.33)
-        Assert.assertEquals(baseObj.get("keyNumberDouble"), 1234.33)
+        Assert.assertEquals(baseObj.getDouble("keyNumberDouble"), 1234.33)
     }
+
+    @Test
+    fun put_float_test_direct() {
+        var baseObj = NCMBBase()
+        baseObj.put("keyNumberFloat", 0.1)
+        Assert.assertEquals(baseObj.getFloat("keyNumberFloat"), 0.1)
+    }
+
+    @Test
+    fun put_boolean_test() {
+        var baseObj = NCMBBase()
+        val booleanValue: Boolean = true
+        baseObj.put("keyBoolean", booleanValue)
+        Assert.assertEquals(baseObj.getBoolean("keyBoolean"), true)
+    }
+
+//    @Test
+//    fun put_jsonObject_test() {
+//        var baseObj = NCMBBase()
+//        val jsonObjectValue: JSONObject = {"a":"b"}
+//        baseObj.put("keyJsonObject", jsonObjectValue)
+//        Assert.assertEquals(baseObj.getJson("keyJsonObject"), {"a":"b"})
+//    }
 
     /**
      * put Array テスト
@@ -92,7 +114,7 @@ class NCMBBaseTest {
         testArray2.put(1)
         testArray2.put(2)
         obj.put("keyArray", testArray)
-        Assert.assertEquals(obj.get("keyArray"), testArray2)
+        Assert.assertEquals(obj.getArray("keyArray"), testArray2)
         Assert.assertEquals(obj.mFields.get("keyArray"), testArray2)
     }
 
