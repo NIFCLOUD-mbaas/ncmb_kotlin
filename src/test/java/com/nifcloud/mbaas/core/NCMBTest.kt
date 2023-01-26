@@ -22,8 +22,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import androidx.test.core.app.ApplicationProvider
 
 
 /**
@@ -52,7 +52,7 @@ class NCMBTest {
         val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
         val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey)
         Assert.assertEquals(applicationKey, NCMB.getApplicationKey())
@@ -71,7 +71,7 @@ class NCMBTest {
         val domainUrl = "https://mbaas.api.nifcloud.com/"
         val apiVersion = "2013-09-01"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey,
             domainUrl,
@@ -94,7 +94,7 @@ class NCMBTest {
         val scriptDomainUrl = "https://scripttestdomain.com/"
         val scriptApiVersion = "2015-09-01"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey,
             domainUrl,
@@ -116,7 +116,7 @@ class NCMBTest {
         val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
         val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey
         )
@@ -135,12 +135,12 @@ class NCMBTest {
         val applicationKey2 =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
         val clientKey2 = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey1,
             clientKey1
         )
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey2,
             clientKey2
         )
@@ -154,7 +154,7 @@ class NCMBTest {
     @Test
     fun Initialize_direct() {
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
             "111111111111111111111111111111111111111111111111111111111111111"
         )
