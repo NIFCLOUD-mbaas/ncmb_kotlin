@@ -29,9 +29,6 @@ import org.robolectric.annotation.Config
 /**
  * 初期化のテスト
  *
- * @param applicationKey & clientKey は apikey
- * @property なし .
- * @constructor なし .
  */
 
 @RunWith(RobolectricTestRunner::class)
@@ -42,7 +39,7 @@ class NCMBTest {
     @Before
     @Throws(Exception::class)
     fun setup() {
-        var ncmbDispatcher = NCMBDispatcher("")
+        val ncmbDispatcher = NCMBDispatcher("")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
     }
@@ -52,8 +49,8 @@ class NCMBTest {
      */
     @Test
     fun Initialize_test() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
             RuntimeEnvironment.application.getApplicationContext(),
             applicationKey,
@@ -69,10 +66,10 @@ class NCMBTest {
      */
     @Test
     fun Initialize_test_domainurl_apiversion() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
-        var domainUrl = "https://mbaas.api.nifcloud.com/"
-        var apiVersion = "2013-09-01"
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+        val domainUrl = "https://mbaas.api.nifcloud.com/"
+        val apiVersion = "2013-09-01"
         NCMB.initialize(
             RuntimeEnvironment.application.getApplicationContext(),
             applicationKey,
@@ -90,12 +87,12 @@ class NCMBTest {
      */
     @Test
     fun Initialize_test_domainurlScript_apiversionScript() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
-        var domainUrl = "https://testdomain.com/"
-        var apiVersion = "2013-09-01"
-        var scriptDomainUrl = "https://scripttestdomain.com/"
-        var scriptApiVersion = "2015-09-01"
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+        val domainUrl = "https://testdomain.com/"
+        val apiVersion = "2013-09-01"
+        val scriptDomainUrl = "https://scripttestdomain.com/"
+        val scriptApiVersion = "2015-09-01"
         NCMB.initialize(
             RuntimeEnvironment.application.getApplicationContext(),
             applicationKey,
@@ -116,8 +113,8 @@ class NCMBTest {
      */
     @Test
     fun Initialize_onlyapiclientkey_test() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
             RuntimeEnvironment.application.getApplicationContext(),
             applicationKey,
@@ -133,10 +130,10 @@ class NCMBTest {
      */
     @Test
     fun Initialize_two_times() {
-        var applicationKey1 =  "0123456789"
-        var clientKey1 = "111111111"
-        var applicationKey2 =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey2 = "111111111111111111111111111111111111111111111111111111111111111"
+        val applicationKey1 =  "0123456789"
+        val clientKey1 = "111111111"
+        val applicationKey2 =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey2 = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
             RuntimeEnvironment.application.getApplicationContext(),
             applicationKey1,
