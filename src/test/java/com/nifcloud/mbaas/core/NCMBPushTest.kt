@@ -41,7 +41,7 @@ import java.util.*
  * 主に通信を行う自動化テストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBPushTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -289,7 +289,6 @@ class NCMBPushTest {
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         df.timeZone = TimeZone.getTimeZone("Etc/UTC")
         try {
-            val date = df.parse("2030-10-10 10:10:10")
             push.setObjectId("7FrmPTBKSNtVjajm")
             push.title = "title_update"
             push.message = "message_update"

@@ -33,7 +33,7 @@ import org.robolectric.annotation.Config
  * 主に通信を行うNCMBConnectionテストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(26), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBConnectionTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -93,11 +93,11 @@ class NCMBConnectionTest {
                 Assert.assertNull(e)
             }
         }
-        val handler = NCMBHandler { callback, res ->
+        val handler = NCMBHandler { callbackHandler, res ->
             //Handler Action is set here
             when(res) {
                 is NCMBResponse.Failure -> {
-                    callback!!.done(res.resException)
+                    callbackHandler.done(res.resException)
                 }
             }
         }

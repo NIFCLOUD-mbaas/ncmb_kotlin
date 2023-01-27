@@ -31,7 +31,7 @@ import androidx.test.core.app.ApplicationProvider
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(26), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBScriptTest {
 
     private var mServer: MockWebServer = MockWebServer()

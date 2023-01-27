@@ -27,7 +27,7 @@ import org.robolectric.annotation.Config
  * 主に通信を行う自動化テストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBDateFormatTest {
     /**
      * putテスト

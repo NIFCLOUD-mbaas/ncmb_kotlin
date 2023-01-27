@@ -34,7 +34,7 @@ import androidx.test.core.app.ApplicationProvider
  * 主に通信を行うNCMBConnectionテストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(26), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBAclTest {
 
     private var mServer: MockWebServer = MockWebServer()

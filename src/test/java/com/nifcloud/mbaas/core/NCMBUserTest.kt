@@ -36,7 +36,7 @@ import java.util.Date
  * 主に通信を行う自動化テストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBUserTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -47,7 +47,7 @@ class NCMBUserTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBDispatcher("users")
+        val ncmbDispatcher = NCMBDispatcher("users")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -71,7 +71,7 @@ class NCMBUserTest {
         user.setObjectId("dummyUserId")
         user.put("key", "value")
         user.save()
-        val date: Date = getIso8601().parse("2014-06-04T11:28:30.348Z")
+        val date: Date? = getIso8601().parse("2014-06-04T11:28:30.348Z")
         Assert.assertEquals(user.getUpdateDate(), date)
     }
 
@@ -107,7 +107,7 @@ class NCMBUserTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun login_and_getCurrentUser() {
-        val user: NCMBUser = NCMBUser().login("Ncmb Tarou", "dummyPassword")
+        NCMBUser().login("Ncmb Tarou", "dummyPassword")
         Assert.assertEquals("dummyObjectId", NCMBUser().getCurrentUser().getObjectId())
         Assert.assertEquals("Ncmb Tarou", NCMBUser().getCurrentUser().userName)
         Assert.assertEquals("ebDH8TtmLoygzjqjaI4EWFfxc", NCMB.SESSION_TOKEN)

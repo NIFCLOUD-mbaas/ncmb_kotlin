@@ -42,7 +42,7 @@ import androidx.test.core.app.ApplicationProvider
 
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBFileTest {
 
     private var mServer: MockWebServer = MockWebServer()

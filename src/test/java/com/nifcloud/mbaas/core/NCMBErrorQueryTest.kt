@@ -35,7 +35,7 @@ import kotlin.test.assertFails
  * 主に通信を行う自動化テストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBErrorQueryTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -74,7 +74,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoSearchSync_500error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass500")
-        val throwable = assertFails{ val objects = query.find() }
+        val throwable = assertFails{ query.find() }
         Assert.assertEquals("System error.",throwable.message)
     }
 
@@ -83,7 +83,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoSearchSync_429error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass429")
-        val throwable = assertFails{ val objects = query.find() }
+        val throwable = assertFails{ query.find() }
         Assert.assertEquals("Too many requests.",throwable.message)
     }
 
@@ -92,7 +92,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoCountSync_503error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass503")
-        val throwable = assertFails{ val objects = query.count() }
+        val throwable = assertFails{ query.count() }
         Assert.assertEquals("Service unavailable.",throwable.message)
     }
 
@@ -101,7 +101,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoCountSync_500error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass500")
-        val throwable = assertFails{ val objects = query.count() }
+        val throwable = assertFails{ query.count() }
         Assert.assertEquals("System error.",throwable.message)
     }
 
@@ -110,7 +110,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoCountSync_429error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass429")
-        val throwable = assertFails{ val objects = query.count() }
+        val throwable = assertFails{ query.count() }
         Assert.assertEquals("Too many requests.",throwable.message)
     }
 

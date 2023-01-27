@@ -32,7 +32,7 @@ import java.util.*
 import kotlin.test.assertFails
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBErrorGeoPointTest {
     private var mServer: MockWebServer = MockWebServer()
 
@@ -83,8 +83,8 @@ class NCMBErrorGeoPointTest {
         inBackgroundHelper.await()
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
-        val throwable_wrong_type = assertFails { val geo: NCMBGeoPoint = (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geoPoint") }
-        val throwable_wrong_key = assertFails { val geo: NCMBGeoPoint = (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geo") }
+        val throwable_wrong_type = assertFails { (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geoPoint") }
+        val throwable_wrong_key = assertFails { (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geo") }
         Assert.assertEquals("type is not GeoPoint.", throwable_wrong_type.message)
         Assert.assertEquals("No value for geo", throwable_wrong_key.message)
     }
