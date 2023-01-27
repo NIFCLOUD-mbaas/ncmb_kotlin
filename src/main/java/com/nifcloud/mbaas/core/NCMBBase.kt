@@ -121,17 +121,6 @@ open class NCMBBase(){
         }
     }
 
-//    fun getDate(key: String, value: Date? = null): Date?{
-//        return try{
-//            val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
-//            df.parse(mFields.getString(key))
-//        } catch (e: JSONException){
-//            return value
-//        } catch (e: ParseException) {
-//            throw NCMBException(NCMBException.INVALID_FORMAT, e.localizedMessage)
-//        }
-//    }
-
     fun getInt(key: String, value: Int? = null): Int?{
         return try{
             mFields.get(key) as Int
@@ -143,14 +132,6 @@ open class NCMBBase(){
     fun getDouble(key: String, value: Double? = null): Double?{
         return try{
             mFields.get(key) as Double
-        } catch (e: JSONException){
-            return value
-        }
-    }
-
-    fun getFloat(key: String, value: Float? = null): Float?{
-        return try{
-            mFields.get(key) as Float
         } catch (e: JSONException){
             return value
         }
@@ -306,7 +287,7 @@ open class NCMBBase(){
     }
 
     @Throws(NCMBException::class)
-    fun getDate(key : String): Date? {
+    fun getDate(key : String, value : Date? = null): Date? {
         try {
             if (!mFields.isNull(key)) {
                 val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
@@ -317,7 +298,7 @@ open class NCMBBase(){
             }
             return null
         } catch (e: JSONException) {
-            return null
+            return value
         }
     }
 

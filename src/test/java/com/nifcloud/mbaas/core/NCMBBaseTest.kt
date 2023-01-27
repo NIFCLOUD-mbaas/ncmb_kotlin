@@ -78,13 +78,6 @@ class NCMBBaseTest {
     }
 
     @Test
-    fun put_float_test_direct() {
-        var baseObj = NCMBBase()
-        baseObj.put("keyNumberFloat", 0.1)
-        Assert.assertEquals(baseObj.getFloat("keyNumberFloat"), 0.1)
-    }
-
-    @Test
     fun put_boolean_test() {
         var baseObj = NCMBBase()
         val booleanValue: Boolean = true
@@ -92,13 +85,18 @@ class NCMBBaseTest {
         Assert.assertEquals(baseObj.getBoolean("keyBoolean"), true)
     }
 
-//    @Test
-//    fun put_jsonObject_test() {
-//        var baseObj = NCMBBase()
-//        val jsonObjectValue: JSONObject = {"a":"b"}
-//        baseObj.put("keyJsonObject", jsonObjectValue)
-//        Assert.assertEquals(baseObj.getJson("keyJsonObject"), {"a":"b"})
-//    }
+    @Test
+    fun put_jsonObject_test() {
+        var baseObj = NCMBBase()
+        val jsonObjectValue = JSONObject()
+        val jsonObjectAssert = JSONObject()
+        jsonObjectValue.put("a","b")
+        jsonObjectAssert.put("a","b")
+        baseObj.put("keyJsonObject", jsonObjectValue)
+        println("baseObj:" + baseObj.getJson("keyJsonObject"))
+        println("jsonObjectAssert:" + jsonObjectAssert)
+        Assert.assertEquals(baseObj.getJson("keyJsonObject"), jsonObjectAssert)
+    }
 
     /**
      * put Array テスト
