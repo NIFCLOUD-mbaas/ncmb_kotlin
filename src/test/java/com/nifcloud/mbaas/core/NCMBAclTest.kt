@@ -26,9 +26,9 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.skyscreamer.jsonassert.JSONAssert
+import androidx.test.core.app.ApplicationProvider
 
 /**
  * 主に通信を行うNCMBConnectionテストクラス
@@ -48,7 +48,7 @@ class NCMBAclTest {
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),

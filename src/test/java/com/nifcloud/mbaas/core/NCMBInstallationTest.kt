@@ -17,25 +17,19 @@
 package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.JsonObject
 import com.nifcloud.mbaas.core.NCMBDateFormat.getIso8601
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.json.JSONArray
-import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
+import androidx.test.core.app.ApplicationProvider
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowLooper
-import java.lang.AssertionError
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -56,7 +50,7 @@ class NCMBInstallationTest {
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),

@@ -20,7 +20,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
@@ -39,6 +38,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
 import java.util.*
+import androidx.test.core.app.ApplicationProvider
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -65,7 +65,7 @@ class NCMBFileTest {
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),

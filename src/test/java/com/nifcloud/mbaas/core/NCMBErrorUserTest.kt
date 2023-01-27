@@ -17,10 +17,6 @@
 package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nifcloud.mbaas.core.NCMB
-import com.nifcloud.mbaas.core.NCMBErrorDispatcher
-import com.nifcloud.mbaas.core.NCMBException
-import com.nifcloud.mbaas.core.NCMBUser
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
@@ -30,9 +26,8 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
+import androidx.test.core.app.ApplicationProvider
 import org.robolectric.annotation.Config
-import kotlin.test.assertFails
 
 
 /**
@@ -54,7 +49,7 @@ class NCMBErrorUserTest {
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),
