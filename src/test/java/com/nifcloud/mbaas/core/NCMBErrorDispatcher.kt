@@ -62,7 +62,7 @@ class NCMBErrorDispatcher: Dispatcher() {
             val path = pathAndQuery?.get(0)
             var query: String? = null
             if (pathAndQuery?.size!! > 1) {
-                query = pathAndQuery?.get(1)
+                query = pathAndQuery[1]
             }
             if (requestMap!!["url"] != path) {
                 continue
