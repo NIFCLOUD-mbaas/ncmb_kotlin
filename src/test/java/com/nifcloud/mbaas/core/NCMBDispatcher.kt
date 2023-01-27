@@ -43,7 +43,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
     override fun dispatch(request: RecordedRequest): MockResponse {
         var input: InputStream? = null
         try {
-            if(className == "") {
+            if (className == "") {
                 input = FileInputStream(File("src/test/assets/yaml/mbaas.yml"))
             } else {
                 input = FileInputStream(File("src/test/assets/yaml/mbaas_" + className +".yml"))
@@ -52,9 +52,9 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             e.printStackTrace()
         }
         val yaml = Yaml()
-        var map: Map<String?, Any?>? = null
-        var requestMap: Map<String?, Any>? = null
-        var responseMap: Map<String?, Any>? = null
+        var map: Map<String?, Any?>?
+        var requestMap: Map<String?, Any>?
+        var responseMap: Map<String?, Any>?
         var requestBody: String? = null
         for (data in yaml.loadAll(input)) {
             map = data as Map<String?, Any?>?
@@ -70,7 +70,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             }
 
             if(requestMap != null) {
-                if (requestMap!!["url"] != path) {
+                if (requestMap["url"] != path) {
                     continue
                     //return defaultErrorResponse();
                 }
@@ -154,7 +154,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                         val mockBodyStr: String = gson.toJson(mockBody)
                         //println("mock:$mockBodyStr")
                         //println("req:$requestBody")
-                        if (requestBody?.let { checkRequestBody(mockBodyStr, it) }!!) {
+                        if (checkRequestBody(mockBodyStr, requestBody)) {
                             //Responseをreturn
                             MockResponse().setResponseCode(responseMap!!["status"] as Int)
                                 .setHeader("Content-Type", "application/json")
@@ -168,8 +168,8 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                 }
                 if (requestMap.containsKey("header")) {
                     val requestHeaders: Headers = request.headers
-                    val gson: Gson = GsonBuilder().serializeNulls().create()
-                    val mock: String = gson.toJson(requestMap["header"])
+                    //val gson: Gson = GsonBuilder().serializeNulls().create()
+                    //val mock: String = gson.toJson(requestMap["header"])
                     try {
                         val mockHeaders =
                             JSONObject(requestMap["header"].toString())
@@ -178,7 +178,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                         val keys: Iterator<*> = mockHeaders.keys()
                         while (keys.hasNext()) {
                             val key = keys.next() as String
-                            if (requestHeaders.get(key) != null && requestHeaders.get(key)
+                            if (requestHeaders[key] != null && requestHeaders.get(key)
                                     .equals(mockHeaders.getString(key))
                             ) {
                                 return MockResponse().setResponseCode(responseMap!!["status"] as Int)
@@ -194,7 +194,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             }
 
             if(responseMap != null) {
-                return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                return MockResponse().setResponseCode(responseMap["status"] as Int)
                     .setHeader("Content-Type", "application/json")
                     .setBody(readJsonResponse(responseMap["file"].toString()))
             }
