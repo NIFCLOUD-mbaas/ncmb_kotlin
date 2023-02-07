@@ -44,7 +44,7 @@ class NCMBAclTest {
 
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBDispatcher("")
+        val ncmbDispatcher = NCMBDispatcher("")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
