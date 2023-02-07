@@ -53,13 +53,13 @@ class NCMBGeoPointTest {
             "2013-09-01"
         )
 
-        callbackFlag = false;
+        callbackFlag = false
     }
 
     @Test
     fun test_geopoint_right_settings(){
-        val latitude : Double = 35.6666269
-        val longitude : Double = 139.765607
+        val latitude = 35.6666269
+        val longitude = 139.765607
         val geopoint = NCMBGeoPoint(latitude, longitude)
         Assert.assertEquals(geopoint.mlatitude, latitude, 0.0)
         Assert.assertEquals(geopoint.mlongitude, longitude, 0.0)
@@ -75,9 +75,9 @@ class NCMBGeoPointTest {
     @Test
     fun test_geopoint_wrong_latitude(){
         try {
-            val latitude: Double = 139.765607
-            val longitude: Double = 139.765607
-            val geopoint = NCMBGeoPoint(latitude, longitude)
+            val latitude = 139.765607
+            val longitude = 139.765607
+            NCMBGeoPoint(latitude, longitude)
         }
         catch(e: NCMBException){
             Assert.assertEquals(e.message, "set the latitude to a value between -90 and 90")
@@ -87,9 +87,9 @@ class NCMBGeoPointTest {
     @Test
     fun test_geopoint_wrong_longitude(){
         try {
-            val latitude: Double = 35.6666269
-            val longitude: Double = 189.765607
-            val geopoint = NCMBGeoPoint(latitude, longitude)
+            val latitude = 35.6666269
+            val longitude = 189.765607
+            NCMBGeoPoint(latitude, longitude)
         }
         catch(e: NCMBException){
             Assert.assertEquals(e.message, "set the longitude to a value between -180 and 180")
@@ -98,9 +98,9 @@ class NCMBGeoPointTest {
 
     @Test
     fun test_geopoint_save(){
-        val latitude : Double = 35.6666269
-        val longitude : Double = 139.765607
-        var obj = NCMBObject("TestClassGeo")
+        val latitude = 35.6666269
+        val longitude = 139.765607
+        val obj = NCMBObject("TestClassGeo")
         val geopoint = NCMBGeoPoint(latitude, longitude)
         obj.put("geoPoint", geopoint)
         obj.save()
@@ -110,8 +110,8 @@ class NCMBGeoPointTest {
     @Test
     fun test_geopoint_put(){
         val inBackgroundHelper = NCMBInBackgroundTestHelper()
-        val latitude : Double = 35.6666269
-        val longitude : Double = 139.765607
+        val latitude = 35.6666269
+        val longitude = 139.765607
         val obj = NCMBObject("TestClassGeo")
         val geopoint = NCMBGeoPoint(latitude, longitude)
         obj.put("geoPoint", geopoint)
@@ -131,7 +131,7 @@ class NCMBGeoPointTest {
 
     @Test
     fun test_geopoint_get(){
-        var obj = NCMBObject("TestClassGeo")
+        val obj = NCMBObject("TestClassGeo")
         obj.setObjectId("7FrmPTBKSNtVjajm")
         obj.fetch()
         val geo = obj.getGeo("geoPoint")

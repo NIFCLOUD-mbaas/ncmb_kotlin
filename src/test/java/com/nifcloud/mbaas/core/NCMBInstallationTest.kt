@@ -57,7 +57,7 @@ class NCMBInstallationTest {
             "2013-09-01"
         )
 
-        callbackFlag = false;
+        callbackFlag = false
         }
 
     @Test

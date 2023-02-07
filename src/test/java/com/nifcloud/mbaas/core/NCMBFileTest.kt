@@ -31,7 +31,6 @@ import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.skyscreamer.jsonassert.JSONAssert
 import java.io.File
@@ -72,7 +71,7 @@ class NCMBFileTest {
             "2013-09-01"
         )
 
-        callbackFlag = false;
+        callbackFlag = false
 
         try {
             // Create a temporary file.
@@ -82,11 +81,11 @@ class NCMBFileTest {
 
             // Create a png file
             tmpImgFile = tmpFolder.newFile("test.png")
-            val bitmap = BitmapFactory.decodeFile(tmpImgFile.getAbsolutePath())
-            var canvas = Canvas(bitmap)
+            val bitmap = BitmapFactory.decodeFile(tmpImgFile.absolutePath)
+            val canvas = Canvas(bitmap)
             val paint = Paint()
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(10F);
+            paint.color = Color.BLACK
+            paint.textSize = 10F
             canvas.drawText("test", 1F, 1F, paint)
             canvas.save()
 
@@ -110,16 +109,16 @@ class NCMBFileTest {
     fun fileData_set_Get_test() {
         val ncmbFile = NCMBFile()
         ncmbFile.fileData = tmpFile
-        Assert.assertEquals("hello world", ncmbFile.fileData!!.readText(Charset.defaultCharset()).toString())
-        Assert.assertEquals("hello world", (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as File).readText(Charset.defaultCharset()).toString())
+        Assert.assertEquals("hello world", ncmbFile.fileData!!.readText(Charset.defaultCharset()))
+        Assert.assertEquals("hello world", (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as File).readText(Charset.defaultCharset()))
     }
 
     @Test
     fun fileConstructor_filename_filedata() {
         val ncmbFile = NCMBFile("testfile.txt", tmpFile)
         Assert.assertEquals("testfile.txt", ncmbFile.fileName)
-        Assert.assertEquals("hello world", ncmbFile.fileData!!.readText(Charset.defaultCharset()).toString())
-        Assert.assertEquals("hello world", (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as File).readText(Charset.defaultCharset()).toString())
+        Assert.assertEquals("hello world", ncmbFile.fileData!!.readText(Charset.defaultCharset()))
+        Assert.assertEquals("hello world", (ncmbFile.mFields.get(NCMBFile.FILE_DATA) as File).readText(Charset.defaultCharset()))
     }
 
     @Test
