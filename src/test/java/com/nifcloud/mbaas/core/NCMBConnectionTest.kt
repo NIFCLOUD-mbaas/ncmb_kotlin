@@ -42,7 +42,7 @@ class NCMBConnectionTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBDispatcher("")
+        val ncmbDispatcher = NCMBDispatcher("")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -88,9 +88,9 @@ class NCMBConnectionTest {
                 when(res) {
                     is NCMBResponse.Success -> {
                         print(res.data)
+                        Assert.assertNotNull(res.data)
                     }
                 }
-                Assert.assertNull(e)
             }
         }
         val handler = NCMBHandler { callbackHandler, res ->
@@ -98,6 +98,9 @@ class NCMBConnectionTest {
             when(res) {
                 is NCMBResponse.Failure -> {
                     callbackHandler.done(res.resException)
+                }
+                is NCMBResponse.Success -> {
+                    TODO()
                 }
             }
         }

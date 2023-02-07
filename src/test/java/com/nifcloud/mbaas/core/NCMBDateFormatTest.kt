@@ -33,8 +33,8 @@ class NCMBDateFormatTest {
      * putテスト
      */
     @Test
-    fun UTC_check_test() {
-        var format = getIso8601()
+    fun utc_check_test() {
+        val format = getIso8601()
         Assert.assertEquals(format.timeZone.rawOffset, 0)
         Assert.assertEquals(format.timeZone.id, "UTC")
     }

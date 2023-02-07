@@ -36,8 +36,8 @@ import java.nio.file.Paths
 
 class NCMBDispatcher(var className:String): Dispatcher() {
 
-    private val NUMBER_PATTERN = "[0-9]".toRegex()
-    private val BOOL_PATTERN = """(true|false)""".toRegex()
+    private val _numberPattern = "[0-9]".toRegex()
+    private val _boolPattern = """(true|false)""".toRegex()
 
     @Throws(InterruptedException::class)
     override fun dispatch(request: RecordedRequest): MockResponse {
@@ -129,7 +129,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                     if (requestMap.containsKey("query")) {
                         val mockQuery = requestMap["query"]
                         val mockQueryStr: String = Gson().toJson(mockQuery)
-                        if (checkRequestQuery(mockQueryStr, query) == true) {
+                        if (checkRequestQuery(mockQueryStr, query)) {
                             return MockResponse().setResponseCode(responseMap!!["status"] as Int)
                                 .setHeader("Content-Type", "application/json")
                                 .setBody(readJsonResponse(responseMap["file"].toString()))
@@ -215,7 +215,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
     private fun checkRequestQuery(
         mockRequestQueryStr: String,
         realRequestQueryStr: String
-    ): Boolean? {
+    ): Boolean {
         try {
             val mockQuery = JSONObject(mockRequestQueryStr)
             val decodedQueryStr =
@@ -232,9 +232,9 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                 if (queryData.size == 2) {
                     value = queryData[1]
                 }
-                if (value.matches(NUMBER_PATTERN)) {
+                if (value.matches(_numberPattern)) {
                     realQueryMap[key] = value.toInt()
-                } else if (value.matches(BOOL_PATTERN)) {
+                } else if (value.matches(_boolPattern)) {
                     realQueryMap[key] = java.lang.Boolean.parseBoolean(value)
                 } else {
                     realQueryMap[key] = value
@@ -295,9 +295,9 @@ class NCMBDispatcher(var className:String): Dispatcher() {
         //val file = File("src/test/assets/json/$file_name")
         val file = Paths.get("src/test/assets/json/$file_name")
 
-        var json: String = ""
+        var json = ""
         try {
-            json = Files.readAllLines(file, StandardCharsets.UTF_8).toString();
+            json = Files.readAllLines(file, StandardCharsets.UTF_8).toString()
         } catch (e: IOException) {
             e.printStackTrace()
         }
