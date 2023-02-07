@@ -65,7 +65,7 @@ class NCMBQueryTest {
         val inBackgroundHelper = NCMBInBackgroundTestHelper() // ヘルパーの初期化
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass")
-        query.whereEqualTo("key", "value");
+        query.whereEqualTo("key", "value")
         val callback = NCMBCallback { e, objects ->
             inBackgroundHelper["e"] = e
             inBackgroundHelper["objects"] = objects
@@ -77,15 +77,15 @@ class NCMBQueryTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
-            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getObjectId(),
+            ((inBackgroundHelper["objects"] as List<*>)[0] as NCMBObject).getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getString("key"),
+            ((inBackgroundHelper["objects"] as List<*>)[0] as NCMBObject).getString("key"),
             "value"
         )
         Assert.assertEquals(
-            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].keys.size,
+            ((inBackgroundHelper["objects"] as List<*>)[0] as NCMBObject).keys.size,
             5
         )
     }
@@ -107,7 +107,7 @@ class NCMBQueryTest {
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
             0,
-            (inBackgroundHelper["objects"] as List<NCMBObject>).size
+            (inBackgroundHelper["objects"] as List<*>).size
         )
     }
 
@@ -127,11 +127,11 @@ class NCMBQueryTest {
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
         Assert.assertEquals(
-            (inBackgroundHelper["objects"] as List<NCMBObject>)[0].getObjectId(),
+            ((inBackgroundHelper["objects"] as List<*>)[0] as NCMBObject).getObjectId(),
             "8FgKqFlH8dZRDrBJ"
         )
         Assert.assertEquals(
-            (inBackgroundHelper["objects"] as List<NCMBObject>)[1].getObjectId(),
+            ((inBackgroundHelper["objects"] as List<*>)[1] as NCMBObject).getObjectId(),
             "eQRqoObEZmtrfgzH"
         )
     }
@@ -372,7 +372,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_WhereContainedIn_Success() {
         val query = NCMBQuery.forObject("TestClassContainedIn")
-        val objs = setOf<Int>(1,2,3)
+        val objs = setOf(1,2,3)
         query.whereContainedIn("keyArray", objs)
         val objects = query.find()
         Assert.assertEquals(
@@ -411,7 +411,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_WhereContainedInArray_Success() {
         val query = NCMBQuery.forObject("TestClassContainedInArray")
-        val objs = setOf<Int>(1,2,3)
+        val objs = setOf(1,2,3)
         query.whereContainedInArray("keyArray", objs)
         val objects = query.find()
         Assert.assertEquals(
@@ -450,7 +450,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_WhereNotContainedInArray_Success() {
         val query = NCMBQuery.forObject("TestClassNotContainedInArray")
-        val objs = setOf<Int>(1,2,3)
+        val objs = setOf(1,2,3)
         query.whereNotContainedInArray("keyArray", objs)
         val objects = query.find()
         Assert.assertEquals(
@@ -489,7 +489,7 @@ class NCMBQueryTest {
     @Test    
     fun testNCMBObject_WhereNotContainedIn_Success() {
         val query = NCMBQuery.forObject("TestClassNotContainedIn")
-        val objs = setOf<Int>(1,2,3)
+        val objs = setOf(1,2,3)
         query.whereNotContainedIn("keyArray", objs)
         val objects = query.find()
         Assert.assertEquals(
@@ -528,7 +528,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_WhereContainedAll_Success() {
         val query = NCMBQuery.forObject("TestClassContainedAll")
-        val objs = setOf<Int>(1,2,3)
+        val objs = setOf(1,2,3)
         query.whereContainsAll("keyArray", objs)
         val objects = query.find()
         Assert.assertEquals(
@@ -567,7 +567,7 @@ class NCMBQueryTest {
     @Test
     fun testNCMBObject_WhereContainedIn_StringArray_Success() {
         val query = NCMBQuery.forObject("TestClassContainedIn_String")
-        val objs = setOf<String>("1","2","3")
+        val objs = setOf("1","2","3")
         query.whereContainedIn("keyArray", objs)
         val objects = query.find()
         Assert.assertEquals(

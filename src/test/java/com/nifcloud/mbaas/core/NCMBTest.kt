@@ -47,7 +47,7 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_test() {
+    fun initialize_test() {
         val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
         val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
@@ -64,7 +64,7 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_test_domainurl_apiversion() {
+    fun initialize_test_domainurl_apiversion() {
         val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
         val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         val domainUrl = "https://mbaas.api.nifcloud.com/"
@@ -85,7 +85,7 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_test_domainurlScript_apiversionScript() {
+    fun initialize_test_domainurlScript_apiversionScript() {
         val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
         val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         val domainUrl = "https://testdomain.com/"
@@ -111,7 +111,7 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_onlyapiclientkey_test() {
+    fun initialize_onlyapiclientkey_test() {
         val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
         val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
@@ -128,7 +128,7 @@ class NCMBTest {
      * 初期化が2度起きた時のテスト
      */
     @Test
-    fun Initialize_two_times() {
+    fun initialize_two_times() {
         val applicationKey1 =  "0123456789"
         val clientKey1 = "111111111"
         val applicationKey2 =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
@@ -151,7 +151,7 @@ class NCMBTest {
      * 直接apikeyを代入した初期化のテスト.
      */
     @Test
-    fun Initialize_direct() {
+    fun initialize_direct() {
         NCMB.initialize(
             ApplicationProvider.getApplicationContext(),
             "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
