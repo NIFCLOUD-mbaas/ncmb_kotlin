@@ -50,7 +50,7 @@ class NCMBErrorPushTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBErrorDispatcher()
+        val ncmbDispatcher = NCMBErrorDispatcher()
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -117,10 +117,10 @@ class NCMBErrorPushTest {
         //post
         var date = Date()
         val push = NCMBPush()
-        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         df.timeZone = TimeZone.getTimeZone("Etc/UTC")
         try {
-            date = df.parse("2030-10-10 10:10:10")
+            date = df.parse("2030-10-10 10:10:10") as Date
         } catch (e: ParseException) {
             e.printStackTrace()
         }

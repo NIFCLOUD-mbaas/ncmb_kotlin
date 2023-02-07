@@ -45,7 +45,7 @@ class NCMBErrorUserTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBErrorDispatcher()
+        val ncmbDispatcher = NCMBErrorDispatcher()
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(

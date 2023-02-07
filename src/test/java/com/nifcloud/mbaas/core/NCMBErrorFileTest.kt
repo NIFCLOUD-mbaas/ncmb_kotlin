@@ -47,7 +47,7 @@ class NCMBErrorFileTest {
     */
     @get:Rule
     var tmpFolder = TemporaryFolder()
-    lateinit var tmpFile: File
+    private lateinit var tmpFile: File
 
     @Before
     fun setup() {

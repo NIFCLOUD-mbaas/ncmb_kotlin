@@ -46,7 +46,7 @@ class NCMBErrorQueryTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBErrorDispatcher()
+        val ncmbDispatcher = NCMBErrorDispatcher()
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
@@ -65,7 +65,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoSearchSync_503error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass503")
-        val throwable = assertFails{ val objects = query.find() }
+        val throwable = assertFails{ query.find() }
         Assert.assertEquals("Service unavailable.",throwable.message)
     }
 

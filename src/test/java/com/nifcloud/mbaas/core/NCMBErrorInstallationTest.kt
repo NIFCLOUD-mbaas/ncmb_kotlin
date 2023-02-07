@@ -19,7 +19,6 @@ package com.nifcloud.mbaas.core
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
-import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -46,7 +45,7 @@ class NCMBErrorInstallationTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBErrorDispatcher()
+        val ncmbDispatcher = NCMBErrorDispatcher()
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(

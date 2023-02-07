@@ -55,8 +55,8 @@ class NCMBErrorGeoPointTest {
     @Test
     fun test_geopoint_saveInBackground_invalid_field(){
         val inBackgroundHelper = NCMBInBackgroundTestHelper()
-        val latitude : Double = 35.6666269
-        val longitude : Double = 139.765607
+        val latitude = 35.6666269
+        val longitude = 139.765607
         val obj = NCMBObject("TestClassGeo403")
         val geopoint = NCMBGeoPoint(latitude, longitude)
         obj.put("geo", geopoint)
@@ -83,9 +83,9 @@ class NCMBErrorGeoPointTest {
         inBackgroundHelper.await()
         Assert.assertTrue(inBackgroundHelper.isCalledRelease())
         Assert.assertNull(inBackgroundHelper["e"])
-        val throwable_wrong_type = assertFails { (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geoPoint") }
-        val throwable_wrong_key = assertFails { (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geo") }
-        Assert.assertEquals("type is not GeoPoint.", throwable_wrong_type.message)
-        Assert.assertEquals("No value for geo", throwable_wrong_key.message)
+        val throwableWrongType = assertFails { (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geoPoint") }
+        val throwableWrongKey = assertFails { (inBackgroundHelper["ncmbObj"] as NCMBObject).getGeo("geo") }
+        Assert.assertEquals("type is not GeoPoint.", throwableWrongType.message)
+        Assert.assertEquals("No value for geo", throwableWrongKey.message)
     }
 }
