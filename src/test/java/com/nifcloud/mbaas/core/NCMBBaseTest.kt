@@ -41,7 +41,7 @@ class NCMBBaseTest {
      */
     @Test
     fun put_string_test() {
-        var baseObj = NCMBBase()
+        val baseObj = NCMBBase()
         baseObj.put("keyString", "stringValue")
         Assert.assertEquals(baseObj.get("keyString"), "stringValue")
     }
@@ -52,8 +52,8 @@ class NCMBBaseTest {
      */
     @Test
     fun put_int_test() {
-        var baseObj = NCMBBase()
-        val setNumberValue: Int = 12
+        val baseObj = NCMBBase()
+        val setNumberValue = 12
         baseObj.put("keyNumberInt", setNumberValue)
         Assert.assertEquals(baseObj.get("keyNumberInt"), setNumberValue)
     }
@@ -63,7 +63,7 @@ class NCMBBaseTest {
      */
     @Test
     fun put_int_test_direct() {
-        var baseObj = NCMBBase()
+        val baseObj = NCMBBase()
         baseObj.put("keyNumberInt", 1234)
         Assert.assertEquals(baseObj.get("keyNumberInt"), 1234)
     }
@@ -73,7 +73,7 @@ class NCMBBaseTest {
      */
     @Test
     fun put_double_test_direct() {
-        var baseObj = NCMBBase()
+        val baseObj = NCMBBase()
         baseObj.put("keyNumberDouble", 1234.33)
         Assert.assertEquals(baseObj.get("keyNumberDouble"), 1234.33)
     }
@@ -98,13 +98,13 @@ class NCMBBaseTest {
 
     @Test
     fun put_date_test_direct() {
-        var baseObj = NCMBBase()
+        val baseObj = NCMBBase()
 
-        val assertDate: Date = NCMBDateFormat.getIso8601().parse("2022-04-14T10:10:10.000Z")
+        val assertDate: Date = NCMBDateFormat.getIso8601().parse("2022-04-14T10:10:10.000Z") as Date
         baseObj.put("keyDate", assertDate)
 
         val expectedKeyDateJson = JSONObject("{\"__type\":\"Date\",\"iso\":\"2022-04-14T10:10:10.000Z\"}")
-        Assert.assertTrue(assertDate.equals(baseObj.getDate("keyDate")));
+        Assert.assertEquals(assertDate,baseObj.getDate("keyDate"))
         JSONAssert.assertEquals(expectedKeyDateJson, baseObj.mFields.getJSONObject("keyDate"), false)
         Assert.assertEquals(1, baseObj.mUpdateKeys.size)
     }
@@ -114,7 +114,7 @@ class NCMBBaseTest {
      */
     @Test
     fun copy_from_test() {
-        var baseObj = NCMBBase()
+        val baseObj = NCMBBase()
         val json = JSONObject("{\"objectId\":\"xxxxx\",\"userName\":\"YamadaTarou\"}")
         val testKeys = hashSetOf("objectId", "userName")
         Assert.assertEquals("xxxxx", json.getString("objectId"))
@@ -168,7 +168,7 @@ class NCMBBaseTest {
      */
     @Test
     fun setAcl_test() {
-        var baseObj = NCMBBase()
+        val baseObj = NCMBBase()
         val acl = NCMBAcl()
         acl.publicReadAccess = true
         baseObj.setAcl(acl)

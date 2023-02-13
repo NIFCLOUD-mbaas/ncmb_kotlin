@@ -26,15 +26,15 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import org.skyscreamer.jsonassert.JSONAssert
+import androidx.test.core.app.ApplicationProvider
 
 /**
  * 主に通信を行うNCMBConnectionテストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(26), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBAclTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -44,11 +44,11 @@ class NCMBAclTest {
 
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBDispatcher("")
+        val ncmbDispatcher = NCMBDispatcher("")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),

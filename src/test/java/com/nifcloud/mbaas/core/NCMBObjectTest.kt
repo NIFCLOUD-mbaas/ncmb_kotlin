@@ -28,17 +28,16 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import java.util.*
 import kotlin.test.assertFails
-
+import androidx.test.core.app.ApplicationProvider
 
 /**
  * 主に通信を行う自動化テストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBObjectTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -52,14 +51,14 @@ class NCMBObjectTest {
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),
             "2013-09-01"
         )
 
-        callbackFlag = false;
+        callbackFlag = false
     }
 
     /**
@@ -88,13 +87,12 @@ class NCMBObjectTest {
     @Test
     fun put_ignoreKey_test() {
         val obj = NCMBObject("TestClass")
-        val throwable_ignore1 = assertFails {  obj.put("objectId", "stringValue") }
-        Assert.assertEquals("Can't put data to same name with special key.", throwable_ignore1.message)
-        val throwable_ignore2 = assertFails {  obj.put("createDate", "TestCreateDate") }
-        Assert.assertEquals("Can't put data to same name with special key.", throwable_ignore2.message)
-        val throwable_ignore3 = assertFails {  obj.put("updateDate", "TestUpdateDate") }
-        Assert.assertEquals("Can't put data to same name with special key.", throwable_ignore3.message)
-
+        val throwableIgnore1 = assertFails {  obj.put("objectId", "stringValue") }
+        Assert.assertEquals("Can't put data to same name with special key.", throwableIgnore1.message)
+        val throwableIgnore2 = assertFails {  obj.put("createDate", "TestCreateDate") }
+        Assert.assertEquals("Can't put data to same name with special key.", throwableIgnore2.message)
+        val throwableIgnore3 = assertFails {  obj.put("updateDate", "TestUpdateDate") }
+        Assert.assertEquals("Can't put data to same name with special key.", throwableIgnore3.message)
     }
 
     /**
@@ -166,7 +164,7 @@ class NCMBObjectTest {
     @Test
     @Throws(NCMBException::class)
     fun save_object_with_post_data_save_success() {
-        var obj = NCMBObject("TestClass")
+        val obj = NCMBObject("TestClass")
         obj.put("key", "value")
         obj.save()
         Assert.assertEquals(obj.getObjectId(), "7FrmPTBKSNtVjajm")
@@ -489,7 +487,7 @@ class NCMBObjectTest {
 */
     @Test
     fun isIgnore_true_test() {
-        var testObj = NCMBObject("TestClass")
+        val testObj = NCMBObject("TestClass")
         Assert.assertEquals(testObj.isIgnoreKey("createDate"), true)
         Assert.assertEquals(testObj.isIgnoreKey("updateDate"), true)
         Assert.assertEquals(testObj.isIgnoreKey("objectId"), true)

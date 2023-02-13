@@ -151,23 +151,21 @@ class NCMB {
                 val utils = NCMBNotificationUtils(context)
                 utils.settingDefaultChannels()
             }
-            NCMBInstallation().getDeviceTokenInBackground(NCMBCallback { e, deviceToken ->
-            if (e != null) {
-                Log.d("error", "devicetoken GET ERROR : " + e.message)
+            NCMBInstallation().getDeviceTokenInBackground(NCMBCallback { err1, deviceToken ->
+            if (err1 != null) {
+                Log.d("error", "devicetoken GET ERROR : " + err1.message)
             } else {
                 Log.d("success", "deviceToken :$deviceToken")
                 val installationObj = NCMBInstallation.currentInstallation
-                if (installationObj != null) {
-                    installationObj.deviceToken = deviceToken as String
-                    installationObj.saveInBackground(NCMBCallback { e, ncmbInstallation ->
-                        if (e != null) {
-                            Log.d("error","installation SAVE ERROR : " + e.message)
-                        } else {
-                            val result = ncmbInstallation as NCMBInstallation
-                            Log.d("success","installation DONE ObjectID :" + result.getObjectId())
-                        }
-                    })
-                }
+                installationObj.deviceToken = deviceToken as String
+                installationObj.saveInBackground(NCMBCallback { err2, ncmbInstallation ->
+                    if (err2 != null) {
+                        Log.d("error","installation SAVE ERROR : " + err2.message)
+                    } else {
+                        val result = ncmbInstallation as NCMBInstallation
+                        Log.d("success","installation DONE ObjectID :" + result.getObjectId())
+                    }
+                })
             }
         })
         }
