@@ -43,9 +43,16 @@ class NCMBBaseTest {
     fun put_string_test() {
         val baseObj = NCMBBase()
         baseObj.put("keyString", "stringValue")
-        Assert.assertEquals(baseObj.get("keyString"), "stringValue")
+        Assert.assertEquals(baseObj.getString("keyString"), "stringValue")
     }
 
+    @Test
+    fun put_string_null_test() {
+        val baseObj = NCMBBase()
+        baseObj.put("keyString", "stringValue")
+        Assert.assertNull(baseObj.getString("key"))
+        Assert.assertEquals(baseObj.getString("key", "error"), "error")
+    }
 
     /**
      * putテスト
@@ -53,9 +60,18 @@ class NCMBBaseTest {
     @Test
     fun put_int_test() {
         val baseObj = NCMBBase()
-        val setNumberValue = 12
+        val setNumberValue: Int = 12
         baseObj.put("keyNumberInt", setNumberValue)
-        Assert.assertEquals(baseObj.get("keyNumberInt"), setNumberValue)
+        Assert.assertEquals(baseObj.getInt("keyNumberInt"), setNumberValue)
+    }
+
+    @Test
+    fun put_int_null_test() {
+        val baseObj = NCMBBase()
+        val setNumberValue: Int = 12
+        baseObj.put("keyNumberInt", setNumberValue)
+        Assert.assertNull(baseObj.getInt("key"))
+        Assert.assertEquals(baseObj.getInt("key", 0), 0)
     }
 
     /**
@@ -65,7 +81,15 @@ class NCMBBaseTest {
     fun put_int_test_direct() {
         val baseObj = NCMBBase()
         baseObj.put("keyNumberInt", 1234)
-        Assert.assertEquals(baseObj.get("keyNumberInt"), 1234)
+        Assert.assertEquals(baseObj.getInt("keyNumberInt"), 1234)
+    }
+
+    @Test
+    fun put_int_null_test_direct(){
+        val baseObj = NCMBBase()
+        baseObj.put("keyNumberInt", 1234)
+        Assert.assertNull(baseObj.getInt("key"))
+        Assert.assertEquals(baseObj.getInt("key", 0), 0)
     }
 
     /**
@@ -75,7 +99,61 @@ class NCMBBaseTest {
     fun put_double_test_direct() {
         val baseObj = NCMBBase()
         baseObj.put("keyNumberDouble", 1234.33)
-        Assert.assertEquals(baseObj.get("keyNumberDouble"), 1234.33)
+        Assert.assertEquals(baseObj.getDouble("keyNumberDouble"), 1234.33)
+    }
+
+    @Test
+    fun put_double_null_test_direct(){
+        val baseObj = NCMBBase()
+        baseObj.put("keyNumberDouble", 1234.33)
+        Assert.assertNull(baseObj.getDouble("key"))
+        Assert.assertEquals(baseObj.getDouble("key", 0.0), 0.0)
+    }
+
+    /**
+     * putテスト
+     */
+    @Test
+    fun put_boolean_test() {
+        val baseObj = NCMBBase()
+        val booleanValue: Boolean = true
+        baseObj.put("keyBoolean", booleanValue)
+        Assert.assertEquals(baseObj.getBoolean("keyBoolean"), true)
+    }
+
+    @Test
+    fun put_boolean_null_test() {
+        val baseObj = NCMBBase()
+        val booleanValue: Boolean = true
+        baseObj.put("keyBoolean", booleanValue)
+        Assert.assertNull(baseObj.getBoolean("key"))
+        Assert.assertEquals(baseObj.getBoolean("key", true), true)
+    }
+
+    /**
+     * putテスト
+     */
+    @Test
+    fun put_jsonObject_test() {
+        val baseObj = NCMBBase()
+        val jsonObjectValue = JSONObject()
+        val jsonObjectAssert = JSONObject()
+        jsonObjectValue.put("a","b")
+        jsonObjectAssert.put("a","b")
+        baseObj.put("keyJsonObject", jsonObjectValue)
+        JSONAssert.assertEquals(baseObj.getJson("keyJsonObject"), jsonObjectAssert, true)
+    }
+
+    @Test
+    fun put_jsonObject_null_test() {
+        val baseObj = NCMBBase()
+        val jsonObjectValue = JSONObject()
+        val jsonObjectAssert = JSONObject()
+        jsonObjectValue.put("a","b")
+        jsonObjectAssert.put("a","b")
+        baseObj.put("keyJsonObject", jsonObjectValue)
+        Assert.assertNull(baseObj.getJson("key"))
+        JSONAssert.assertEquals(baseObj.getJson("key", jsonObjectAssert), jsonObjectAssert, true)
     }
 
     /**
@@ -92,8 +170,23 @@ class NCMBBaseTest {
         testArray2.put(1)
         testArray2.put(2)
         obj.put("keyArray", testArray)
-        Assert.assertEquals(obj.get("keyArray"), testArray2)
+        Assert.assertEquals(obj.getArray("keyArray"), testArray2)
         Assert.assertEquals(obj.mFields.get("keyArray"), testArray2)
+    }
+
+    @Test
+    fun put_array_of_int_null_test() {
+        val obj = NCMBBase()
+        val testArray = JSONArray()
+        testArray.put(1)
+        testArray.put(2)
+
+        val testArray2 = JSONArray()
+        testArray2.put(1)
+        testArray2.put(2)
+        obj.put("keyArray", testArray)
+        Assert.assertNull(obj.getArray("key"))
+        Assert.assertEquals(obj.getArray("key", testArray2), testArray2)
     }
 
     @Test
@@ -107,6 +200,18 @@ class NCMBBaseTest {
         Assert.assertEquals(assertDate,baseObj.getDate("keyDate"))
         JSONAssert.assertEquals(expectedKeyDateJson, baseObj.mFields.getJSONObject("keyDate"), false)
         Assert.assertEquals(1, baseObj.mUpdateKeys.size)
+    }
+
+    @Test
+    fun put_date_null_test_direct() {
+        val baseObj = NCMBBase()
+
+        val assertDate: Date = NCMBDateFormat.getIso8601().parse("2022-04-14T10:10:10.000Z")
+        val assertDate2: Date = NCMBDateFormat.getIso8601().parse("2023-01-27T10:10:10.000Z")
+        baseObj.put("keyDate", assertDate)
+
+        Assert.assertNull(baseObj.getDate("key"))
+        Assert.assertEquals(baseObj.getDate("key", assertDate2), assertDate2);
     }
 
     /**
