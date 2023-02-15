@@ -17,9 +17,6 @@
 package com.nifcloud.mbaas.core
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.nifcloud.mbaas.core.NCMB
-import com.nifcloud.mbaas.core.NCMBErrorDispatcher
-import com.nifcloud.mbaas.core.NCMBException
 import com.nifcloud.mbaas.core.helper.NCMBInBackgroundTestHelper
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert
@@ -29,7 +26,7 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
+import androidx.test.core.app.ApplicationProvider
 import org.robolectric.annotation.Config
 import kotlin.test.assertFails
 
@@ -38,7 +35,7 @@ import kotlin.test.assertFails
  * 主に通信を行う自動化テストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBErrorQueryTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -49,11 +46,11 @@ class NCMBErrorQueryTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBErrorDispatcher()
+        val ncmbDispatcher = NCMBErrorDispatcher()
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),
@@ -68,7 +65,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoSearchSync_503error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass503")
-        val throwable = assertFails{ val objects = query.find() }
+        val throwable = assertFails{ query.find() }
         Assert.assertEquals("Service unavailable.",throwable.message)
     }
 
@@ -77,7 +74,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoSearchSync_500error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass500")
-        val throwable = assertFails{ val objects = query.find() }
+        val throwable = assertFails{ query.find() }
         Assert.assertEquals("System error.",throwable.message)
     }
 
@@ -86,7 +83,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoSearchSync_429error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass429")
-        val throwable = assertFails{ val objects = query.find() }
+        val throwable = assertFails{ query.find() }
         Assert.assertEquals("Too many requests.",throwable.message)
     }
 
@@ -95,7 +92,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoCountSync_503error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass503")
-        val throwable = assertFails{ val objects = query.count() }
+        val throwable = assertFails{ query.count() }
         Assert.assertEquals("Service unavailable.",throwable.message)
     }
 
@@ -104,7 +101,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoCountSync_500error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass500")
-        val throwable = assertFails{ val objects = query.count() }
+        val throwable = assertFails{ query.count() }
         Assert.assertEquals("System error.",throwable.message)
     }
 
@@ -113,7 +110,7 @@ class NCMBErrorQueryTest {
     fun testNCMBObject_DoCountSync_429error() {
         //TestClassクラスを検索するクエリを作成
         val query = NCMBQuery.forObject("TestClass429")
-        val throwable = assertFails{ val objects = query.count() }
+        val throwable = assertFails{ query.count() }
         Assert.assertEquals("Too many requests.",throwable.message)
     }
 

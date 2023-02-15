@@ -36,14 +36,14 @@ import java.nio.file.Paths
 
 class NCMBDispatcher(var className:String): Dispatcher() {
 
-    private val NUMBER_PATTERN = "[0-9]".toRegex()
-    private val BOOL_PATTERN = """(true|false)""".toRegex()
+    private val _numberPattern = "[0-9]".toRegex()
+    private val _boolPattern = """(true|false)""".toRegex()
 
     @Throws(InterruptedException::class)
     override fun dispatch(request: RecordedRequest): MockResponse {
         var input: InputStream? = null
         try {
-            if(className == "") {
+            if (className == "") {
                 input = FileInputStream(File("src/test/assets/yaml/mbaas.yml"))
             } else {
                 input = FileInputStream(File("src/test/assets/yaml/mbaas_" + className +".yml"))
@@ -52,9 +52,9 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             e.printStackTrace()
         }
         val yaml = Yaml()
-        var map: Map<String?, Any?>? = null
-        var requestMap: Map<String?, Any>? = null
-        var responseMap: Map<String?, Any>? = null
+        var map: Map<String?, Any?>?
+        var requestMap: Map<String?, Any>?
+        var responseMap: Map<String?, Any>?
         var requestBody: String? = null
         for (data in yaml.loadAll(input)) {
             map = data as Map<String?, Any?>?
@@ -66,11 +66,11 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             val path = pathAndQuery?.get(0)
             var query: String? = null
             if (pathAndQuery?.size!! > 1) {
-                query = pathAndQuery?.get(1)
+                query = pathAndQuery[1]
             }
 
             if(requestMap != null) {
-                if (requestMap!!["url"] != path) {
+                if (requestMap["url"] != path) {
                     continue
                     //return defaultErrorResponse();
                 }
@@ -129,7 +129,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                     if (requestMap.containsKey("query")) {
                         val mockQuery = requestMap["query"]
                         val mockQueryStr: String = Gson().toJson(mockQuery)
-                        if (checkRequestQuery(mockQueryStr, query) == true) {
+                        if (checkRequestQuery(mockQueryStr, query)) {
                             return MockResponse().setResponseCode(responseMap!!["status"] as Int)
                                 .setHeader("Content-Type", "application/json")
                                 .setBody(readJsonResponse(responseMap["file"].toString()))
@@ -154,7 +154,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                         val mockBodyStr: String = gson.toJson(mockBody)
                         //println("mock:$mockBodyStr")
                         //println("req:$requestBody")
-                        if (requestBody?.let { checkRequestBody(mockBodyStr, it) }!!) {
+                        if (checkRequestBody(mockBodyStr, requestBody)) {
                             //Responseをreturn
                             MockResponse().setResponseCode(responseMap!!["status"] as Int)
                                 .setHeader("Content-Type", "application/json")
@@ -168,8 +168,8 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                 }
                 if (requestMap.containsKey("header")) {
                     val requestHeaders: Headers = request.headers
-                    val gson: Gson = GsonBuilder().serializeNulls().create()
-                    val mock: String = gson.toJson(requestMap["header"])
+                    //val gson: Gson = GsonBuilder().serializeNulls().create()
+                    //val mock: String = gson.toJson(requestMap["header"])
                     try {
                         val mockHeaders =
                             JSONObject(requestMap["header"].toString())
@@ -178,7 +178,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                         val keys: Iterator<*> = mockHeaders.keys()
                         while (keys.hasNext()) {
                             val key = keys.next() as String
-                            if (requestHeaders.get(key) != null && requestHeaders.get(key)
+                            if (requestHeaders[key] != null && requestHeaders.get(key)
                                     .equals(mockHeaders.getString(key))
                             ) {
                                 return MockResponse().setResponseCode(responseMap!!["status"] as Int)
@@ -194,7 +194,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
             }
 
             if(responseMap != null) {
-                return MockResponse().setResponseCode(responseMap!!["status"] as Int)
+                return MockResponse().setResponseCode(responseMap["status"] as Int)
                     .setHeader("Content-Type", "application/json")
                     .setBody(readJsonResponse(responseMap["file"].toString()))
             }
@@ -215,7 +215,7 @@ class NCMBDispatcher(var className:String): Dispatcher() {
     private fun checkRequestQuery(
         mockRequestQueryStr: String,
         realRequestQueryStr: String
-    ): Boolean? {
+    ): Boolean {
         try {
             val mockQuery = JSONObject(mockRequestQueryStr)
             val decodedQueryStr =
@@ -232,9 +232,9 @@ class NCMBDispatcher(var className:String): Dispatcher() {
                 if (queryData.size == 2) {
                     value = queryData[1]
                 }
-                if (value.matches(NUMBER_PATTERN)) {
+                if (value.matches(_numberPattern)) {
                     realQueryMap[key] = value.toInt()
-                } else if (value.matches(BOOL_PATTERN)) {
+                } else if (value.matches(_boolPattern)) {
                     realQueryMap[key] = java.lang.Boolean.parseBoolean(value)
                 } else {
                     realQueryMap[key] = value
@@ -295,9 +295,9 @@ class NCMBDispatcher(var className:String): Dispatcher() {
         //val file = File("src/test/assets/json/$file_name")
         val file = Paths.get("src/test/assets/json/$file_name")
 
-        var json: String = ""
+        var json = ""
         try {
-            json = Files.readAllLines(file, StandardCharsets.UTF_8).toString();
+            json = Files.readAllLines(file, StandardCharsets.UTF_8).toString()
         } catch (e: IOException) {
             e.printStackTrace()
         }
