@@ -22,27 +22,23 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-
+import androidx.test.core.app.ApplicationProvider
 
 /**
  * 初期化のテスト
  *
- * @param applicationKey & clientKey は apikey
- * @property なし .
- * @constructor なし .
  */
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBTest {
     private var mServer: MockWebServer = MockWebServer()
 
     @Before
     @Throws(Exception::class)
     fun setup() {
-        var ncmbDispatcher = NCMBDispatcher("")
+        val ncmbDispatcher = NCMBDispatcher("")
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
     }
@@ -51,11 +47,11 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_test() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+    fun initialize_test() {
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey)
         Assert.assertEquals(applicationKey, NCMB.getApplicationKey())
@@ -68,13 +64,13 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_test_domainurl_apiversion() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
-        var domainUrl = "https://mbaas.api.nifcloud.com/"
-        var apiVersion = "2013-09-01"
+    fun initialize_test_domainurl_apiversion() {
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+        val domainUrl = "https://mbaas.api.nifcloud.com/"
+        val apiVersion = "2013-09-01"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey,
             domainUrl,
@@ -89,15 +85,15 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_test_domainurlScript_apiversionScript() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
-        var domainUrl = "https://testdomain.com/"
-        var apiVersion = "2013-09-01"
-        var scriptDomainUrl = "https://scripttestdomain.com/"
-        var scriptApiVersion = "2015-09-01"
+    fun initialize_test_domainurlScript_apiversionScript() {
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+        val domainUrl = "https://testdomain.com/"
+        val apiVersion = "2013-09-01"
+        val scriptDomainUrl = "https://scripttestdomain.com/"
+        val scriptApiVersion = "2015-09-01"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey,
             domainUrl,
@@ -115,11 +111,11 @@ class NCMBTest {
      * シンプルなapikeyの初期化テスト
      */
     @Test
-    fun Initialize_onlyapiclientkey_test() {
-        var applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey = "111111111111111111111111111111111111111111111111111111111111111"
+    fun initialize_onlyapiclientkey_test() {
+        val applicationKey =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey,
             clientKey
         )
@@ -132,18 +128,18 @@ class NCMBTest {
      * 初期化が2度起きた時のテスト
      */
     @Test
-    fun Initialize_two_times() {
-        var applicationKey1 =  "0123456789"
-        var clientKey1 = "111111111"
-        var applicationKey2 =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        var clientKey2 = "111111111111111111111111111111111111111111111111111111111111111"
+    fun initialize_two_times() {
+        val applicationKey1 =  "0123456789"
+        val clientKey1 = "111111111"
+        val applicationKey2 =  "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        val clientKey2 = "111111111111111111111111111111111111111111111111111111111111111"
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey1,
             clientKey1
         )
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             applicationKey2,
             clientKey2
         )
@@ -155,9 +151,9 @@ class NCMBTest {
      * 直接apikeyを代入した初期化のテスト.
      */
     @Test
-    fun Initialize_direct() {
+    fun initialize_direct() {
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
             "111111111111111111111111111111111111111111111111111111111111111"
         )

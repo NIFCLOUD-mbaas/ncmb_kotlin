@@ -27,8 +27,8 @@ import org.junit.Test
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import androidx.test.core.app.ApplicationProvider
 import java.lang.Exception
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -39,7 +39,7 @@ import java.util.*
  * 主に通信を行う自動化テストクラス
  */
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBErrorPushTest {
 
     private var mServer: MockWebServer = MockWebServer()
@@ -50,11 +50,11 @@ class NCMBErrorPushTest {
     val rule: TestRule = InstantTaskExecutorRule()
     @Before
     fun setup() {
-        var ncmbDispatcher = NCMBErrorDispatcher()
+        val ncmbDispatcher = NCMBErrorDispatcher()
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),
@@ -117,10 +117,10 @@ class NCMBErrorPushTest {
         //post
         var date = Date()
         val push = NCMBPush()
-        var df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         df.timeZone = TimeZone.getTimeZone("Etc/UTC")
         try {
-            date = df.parse("2030-10-10 10:10:10")
+            date = df.parse("2030-10-10 10:10:10") as Date
         } catch (e: ParseException) {
             e.printStackTrace()
         }

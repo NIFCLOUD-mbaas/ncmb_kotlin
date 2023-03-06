@@ -113,11 +113,81 @@ open class NCMBBase(){
      * @param key field name to get the value
      * @return value of specified key or null
      */
-    open fun getString(key: String): String? {
+    open fun getString(key: String, value: String? = null): String? {
         return try {
             mFields.getString(key)
         } catch (e: JSONException) {
-            null
+            return value
+        }
+    }
+
+    /**
+     * get int value from given key
+     *
+     * @param key field name to get the value
+     * @return value of specified key or null
+     */
+    fun getInt(key: String, value: Int? = null): Int?{
+        return try{
+            mFields.get(key) as Int
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    /**
+     * get double value from given key
+     *
+     * @param key field name to get the value
+     * @return value of specified key or null
+     */
+    fun getDouble(key: String, value: Double? = null): Double?{
+        return try{
+            mFields.get(key) as Double
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    /**
+     * get boolean value from given key
+     *
+     * @param key field name to get the value
+     * @return value of specified key or null
+     */
+    fun getBoolean(key: String, value: Boolean? = null): Boolean?{
+        return try{
+            mFields.get(key) as Boolean
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    /**
+     * get JSONObject value from given key
+     *
+     * @param key field name to get the value
+     * @return value of specified key or null
+     */
+    fun getJson(key: String, value: JSONObject? = null): JSONObject?{
+        return try{
+            mFields.get(key) as JSONObject
+        } catch (e: JSONException){
+            return value
+        }
+    }
+
+    /**
+     * get JSONArray value from given key
+     *
+     * @param key field name to get the value
+     * @return value of specified key or null
+     */
+    fun getArray(key: String, value: JSONArray? = null): JSONArray?{
+        return try{
+            mFields.get(key) as JSONArray
+        } catch (e: JSONException){
+            return value
         }
     }
 
@@ -247,7 +317,7 @@ open class NCMBBase(){
     }
 
     @Throws(NCMBException::class)
-    fun getDate(key : String): Date? {
+    fun getDate(key : String, value : Date? = null): Date? {
         try {
             if (!mFields.isNull(key)) {
                 val df: SimpleDateFormat = NCMBDateFormat.getIso8601()
@@ -256,7 +326,7 @@ open class NCMBBase(){
                     return df.parse(dateJson.getString("iso"))
                 }
             }
-            return null
+            return value
         } catch (e: JSONException) {
             return null
         }

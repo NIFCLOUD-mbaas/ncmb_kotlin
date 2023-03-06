@@ -24,19 +24,16 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
+import androidx.test.core.app.ApplicationProvider
 import org.robolectric.annotation.Config
-import java.io.File
-import java.io.IOException
 import java.util.*
-import kotlin.test.assertFails
+
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = intArrayOf(27), manifest = Config.NONE)
+@Config(sdk = [27], manifest = Config.NONE)
 class NCMBErrorScriptTest {
     private var mServer: MockWebServer = MockWebServer()
 
@@ -49,7 +46,7 @@ class NCMBErrorScriptTest {
         mServer.dispatcher = ncmbDispatcher
         mServer.start()
         NCMB.initialize(
-            RuntimeEnvironment.application.getApplicationContext(),
+            ApplicationProvider.getApplicationContext(),
             "appKey",
             "cliKey",
             mServer.url("/").toString(),
@@ -66,12 +63,11 @@ class NCMBErrorScriptTest {
         val query = JSONObject()
         val scriptObj = NCMBScript("errorTestScript.js", NCMBScript.MethodType.GET)
 
-        var response : ByteArray? = null
         try {
-            response = scriptObj.execute(header, body, query)
+            scriptObj.execute(header, body, query)
         }
         catch(e : NCMBException){
-            Assert.assertNull(response)
+            Assert.assertNotNull(e)
             Assert.assertEquals(e.message, "errorTestScript.js not found")
         }
     }
