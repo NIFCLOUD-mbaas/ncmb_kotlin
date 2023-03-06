@@ -22,7 +22,22 @@ import java.util.*
 /**
  * Service class for push notification api
  */
-internal class NCMBPushService : NCMBService() {
+internal class NCMBPushService : NCMBObjectService() {
+
+
+    /** service path for API category  */
+    override val SERVICE_PATH = "push"
+    
+
+    /**
+     * Constructor
+     *
+     * @param context NCMBContext object for current context
+     */
+    init {
+        this.mServicePath = this.SERVICE_PATH
+    }
+
     /**
      * Create push object
      *
@@ -32,7 +47,8 @@ internal class NCMBPushService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun sendPush(params: JSONObject): JSONObject {
-        val request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST)
+        // val request = createRequestParams(null, params, null, NCMBRequest.HTTP_METHOD_POST)
+        val request = createRequestParamsPush(null, params, null, NCMBRequest.HTTP_METHOD_POST, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -55,7 +71,7 @@ internal class NCMBPushService : NCMBService() {
      */
     @Throws(NCMBException::class)
     fun updatePush(pushId: String?, params: JSONObject): JSONObject {
-        val request = createRequestParams(pushId, params, null, NCMBRequest.HTTP_METHOD_PUT)
+        val request = createRequestParamsPush(pushId, params, null, NCMBRequest.HTTP_METHOD_PUT, null, null)
         val response = sendRequest(request)
         when (response) {
             is NCMBResponse.Success -> {
@@ -87,11 +103,13 @@ internal class NCMBPushService : NCMBService() {
             }
 
             //connect
-            val paramsRequest = createRequestParams(
+            val paramsRequest = createRequestParamsPush(
                 "$pushId/openNumber",
                 params,
                 null,
-                NCMBRequest.HTTP_METHOD_POST
+                NCMBRequest.HTTP_METHOD_POST,
+                null,
+                null
             )
             val pushReceiptStatusHandler = NCMBHandler { callback, response ->
                 when (response) {
@@ -114,26 +132,28 @@ internal class NCMBPushService : NCMBService() {
     }
 
     /**
-     * Setup params to installation
+     * Setup params to push
      *
-     * @param installationId installation id
-     * @param params         installation parameters
+     * @param pushId         push id
+     * @param params         push parameters
      * @param queryParams    query parameters
      * @param method         method
      * @return parameters in object
      */
     @Throws(NCMBException::class)
-    fun createRequestParams(
-        installationId: String?,
+    fun createRequestParamsPush(
+        pushId: String?,
         params: JSONObject,
         queryParams: JSONObject?,
-        method: String
+        method: String,
+        callback: NCMBCallback?,
+        handler: NCMBHandler?
     ): RequestParams {
 
         //url set
-        val url: String = if (installationId != null) {
+        val url: String = if (pushId != null) {
             //PUT,GET(fetch)
-            NCMB.getApiBaseUrl() + mServicePath + "/" + installationId
+            NCMB.getApiBaseUrl() + mServicePath + "/" + pushId
         } else {
             //POST,GET(search)
             NCMB.getApiBaseUrl() + this.mServicePath
@@ -142,21 +162,45 @@ internal class NCMBPushService : NCMBService() {
             url = url,
             method = method,
             params = params,
-            contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+            contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON,
+            callback = callback,
+            handler = handler
         )
     }
 
-    companion object {
-        /** service path for API category  */
-        const val SERVICE_PATH = "push"
+    /**
+     * Setup params to do find request for Query search functions
+     *
+     * @param className Class name
+     * @param query JSONObject
+     * @return parameters in object
+     * @throws NCMBException
+     */
+    @Throws(NCMBException::class)
+    override fun findObjectParams(className: String, query:JSONObject): RequestParams {
+        var url = NCMB.getApiBaseUrl() + this.mServicePath
+        if(query.length() > 0) {
+            url = url.plus("?" + queryUrlStringGenerate(query))
+        }
+        val method = NCMBRequest.HTTP_METHOD_GET
+        val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
+        return RequestParams(url = url, method = method, contentType = contentType, query=query)
     }
 
-    /**
-     * Constructor
-     *
-     * @param context NCMBContext object for current context
-     */
-    init {
-        mServicePath = SERVICE_PATH
+    @Throws(NCMBException::class)
+    override fun createSearchResponseList(className: String, responseData: JSONObject): List<NCMBPush> {
+        return try {
+            val results = responseData.getJSONArray(NCMBQueryConstants.RESPONSE_PARAMETER_RESULTS)
+            val array: MutableList<NCMBPush> = ArrayList()
+            for (i in 0 until results.length()) {
+                val tmpObj = NCMBPush(results.getJSONObject(i))
+                array.add(tmpObj)
+            }
+            array
+        } catch (e: JSONException) {
+            throw NCMBException(NCMBException.INVALID_JSON, "Invalid JSON format.")
+        }
     }
 }
+
+
