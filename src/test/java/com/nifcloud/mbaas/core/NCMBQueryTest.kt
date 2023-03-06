@@ -936,4 +936,32 @@ class NCMBQueryTest {
         )
     }
 
+    @Test
+    fun test_NCMBPush_find_success(){
+        val query = NCMBQuery.forPush()
+        val pushes = query.find()
+        Assert.assertEquals(
+            2,
+            pushes.size
+        )
+         Assert.assertEquals(
+             pushes[0].title,
+             "title1"
+         )
+//         Assert.assertEquals(
+//             pushes[1].getObjectId(),
+//             "dummyObjectId02"
+//         )
+    }
+
+//    @Test
+//    fun test_NCMBPush_find_ios_success(){
+//        val query = NCMBQuery.forPush()
+//        query.whereEqualTo("target", ["ios"])
+//        val ios_pushes = query.find()
+//        Assert.assertEquals(
+//            2,
+//            ios_pushes.size
+//        )
+//    }
 }
