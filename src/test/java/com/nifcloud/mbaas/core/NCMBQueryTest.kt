@@ -31,6 +31,7 @@ import org.robolectric.annotation.Config
 import org.skyscreamer.jsonassert.JSONAssert
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.test.assertFails
 
 //Android環境のベースにテスト実装するため
@@ -944,24 +945,45 @@ class NCMBQueryTest {
             2,
             pushes.size
         )
-         Assert.assertEquals(
-             pushes[0].title,
-             "title1"
-         )
-//         Assert.assertEquals(
-//             pushes[1].getObjectId(),
-//             "dummyObjectId02"
-//         )
+        Assert.assertEquals(
+            pushes[0].title,
+            "title1"
+        )
+        Assert.assertEquals(
+            pushes[0].getObjectId(),
+            "7FrmPTBKSNtVjajm"
+        )
+        Assert.assertEquals(
+            pushes[1].title,
+            "title2"
+        )
+        Assert.assertEquals(
+            pushes[1].getObjectId(),
+            "raCwV9E8HjPWO5yW"
+        )
     }
 
-//    @Test
-//    fun test_NCMBPush_find_ios_success(){
-//        val query = NCMBQuery.forPush()
-//        query.whereEqualTo("target", ["ios"])
-//        val ios_pushes = query.find()
-//        Assert.assertEquals(
-//            2,
-//            ios_pushes.size
-//        )
-//    }
+    @Test
+    fun test_NCMBPush_find_whereEqualTo_success(){
+        val query = NCMBQuery.forPush()
+        val objs = setOf("android")
+        query.whereContainedInArray("target", objs)
+        val android_pushes = query.find()
+        Assert.assertEquals(
+            android_pushes[0].getObjectId(),
+            "ukAwn7IKAG4Lgt0H"
+        )
+        Assert.assertEquals(
+            android_pushes[1].getObjectId(),
+            "zsps3o9UkhYxO9p9"
+        )
+        Assert.assertEquals(
+            android_pushes[0].target,
+            "android"
+        )
+        Assert.assertEquals(
+            android_pushes[1].target,
+            "android"
+        )
+    }
 }
