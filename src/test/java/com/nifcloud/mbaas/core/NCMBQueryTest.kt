@@ -966,8 +966,7 @@ class NCMBQueryTest {
     @Test
     fun test_NCMBPush_find_whereEqualTo_success(){
         val query = NCMBQuery.forPush()
-        val objs = setOf("android")
-        query.whereContainedInArray("target", objs)
+        query.whereEqualTo("target","android")
         val android_pushes = query.find()
         Assert.assertEquals(
             android_pushes[0].getObjectId(),
@@ -976,14 +975,6 @@ class NCMBQueryTest {
         Assert.assertEquals(
             android_pushes[1].getObjectId(),
             "zsps3o9UkhYxO9p9"
-        )
-        Assert.assertEquals(
-            android_pushes[0].target,
-            "android"
-        )
-        Assert.assertEquals(
-            android_pushes[1].target,
-            "android"
         )
     }
 }

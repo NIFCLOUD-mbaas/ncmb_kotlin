@@ -9,7 +9,7 @@ request:
     url: /2013-09-01/push
     method: GET
     query:
-        where: {"target":{"$inArray":["android"]}}
+        where: '{"target":"android"}'
 response:
     status: 200
     file: valid_get_searchPush_response.json
