@@ -289,8 +289,10 @@ internal class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
+
     fun loginByNameParams(params: JSONObject, loginCallback: NCMBCallback?, loginHandler: NCMBHandler?): RequestParams {
         val url = NCMB.getApiBaseUrl() + "login"
+
         val method = NCMBRequest.HTTP_METHOD_POST
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
         return RequestParams(url = url, method = method,  contentType = contentType, params = params, callback = loginCallback, handler = loginHandler)
