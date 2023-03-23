@@ -108,8 +108,8 @@ internal class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun loginUser(query: JSONObject): NCMBUser {
-        val reqParams = loginByNameParams(query, null, null)
+    protected fun loginUser(param: JSONObject): NCMBUser {
+        val reqParams = loginByNameParams(param, null, null)
         val response = sendRequest(reqParams)
         val responseData = loginByNameCheckResponse(response)
         return postLoginProcess(responseData)
@@ -213,7 +213,7 @@ internal class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    protected fun loginUserInBackground(query: JSONObject, loginCallback: NCMBCallback){
+    protected fun loginUserInBackground(param: JSONObject, loginCallback: NCMBCallback){
         val loginHandler = NCMBHandler { logincallback, response ->
             when (response) {
                 is NCMBResponse.Success -> {
@@ -227,7 +227,7 @@ internal class NCMBUserService : NCMBObjectService() {
                 }
             }
         }
-        val reqParams : RequestParams = loginByNameParams(query, loginCallback, loginHandler)
+        val reqParams : RequestParams = loginByNameParams(param, loginCallback, loginHandler)
         sendRequestAsync(reqParams, loginCallback, loginHandler)
     }
 
@@ -289,11 +289,13 @@ internal class NCMBUserService : NCMBObjectService() {
      * @throws NCMBException
      */
     @Throws(NCMBException::class)
-    fun loginByNameParams(query: JSONObject, loginCallback: NCMBCallback?, loginHandler: NCMBHandler?): RequestParams {
-        val url = NCMB.getApiBaseUrl() + "login?" + queryUrlStringGenerate(query)
-        val method = NCMBRequest.HTTP_METHOD_GET
+
+    fun loginByNameParams(params: JSONObject, loginCallback: NCMBCallback?, loginHandler: NCMBHandler?): RequestParams {
+        val url = NCMB.getApiBaseUrl() + "login"
+
+        val method = NCMBRequest.HTTP_METHOD_POST
         val contentType = NCMBRequest.HEADER_CONTENT_TYPE_JSON
-        return RequestParams(url = url, method = method,  contentType = contentType, query = query, callback = loginCallback, handler = loginHandler)
+        return RequestParams(url = url, method = method,  contentType = contentType, params = params, callback = loginCallback, handler = loginHandler)
     }
 
     /**
