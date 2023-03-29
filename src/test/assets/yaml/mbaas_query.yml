@@ -1,18 +1,15 @@
 request:
     url: /2013-09-01/push
     method: GET
-    query:
-        where: '{"target":["android"]}'
-        limit: 2
 response:
     status: 200
-    file: valid_get_searchPush_response.json
+    file: valid_get_push_response.json
 ---
 request:
     url: /2013-09-01/push
     method: GET
     query:
-        where: '{"target":["android"]}'
+        where: '{"target":"android"}'
 response:
     status: 200
     file: valid_get_searchPush_response.json
