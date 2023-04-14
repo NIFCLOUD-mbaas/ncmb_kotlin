@@ -81,6 +81,10 @@ class NCMBQuery<T : NCMBObject> private constructor(val mClassName: String, val 
         fun forFile(): NCMBQuery<NCMBFile> {
             return NCMBQuery("file", NCMBFileService()) as NCMBQuery<NCMBFile>
         }
+
+        fun forPush(): NCMBQuery<NCMBPush> {
+            return NCMBQuery("push", NCMBPushService()) as NCMBQuery<NCMBPush>
+        }
     }
 
     /**

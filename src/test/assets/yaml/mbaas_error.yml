@@ -17,30 +17,30 @@ response:
 ---
 request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
         userName: "Ncmb Ichiro"
         password: invalidPassword
-    method: GET
 response:
     status: 401
     file: invalid_get_login_response.json
 ---
 request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
         userName: "invalidUser"
         password: Password
-    method: GET
 response:
     status: 401
     file: invalid_get_login_response.json
 ---
 request:
     url: /2013-09-01/login
-    query:
+    method: POST
+    body:
         userName: "Ncmb Jirou"
         password: dummyPassword
-    method: GET
 response:
     status: 200
     file: valid_get_login_response.json
